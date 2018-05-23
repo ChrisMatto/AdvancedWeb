@@ -48,7 +48,7 @@ Desktop.ini
 ######################
 # NetBeans
 ######################
-nbproject/
+private/
 build/
 nbbuild/
 dist/
