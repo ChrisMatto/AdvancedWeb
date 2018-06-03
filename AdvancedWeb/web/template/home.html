@@ -76,7 +76,7 @@
 
                         
                             <li>
-                                <a href="Home?lin=it">Home</a>
+                                <a onclick="bodychange()">Home</a>
                             </li>
                             <li>
                                 <a href="listcorsi?lin=it">Corsi</a>
@@ -107,6 +107,7 @@
         <!-- End container -->
     </nav>
     <!------------------------fine menu ------------------------->
+<div id="body">
     
     <section class="tp-banner-container">
     <div class="tp-banner" >
@@ -386,6 +387,8 @@
     </div>
 </section><!-- End slider -->
 
+
+
 <section id="main-features">
 <div class="divider_top_black"></div>
 <div class="container">
@@ -438,6 +441,10 @@
     </div><!-- End container-->
 </section><!-- End main-features -->
 
+
+
+
+
 <section id="main_content_gray">
     <div class="container">
         <div class="row">
@@ -449,8 +456,8 @@
 
     
 
-    <div id="cdl" style="display:none">
-    {{#json}}
+    <div id="cdl" style="display:none"> 
+    {{#cdl}}
     <div  class="col-lg-3 col-md-6 col-sm-6">
             <div class="col-item">
                 <div class="photo">
@@ -461,7 +468,7 @@
                     <div class="row">
                         <div class="course_info col-md-12 col-sm-12">
                             <h5></h5>
-                            <p id="descrizione">{{{descrizione_it}}}</p>
+                            <p id="descrizione">{{#descrizione_it}}{{{descrizione_it}}}{{/descrizione_it}}{{^descrizione_it}}{{{descrizione_en}}}{{/descrizione_it}}</p>
 
                         <div class="price pull-right" id="cfu">{{cfu}} CFU</div>
                         </div>
@@ -472,8 +479,8 @@
                 </div>
             </div>
         </div>
-    {{/json}}
-    </div>
+    {{/cdl}}
+   </div>  
 
 <!--    <div class="col-lg-3 col-md-6 col-sm-6">
             <div class="col-item">
@@ -516,31 +523,31 @@
         </div>
     </div>
     
-    <#list cdlm as cdlm>
-    <#noautoesc>
-    <div class="col-lg-3 col-md-6 col-sm-6">
+<div id="cdlm" style="display:none">
+    {{#cdlm}}
+    <div  class="col-lg-3 col-md-6 col-sm-6">
             <div class="col-item">
                 <div class="photo">
-                    <a href="DetailsCorsoCdl?n=${cdlm.IDCDL}&lin=it"><img src="${cdlm.immagine}"/></a>
-                    <div class="cat_row"><#if cdlm.nome_it?trim?has_content>${cdlm.nome_it}<#else>${cdlm.nome_en}</#if><span class="pull-right"><i class="fas fa-university"></i></span></div>
+                    <a href=""><img src="{{immagine}}" alt="cdlimmagine"/></a>
+                    <div class="cat_row" >{{#nome_it}}{{nome_it}}{{/nome_it}}{{^nome_it}}{{nome_en}}{{/nome_it}}<span class="pull-right"><i class="fas fa-university"></i></span></div>
                 </div>
                 <div class="info">
                     <div class="row">
                         <div class="course_info col-md-12 col-sm-12">
                             <h5></h5>
-                            <p><#if cdlm.descrizione_it?trim?has_content>${cdlm.descrizione_it}<#else>${cdlm.descrizione_en}</#if></p>
+                            <p id="descrizione">{{#descrizione_it}}{{{descrizione_it}}}{{/descrizione_it}}{{^descrizione_it}}{{{descrizione_en}}}{{/descrizione_it}}</p>
 
-                        <div class="price pull-right">${cdlm.cfu} CFU</div>
+                        <div class="price pull-right" id="cfu">{{cfu}} CFU</div>
                         </div>
                     </div>
                     <div class="separator clearfix">
-                        <p class="btn-add"><a href=""><i class="icon-export-4"></i></a></p>
+                        <p class="btn-add" id="cdlink2"><a href=""><i class="icon-export-4"></i></a></p>
                     </div>
                 </div>
             </div>
         </div>
-    </#noautoesc>
-    </#list>
+    {{/cdlm}}
+</div>
     
          <a href="listcorsi?lin=it" class="button_medium_outline pull-right">Vedi Tutti I Corsi</a>
  
@@ -667,6 +674,10 @@
         </div>
     </div>
    </section><!-- End testimonials -->
+   
+   
+   
+</div>
    
    <footer>
 
@@ -876,6 +887,8 @@
         <script src="js/chosen.jquery.js"></script>
         <script src="js/homeMaker.js"></script>
         <script src="js/Mustache.js"></script>
+        <script src="js/bodychange.js"></script>
+        <script src="js/compareStrings.js"></script>
         
         <script> $(document).ready(function(){
             homeMaker();

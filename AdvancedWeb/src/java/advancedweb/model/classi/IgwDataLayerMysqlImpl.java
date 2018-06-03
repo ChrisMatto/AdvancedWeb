@@ -20,12 +20,14 @@ import advancedweb.model.interfacce.Libro;
 import advancedweb.model.interfacce.Log;
 import advancedweb.model.interfacce.Materiale;
 import advancedweb.model.interfacce.Servizio;
+import advancedweb.model.interfacce.Sessione;
 import advancedweb.model.interfacce.Utente;
 import static java.lang.Character.toUpperCase;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import org.apache.commons.lang3.RandomStringUtils;
 
 /**
  *
@@ -48,10 +51,10 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
 
     private PreparedStatement dDocente,dDocentiCorso,dCDLCorso,dColleg_Corso,dCorso,dDescrizione_it,dDescrizione_en,dDublino_it,dDublino_en,dMaterialeCorso,dAllLibriCorso,dLibro,dAllDocCorso,dAllCDLCorso,dThis_Corso,dOther_Corso,dCDLinColl,dCDL,dUtente,dCorsiDocente,dMateriale,dLibriCorso;
     
-    private PreparedStatement iLog;
+    private PreparedStatement iLog,iSessione;
     
 
-    private PreparedStatement checkUtente,sLog;
+    private PreparedStatement checkUtente,sLog,sSessioneByToken;
     
     @Override
     public void init() throws DataLayerException {
@@ -109,6 +112,7 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
             sCorsiByLibro=connection.prepareStatement("SELECT Corso FROM Libri_Corso WHERE Libro=?");
             sGruppiByServizio=connection.prepareStatement("SELECT Gruppo FROM Group_Services WHERE Servizio=?");
             sUtenteByDocente=connection.prepareStatement("SELECT * FROM Utente WHERE Docente=?");
+            sSessioneByToken=connection.prepareStatement("SELECT * FROM Sessione WHERE Token=?");
             
             PreparedStatement sCDLByAnno=connection.prepareStatement("SELECT * FROM CDL");
             
@@ -170,6 +174,8 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
             uLibro=connection.prepareStatement("UPDATE Libro SET Autore=?,Titolo=?,Volume=?,Anno=?,Editore=?,Link=? WHERE IDLibro=?");
             
             iLog=connection.prepareStatement("INSERT INTO LOG(Utente,Data,Descrizione) VALUES (?,?,?)",Statement.RETURN_GENERATED_KEYS);
+            
+            iSessione=connection.prepareStatement("REPLACE INTO Sessione(Token,Data,Utente) VALUES(?,?,?)",Statement.RETURN_GENERATED_KEYS);
             
             
         } catch (SQLException ex) {
@@ -489,6 +495,23 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
         }
    }
  
+    @Override
+    public Sessione createSessione(){
+        return (Sessione) new SessioneImpl(this);
+    }
+    
+    public Sessione createSessione(ResultSet rs) throws DataLayerException{
+        try{
+            Sessione se= new SessioneImpl(this);
+            se.setToken(rs.getString("Token"));
+            se.setData(rs.getTimestamp("Data"));
+            se.setIDUtente(rs.getInt("Utente"));
+            return se;
+        }catch (SQLException ex) {
+            throw new DataLayerException("Unable to create Sessione object form ResultSet", ex);
+        }
+   }
+    
     
     @Override
     public CDL getCDL(int IDCdl) throws DataLayerException {
@@ -940,13 +963,18 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
     }
     
     @Override
-    public List<Corso> getCorsiByAnno() throws DataLayerException {
+    public List<Corso> getCorsiByAnno(int anno) throws DataLayerException {
         List<Corso> result = new ArrayList();
+        int year=0;
+        if(anno!=0){
         LocalDate date=LocalDate.now();
         int month = date.getMonthValue();
-        int year = date.getYear();
+        year = date.getYear();
         if(month <= 8)
             year=year-1;
+        }
+        else
+            year=anno;
         try{
             sCorsiByAnno.setInt(1, year);
             try (ResultSet rs=sCorsiByAnno.executeQuery()){
@@ -1085,6 +1113,78 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
             return false;
     }
     
+    @Override
+    public Sessione getSessione(String token) throws DataLayerException{
+        try {
+            sSessioneByToken.setString(1,token);
+            try (ResultSet rs=sSessioneByToken.executeQuery()) {
+                if(rs.next())
+                    return createSessione(rs);
+            }
+        }
+        catch (SQLException ex){
+            throw new DataLayerException("Unable to load Sessione by Token",ex);
+        }
+        return null;
+    }
+    
+    @Override
+    public String makeSessione(Sessione sessione) throws DataLayerException{
+        String key =sessione.getToken();
+         try {
+            if (key!=null) { //update
+                //non facciamo nulla se l'oggetto non ha subito modifiche
+                //do not store the object if it was not modified
+                if (!sessione.isDirty()) {
+                    return key;
+                }
+                
+  
+            } else { //insert
+               key=RandomStringUtils.randomAlphanumeric(32);
+               iSessione.setString(1, key);
+               iSessione.setTimestamp(2,sessione.getData());
+               iSessione.setInt(3, sessione.getIDUtente());
+                
+                if (iSessione.executeUpdate() == 1) {
+                    //per leggere la chiave generata dal database
+                    //per il record appena inserito, usiamo il metodo
+                    //getGeneratedKeys sullo statement.
+                    //to read the generated record key from the database
+                    //we use the getGeneratedKeys method on the same statement
+                    try (ResultSet keys = iSessione.getGeneratedKeys()) {
+                        //il valore restituito è un ResultSet con un record
+                        //per ciascuna chiave generata (uno solo nel nostro caso)
+                        //the returned value is a ResultSet with a distinct record for
+                        //each generated key (only one in our case)
+                        if (keys.next()) {
+                            //i campi del record sono le componenti della chiave
+                            //(nel nostro caso, un solo intero)
+                            //the record fields are the key componenets
+                            //(a single integer in our case)
+                            key = keys.getString(1);
+                        }
+                    }
+                }
+            }
+            //restituiamo l'oggetto appena inserito RICARICATO
+            //dal database tramite le API del modello. In tal
+            //modo terremo conto di ogni modifica apportata
+            //durante la fase di inserimento
+            if (key!=null) {
+                try {
+                    sessione.copyFrom(getSessione(key));
+                } catch (DataLayerException ex) {
+                    Logger.getLogger(IgwDataLayerMysqlImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            sessione.setDirty(false);
+       
+            } catch (SQLException ex) {
+            Logger.getLogger(IgwDataLayerMysqlImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return key;
+    }
     
     @Override
     public Utente getUtenteByDocente(Docente docente) throws DataLayerException, SQLException {

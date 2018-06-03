@@ -1,43 +1,80 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package advancedweb.controller;
 
 import advancedweb.controller.data.DataConnection;
 import advancedweb.controller.data.DataLayerException;
-import advancedweb.model.classi.IgwDataLayerMysqlImpl;
 import advancedweb.model.interfacce.CDL;
 import advancedweb.model.interfacce.IgwDataLayer;
 import com.google.gson.Gson;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Resource;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-
+import java.util.Random;
 import javax.naming.NamingException;
-import javax.sql.DataSource;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 
-
-
-
-@Path("cdl")
-public class Home{
+/**
+ *
+ * @author Chris-PC
+ */
+@Path("home")
+public class Home {
     
-    
-    /*HTTP GET Request*/
+    @Path("cdl")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCDL() throws DataLayerException, SQLException, NamingException{
         DataConnection data=new DataConnection();
         IgwDataLayer dl = data.getData();
         List<CDL> cdl=dl.getCDLNoMag();
-        String json = new Gson().toJson(cdl);
+        
+        Random rand= new Random();
+        List<CDL> rcdl=new ArrayList();
+        int n=4;
+        int cdlsize=cdl.size();
+        for (int i=0;i<n;i++){
+                if(!cdl.isEmpty() &&i<=cdlsize){
+                    int randomIndex=rand.nextInt(cdl.size());
+                    rcdl.add(cdl.get(randomIndex));
+                    cdl.remove(randomIndex);
+                }
+        }
+        
+        String json = new Gson().toJson(rcdl);
+        return Response.ok(json).build();
+       
+    }
+    
+    
+    @Path("cdlm")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCDLM() throws DataLayerException, SQLException, NamingException{
+        DataConnection data=new DataConnection();
+        IgwDataLayer dl = data.getData();
+        List<CDL> cdlm=dl.getCDLMag();
+        
+        Random rand= new Random();
+        List<CDL> rcdlm=new ArrayList();
+        int n=4;
+        int cdlmsize=cdlm.size();
+        for (int i=0;i<n;i++){
+                if(!cdlm.isEmpty() &&i<=cdlmsize){
+                    int randomIndex=rand.nextInt(cdlm.size());
+                    rcdlm.add(cdlm.get(randomIndex));
+                    cdlm.remove(randomIndex);
+                }
+        }
+        
+        String json = new Gson().toJson(rcdlm);
         return Response.ok(json).build();
        
     }

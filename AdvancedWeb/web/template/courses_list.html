@@ -1,0 +1,110 @@
+<section id="sub-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1 text-center">
+                <h1>Lista dei corsi</h1>
+                <p class="lead boxed ">Esplora la lista dei nostri fantastici corsi</p>
+                <p class="lead">
+                     
+                </p>
+            </div>
+        </div><!-- End row -->
+    </div><!-- End container -->
+    <div class="divider_top"></div>
+    </section><!-- End sub-header -->
+    
+    
+    <section id="main_content" >
+    	<div class="container">
+        
+        <ol class="breadcrumb">
+          <li><a href="Home">Home</a></li>
+          <li class="active">Lista corsi</li>
+        </ol>
+        
+        <div class="row">
+        
+        <aside class="col-lg-3 col-md-4 col-sm-4">
+            <div class="box_style_1">
+                
+              
+            <ul class="submenu-col">
+                <li><a href="listcorsi">Tutti i corsi</a></li>
+                <br>
+                <h4>Corsi di laurea Triennale</h4>
+                <#list cdl?sort_by("nome_it") as cdl>
+                <li><a href="DetailsCorsoCdl?n=${cdl.IDCDL}&lin=it"><#if cdl.nome_it?trim?has_content>${cdl.nome_it}<#else>${cdl.nome_en}</#if></a></li>
+                </#list>
+
+                
+                <h4>Corsi di laurea Magistrale</h4>
+                <#list cdlm?sort_by("nome_it") as cdlm>
+                <li><a href="DetailsCorsoCdl?n=${cdlm.IDCDL}&lin=it"><#if cdlm.nome_it?trim?has_content>${cdlm.nome_it}<#else>${cdlm.nome_en}</#if></a></li>
+                </#list>
+
+            </ul>
+            
+                <hr>
+            </div>
+        </aside>
+        
+        <div class="col-lg-9 col-md-8 col-sm-8">
+       
+            <h3 align="center">Tutti i corsi</h3>
+            <p></p>
+
+                <div class="panel panel-info filterable add_bottom_45">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Corsi</h3>
+                        <div class="pull-right">
+                            <button class="btn-filter"><span class="icon-th-list"></span>Filtri</button>
+                        </div>
+                    </div>
+                    <table class="table table-responsive table-striped">
+                        <thead>
+                            <tr class="filters">
+                                
+                                <th><input type="text" class="form-control" placeholder="Nome" disabled></th>
+                                <th><input type="text" class="form-control" placeholder="SSD" disabled ></th>
+                                <th><input type="text" class="form-control" placeholder="CFU" disabled ></th>
+                                <th><input type="text" class="form-control" placeholder="Lingua" disabled ></th>
+                                <th><input type="text" class="form-control" placeholder="Semestre" disabled ></th>
+                                <th><input type="text" class="form-control" placeholder="Tipologia" disabled ></th>
+                                <th><input type="text" class="form-control" placeholder="CDL" disabled ></th>
+                                <th><input type="text" class="form-control" placeholder="Docenti" disabled ></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <#list corsi?sort_by("nome_it") as corso>
+                            <tr>
+                                
+                                <td><strong><a href="DetailsCorso?n=${corso.ID}&lin=it"><#if corso.nome_it?trim?has_content>${corso.nome_it}<#else>${corso.nome_en}</#if></a></strong></td>
+                                <td>${corso.SSD}</td>
+                                <td>${corso.cfu}</td>
+                                <td>${corso.lingua}</td>
+                                <td>${corso.semestre}</td>
+                                <td>${corso.tipologia}</td>
+                                <td><#list corso.CDL as cdl>
+                                    <#if cdl.abbr_it?trim?has_content>${cdl.abbr_it}<#else>${cdl.abbr_en}</#if><#if cdl?has_next>,&nbsp&nbsp</#if>
+                                </#list></td>
+                                <td><#list corso.docenti as docenti>
+                                    ${docenti.cognome}<#if docenti?has_next>,&nbsp&nbsp</#if>
+                                </#list></td>
+                            </tr>
+                           </#list>
+        
+                        </tbody>
+                </table>
+                </div><!-- End filterable -->
+                    
+      
+ 
+        </div><!-- End col-lg-9-->                        
+        </div><!-- End row -->
+        
+        <hr>
+       
+            	
+        </div><!-- End container -->
+    </section><!-- End main_content -->
+

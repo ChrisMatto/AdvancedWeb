@@ -51,6 +51,8 @@ public interface IgwDataLayer extends DataLayer {
     
     Log CreateLog();
     
+    Sessione createSessione();
+    
     CDL getCDL(int IDCdl) throws DataLayerException;
     
     List<CDL> getCDL() throws DataLayerException;
@@ -120,11 +122,15 @@ public interface IgwDataLayer extends DataLayer {
 
     public List<Docente> getDocente() throws DataLayerException;
     
-    public List<Corso> getCorsiByAnno() throws DataLayerException;
+    public List<Corso> getCorsiByAnno(int anno) throws DataLayerException;
     
     public List<CDL> getCDLNoMag() throws DataLayerException;
     
     public Utente getUtenti(String username, String password) throws DataLayerException;
+    
+    public String makeSessione(Sessione sessione) throws DataLayerException;
+    
+    public Sessione getSessione(String token) throws DataLayerException;
     
     public List<CDL> getCDLInCorso(Corso corso) throws DataLayerException;
     

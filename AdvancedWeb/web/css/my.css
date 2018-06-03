@@ -252,3 +252,7 @@ input[type='checkbox'] {
   align-self: center;
   align-content: center;
 }
+
+a{
+    cursor:pointer;
+}
