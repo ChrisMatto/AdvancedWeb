@@ -49,12 +49,14 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
     private PreparedStatement iDocente, iUtente,iCorso,iDocentiCorso,iCDL,iCDLCorso,iColleg_Corso,iDescrizione_it,iDescrizione_en,iDublino_it,iDublino_en,iMateriale,iLibro,iLibri_Corso;
     private PreparedStatement uDocente, uUtente,uCorso,uCDL,uMateriale,uLibro;
 
-    private PreparedStatement dDocente,dDocentiCorso,dCDLCorso,dColleg_Corso,dCorso,dDescrizione_it,dDescrizione_en,dDublino_it,dDublino_en,dMaterialeCorso,dAllLibriCorso,dLibro,dAllDocCorso,dAllCDLCorso,dThis_Corso,dOther_Corso,dCDLinColl,dCDL,dUtente,dCorsiDocente,dMateriale,dLibriCorso;
+    private PreparedStatement dDocente,dDocentiCorso,dCDLCorso,dColleg_Corso,dCorso,dDescrizione_it,dDescrizione_en,dDublino_it,dDublino_en,dMaterialeCorso,dAllLibriCorso,dLibro,dAllDocCorso,dAllCDLCorso,dThis_Corso,dOther_Corso,dCDLinColl,dCDL,dUtente,dCorsiDocente,dMateriale,dLibriCorso,dSessione;
     
     private PreparedStatement iLog,iSessione;
     
 
     private PreparedStatement checkUtente,sLog,sSessioneByToken;
+    
+    private PreparedStatement sAllUsers;
     
     @Override
     public void init() throws DataLayerException {
@@ -176,7 +178,9 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
             iLog=connection.prepareStatement("INSERT INTO LOG(Utente,Data,Descrizione) VALUES (?,?,?)",Statement.RETURN_GENERATED_KEYS);
             
             iSessione=connection.prepareStatement("REPLACE INTO Sessione(Token,Data,Utente) VALUES(?,?,?)",Statement.RETURN_GENERATED_KEYS);
+            dSessione=connection.prepareStatement("DELETE FROM Sessione WHERE Token=?");
             
+            sAllUsers=connection.prepareStatement("SELECT IDUtente FROM Utente");
             
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing igw data layer", ex);
@@ -1184,6 +1188,17 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
             Logger.getLogger(IgwDataLayerMysqlImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return key;
+    }
+    
+    @Override
+    public void deleteSessione(String token) throws DataLayerException{
+        try {
+            dSessione.setString(1, token);
+            dSessione.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(IgwDataLayerMysqlImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     
     @Override
@@ -2219,6 +2234,21 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
         dLibro.setInt(1, libro.getIDLibro());
         dLibro.executeUpdate();
     }
+    
+    
+    
+    @Override
+    public List<Integer> getAllUsers() throws DataLayerException{
+        List<Integer> result=new ArrayList();
+        try(ResultSet rs=sAllUsers.executeQuery()){
+            while(rs.next())
+                result.add(rs.getInt("IDUtente"));
+        }catch (SQLException ex){
+            throw new DataLayerException("Unable to load AllUsers",ex);
+        }
+        return result;
+    }
+            
         
 }
         

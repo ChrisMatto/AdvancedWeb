@@ -21,15 +21,23 @@ import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 
 
 public class DataConnection {
-    private DataSource ds=null;
-    private BasicDataSource bds = new BasicDataSource();
-    private static IgwDataLayer dl=null;
+    private DataSource ds;
+    private BasicDataSource bds;
+    private static IgwDataLayer dl;
+    
+    public DataConnection(){
+        ds=null;
+        if(dl==null){
+            bds=new BasicDataSource();
+            dl=null;
+        }
+    }
     
     public IgwDataLayer getData() throws SQLException, NamingException, DataLayerException{
         if(dl!=null)
             return dl;
         bds.setDriverClassName("com.mysql.jdbc.Driver");
-        bds.setUrl("jdbc:mysql://localhost:3306/advancedweb");
+        bds.setUrl("jdbc:mysql://localhost:3306/advancedweb?autoReconnect=true&useSSL=false");
         bds.setUsername("website");
         bds.setPassword("webpass");
         bds.setMaxIdle(5);

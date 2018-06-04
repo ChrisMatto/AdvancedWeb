@@ -53,6 +53,8 @@ public interface IgwDataLayer extends DataLayer {
     
     Sessione createSessione();
     
+    void deleteSessione(String token) throws DataLayerException;
+    
     CDL getCDL(int IDCdl) throws DataLayerException;
     
     List<CDL> getCDL() throws DataLayerException;
@@ -181,5 +183,8 @@ public interface IgwDataLayer extends DataLayer {
     public void deleteMateriale(Materiale materiale) throws DataLayerException;
 
     public void deleteLibro(Libro libro) throws DataLayerException,SQLException;
+    
+    
+    List<Integer> getAllUsers() throws DataLayerException;
   
 }
