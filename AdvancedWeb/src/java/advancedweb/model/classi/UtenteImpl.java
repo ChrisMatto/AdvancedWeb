@@ -9,6 +9,7 @@ import advancedweb.controller.data.DataLayerException;
 import advancedweb.model.interfacce.Gruppo;
 import advancedweb.model.interfacce.IgwDataLayer;
 import advancedweb.model.interfacce.Utente;
+import com.google.gson.annotations.Expose;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,21 +19,26 @@ import java.util.logging.Logger;
  */
 public class UtenteImpl implements Utente{
     
+    @Expose
     private int id;
     
+    @Expose
     private String username;
     
+    @Expose(serialize=false,deserialize=true)
     private String password;
     
+    @Expose
     private int docente;
     
-    private Gruppo gruppo;
+    private transient Gruppo gruppo;
     
+    @Expose
     private int id_gruppo;
     
-    protected IgwDataLayer ownerdatalayer;
+    protected transient IgwDataLayer ownerdatalayer;
     
-    protected boolean dirty;
+    protected transient boolean dirty;
     
     public UtenteImpl(IgwDataLayer ownerdatalayer){
         this.ownerdatalayer=ownerdatalayer;
@@ -72,6 +78,11 @@ public class UtenteImpl implements Utente{
     @Override
     public int getDocente(){
         return this.docente;
+    }
+    
+    @Override
+    public int getIDGruppo(){
+        return this.id_gruppo;
     }
     
     @Override
@@ -134,4 +145,8 @@ public class UtenteImpl implements Utente{
         this.dirty = dirty;
     }
 
+    @Override
+    public void setDL(IgwDataLayer dl){
+        this.ownerdatalayer=dl;
+    }
 }

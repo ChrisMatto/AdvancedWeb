@@ -56,7 +56,7 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
 
     private PreparedStatement checkUtente,sLog,sSessioneByToken;
     
-    private PreparedStatement sAllUsers;
+    private PreparedStatement sAllUsers,sAccessToken,checkDocente;
     
     @Override
     public void init() throws DataLayerException {
@@ -118,7 +118,9 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
             
             PreparedStatement sCDLByAnno=connection.prepareStatement("SELECT * FROM CDL");
             
-            sAccess=connection.prepareStatement("SELECT Script FROM Servizio,Utente,Group_Services WHERE Utente.Gruppo=Group_Services.Gruppo AND Servizio.IDServizio=Group_Services.Servizio AND Script=? AND Utente.Username=?");
+            sAccess=connection.prepareStatement("SELECT Nome FROM Servizio,Utente,Group_Services WHERE Utente.Gruppo=Group_Services.Gruppo AND Servizio.IDServizio=Group_Services.Servizio AND Nome=? AND Utente.Username=?");
+            
+            sAccessToken=connection.prepareStatement("SELECT Nome FROM Sessione,Servizio,Utente,Group_Services WHERE Sessione.Utente=Utente.IDUtente AND Utente.Gruppo=Group_Services.Gruppo AND Servizio.IDServizio=Group_Services.Servizio AND Nome=? AND Token=?");
             
             checkUtente=connection.prepareStatement("SELECT * FROM Utente WHERE Username=?");
             
@@ -181,6 +183,7 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
             dSessione=connection.prepareStatement("DELETE FROM Sessione WHERE Token=?");
             
             sAllUsers=connection.prepareStatement("SELECT IDUtente FROM Utente");
+            checkDocente=connection.prepareStatement("SELECT * FROM Utente WHERE Docente=?");
             
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing igw data layer", ex);
@@ -1677,8 +1680,10 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
             dDublino_it.close();
             dDublino_en.close();
             dMaterialeCorso.close();
-            
-            
+            iSessione.close();
+            dSessione.close();
+            sSessioneByToken.close();
+            sAllUsers.close();
             
             
             
@@ -2248,8 +2253,36 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
         }
         return result;
     }
-            
-        
+    
+    @Override
+    public boolean getAccessToken(String token,String servizio)throws DataLayerException{
+        try{
+        sAccessToken.setString(1, servizio);
+        sAccessToken.setString(2, token);
+        try (ResultSet rs=sAccessToken.executeQuery()){
+                        return rs.next();
+                    }
+            } catch (SQLException ex) {
+                Logger.getLogger(IgwDataLayerMysqlImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return false;
+    }
+
+    
+    @Override
+    public boolean checkDocente(int doc) throws DataLayerException{
+        try{
+        checkDocente.setInt(1, doc);
+        try (ResultSet rs=checkDocente.executeQuery()){
+                        return rs.next();
+                    }
+            } catch (SQLException ex) {
+                Logger.getLogger(IgwDataLayerMysqlImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return false;
+    }
+    
+    
 }
         
         

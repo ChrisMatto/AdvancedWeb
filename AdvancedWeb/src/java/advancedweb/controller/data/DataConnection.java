@@ -37,7 +37,7 @@ public class DataConnection {
         if(dl!=null)
             return dl;
         bds.setDriverClassName("com.mysql.jdbc.Driver");
-        bds.setUrl("jdbc:mysql://localhost:3306/advancedweb?autoReconnect=true&useSSL=false");
+        bds.setUrl("jdbc:mysql://localhost:3306/advancedweb");
         bds.setUsername("website");
         bds.setPassword("webpass");
         bds.setMaxIdle(5);

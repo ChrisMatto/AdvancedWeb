@@ -12,6 +12,8 @@ import advancedweb.controller.data.DataLayerException;
  */
 public interface Utente {
     
+    int getIDGruppo();
+    
     void setIDGruppo(int id_gruppo);
     
     void setID(int id);
@@ -40,5 +42,6 @@ public interface Utente {
 
     void setDirty(boolean dirty);
     
+    void setDL(IgwDataLayer dl);
     
 }

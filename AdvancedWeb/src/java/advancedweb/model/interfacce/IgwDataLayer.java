@@ -186,5 +186,9 @@ public interface IgwDataLayer extends DataLayer {
     
     
     List<Integer> getAllUsers() throws DataLayerException;
+    
+    public boolean getAccessToken(String token,String servizio)throws DataLayerException;
+    
+    public boolean checkDocente(int doc) throws DataLayerException;
   
 }
