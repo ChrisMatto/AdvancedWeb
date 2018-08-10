@@ -32,9 +32,11 @@
                 <li><a href="listcorsi">Tutti i corsi</a></li>
                 <br>
                 <h4>Corsi di laurea Triennale</h4>
-                <#list cdl?sort_by("nome_it") as cdl>
-                <li><a href="DetailsCorsoCdl?n=${cdl.IDCDL}&lin=it"><#if cdl.nome_it?trim?has_content>${cdl.nome_it}<#else>${cdl.nome_en}</#if></a></li>
-                </#list>
+                <div id="cdl" style="display:none">
+                {{#cdl}}
+                <li><a href="DetailsCorsoCdl?n=${cdl.IDCDL}&lin=it">{{#nome_it}}{{nome_it}}{{/nome_it}}{{^nome_it}}{{nome_en}}{{/nome_it}}</a></li>
+                {{/cdl}}
+                </div>
 
                 
                 <h4>Corsi di laurea Magistrale</h4>

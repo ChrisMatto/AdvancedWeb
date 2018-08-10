@@ -1,30 +1,67 @@
-function bodychange(){
-    $.ajax({
-        url:'template/courses_list.html',
-        dataType:'html',
-        type:'GET',
-        success:function(html){
-            var template=html;
+var pageEnum = Object.freeze({"listcorsi": "listcorsi"});
+
+function bodychange(page){
+    switch(page) {
+        case pageEnum.listcorsi:
+            //jQuery('#body').load('template/courses_list.html');
+            
             $.ajax({
-                url:'http://localhost:8084/AdvancedWeb/rest/courses',
-                dataType:'json',
+                url:'template/courses_list.html',
+                dataType:'html',
                 type:'GET',
-                success:function(json){
-                    json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
-                    template=Mustache.render(template,{'corsi':json});
+                success:function(html){
+                $.ajax({
+                    url:'http://localhost:8084/AdvancedWeb/rest/cdl',
+                    dataType:'json',
+                    type:'GET',
+                    success:function(json){
+                        var temp = jQuery('#cdl').html();
+                        json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
+                        var newTemp=Mustache.render(temp,{'cdl':json});
+                        html.$('#cdl').replaceWith(newTemp);
+                    }
+                });
+                $('#body').replaceWith(html);
                 }
+                
             });
-            $.ajax({
-                url:'http://localhost:8084/AdvancedWeb/rest/cdl',
-                dataType:'json',
+            
+            
+            /*$.ajax({
+                url:'template/courses_list.html',
+                dataType:'html',
                 type:'GET',
-                success:function(json){
-                    json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
-                    template=Mustache.render(template,{'cdl':json});
+                success:function(html){
+                    var template=html;
+                    $('#body').replaceWith(html)
+                    $.ajax({
+                        url:'http://localhost:8084/AdvancedWeb/rest/courses',
+                        dataType:'json',
+                        type:'GET',
+                        success:function(json){
+                            json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
+                            template=Mustache.render(template,{'corsi':json});
+                            //$('#body').replaceWith(template);
+                        }
+                    });
+                    $.ajax({
+                        url:'http://localhost:8084/AdvancedWeb/rest/cdl',
+                        dataType:'json',
+                        type:'GET',
+                        success:function(json){
+                            var temp = ('#cdl').html();
+                            json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
+                            var newTemp=Mustache.render(temp,{'cdl':json});
+                            $('#cdl').replaceWith(newTemp);
+                        }
+                    });
+                    //console.log(template);
+                    //$('#body').replaceWith(template);
                 }
-            });
-        }
-    });
+            });*/
+        
+    }
+    
             
             
             
