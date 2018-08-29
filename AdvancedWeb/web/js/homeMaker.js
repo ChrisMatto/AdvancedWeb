@@ -28,6 +28,17 @@ function homeMaker(){
             //console.log(template);
             var newTemp=Mustache.render(template,{'cdl':json});
             $('#cdl').replaceWith(newTemp);
+            
+            $.ajax({
+                url:'http://localhost:8084/AdvancedWeb/rest/home/cdlm',
+                dataType: 'json',
+                type:'GET',
+                success: function(json){
+                    var template=$('#cdlm').html();
+                    var newTemp=Mustache.render(template,{'cdlm':json});
+                    $('#cdlm').replaceWith(newTemp);
+                }
+            });
         }
     });
     /*var home={};
@@ -38,14 +49,5 @@ function homeMaker(){
     var newTemp=Mustache.render(template,home);
     $('#home').replaceWith(newTemp);*/
     
-    $.ajax({
-        url:'http://localhost:8084/AdvancedWeb/rest/home/cdlm',
-        dataType: 'json',
-        type:'GET',
-        success: function(json){
-            var template=$('#cdlm').html();
-            var newTemp=Mustache.render(template,{'cdlm':json});
-            $('#cdlm').replaceWith(newTemp);
-        }
-    });
+    
 }

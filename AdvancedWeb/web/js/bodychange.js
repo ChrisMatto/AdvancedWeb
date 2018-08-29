@@ -10,21 +10,43 @@ function bodychange(page){
                 dataType:'html',
                 type:'GET',
                 success:function(html){
+                    $($('#body').replaceWith(html)).ready(function() {
+                        $.ajax({
+                        url:'http://localhost:8084/AdvancedWeb/rest/cdl',
+                        dataType:'json',
+                        type:'GET',
+                        success:function(json){
+                            var temp = $('#cdl').html();
+                            json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
+                            var newTemp = Mustache.render(temp,{'cdl' : json});
+                            $('#cdl').replaceWith(newTemp);
+                        }
+                    });
+                });
+                }
+            });
+            
+            /*$.ajax({
+                url:'template/courses_list.html',
+                dataType:'html',
+                type:'GET',
+                success:function(html){
                 $.ajax({
                     url:'http://localhost:8084/AdvancedWeb/rest/cdl',
                     dataType:'json',
                     type:'GET',
                     success:function(json){
-                        var temp = jQuery('#cdl').html();
+                        var str = html.toString();
+                        var temp = html.jQuery('#cdl').html();
                         json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
                         var newTemp=Mustache.render(temp,{'cdl':json});
                         html.$('#cdl').replaceWith(newTemp);
                     }
                 });
-                $('#body').replaceWith(html);
+                ('#body').replaceWith(html);
                 }
                 
-            });
+            });*/
             
             
             /*$.ajax({
