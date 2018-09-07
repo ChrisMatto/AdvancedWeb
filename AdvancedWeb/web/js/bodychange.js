@@ -1,4 +1,4 @@
-var pageEnum = Object.freeze({"listcorsi": "listcorsi"});
+var pageEnum = Object.freeze({"listcorsi": "listcorsi"}, {"home": "home"}, {"insegnanti": "insegnanti"});
 
 function bodychange(page){
     switch(page) {
@@ -12,21 +12,37 @@ function bodychange(page){
                 success:function(html){
                     $($('#body').replaceWith(html)).ready(function() {
                         $.ajax({
-                        url:'http://localhost:8084/AdvancedWeb/rest/cdl',
-                        dataType:'json',
-                        type:'GET',
-                        success:function(json){
-                            var temp = $('#cdl').html();
-                            json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
-                            var newTemp = Mustache.render(temp,{'cdl' : json});
-                            $('#cdl').replaceWith(newTemp);
+                            url:'http://localhost:8084/AdvancedWeb/rest/cdl',
+                            dataType:'json',
+                            type:'GET',
+                            success:function(json){
+                                var temp = $('#cdl').html();
+                                json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
+                                var newTemp = Mustache.render(temp,{'cdl' : json});
+                                $('#cdl').replaceWith(newTemp);
                         }
                     });
+                        $.ajax({
+                            url: 'http://localhost:8084/AdvancedWeb/rest/cdlm',
+                            dataType: 'json',
+                            type: 'GET',
+                            success: function(json) {
+                                var temp = $('#cdlm').html();
+                                json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
+                                var newTemp = Mustache.render(temp,{'cdlm' : json});
+                                $('#cdlm').replaceWith(newTemp);
+                            }
+                    });    
                 });
                 }
             });
             
-            /*$.ajax({
+            
+        
+    }
+}
+    
+    /*$.ajax({
                 url:'template/courses_list.html',
                 dataType:'html',
                 type:'GET',
@@ -80,11 +96,7 @@ function bodychange(page){
                     //console.log(template);
                     //$('#body').replaceWith(template);
                 }
-            });*/
-        
-    }
-    
-            
+            });*/        
             
             
     
@@ -100,4 +112,4 @@ function bodychange(page){
   xhttp.open("GET", "template/courses_list.html", true);
   console.log(xhttp);
   xhttp.send();*/
-  }
+  
