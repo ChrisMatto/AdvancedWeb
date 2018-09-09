@@ -33,16 +33,18 @@
                 <br>
                 <h4>Corsi di laurea Triennale</h4>
                 <div id="cdl" style="display:none">
-                {{#cdl}}
-                <li><a href="DetailsCorsoCdl?n=${cdl.IDCDL}&lin=it">{{#nome_it}}{{nome_it}}{{/nome_it}}{{^nome_it}}{{nome_en}}{{/nome_it}}</a></li>
-                {{/cdl}}
+                    {{#cdl}}
+                    <li><a href="DetailsCorsoCdl?n=${cdl.IDCDL}&lin=it">{{#nome_it}}{{nome_it}}{{/nome_it}}{{^nome_it}}{{nome_en}}{{/nome_it}}</a></li>
+                    {{/cdl}}
                 </div>
 
                 
-                <h4>Corsi di laurea Magistrale</h4>
-                <#list cdlm?sort_by("nome_it") as cdlm>
-                <li><a href="DetailsCorsoCdl?n=${cdlm.IDCDL}&lin=it"><#if cdlm.nome_it?trim?has_content>${cdlm.nome_it}<#else>${cdlm.nome_en}</#if></a></li>
-                </#list>
+                <h4>Corsi di laurea Magistrale</h4>  
+                <div id="cdlm" style="dysplay:none">
+                    {{#cdlm}}
+                    <li><a href="DetailsCorsoCdl?n=${cdlm.IDCDL}&lin=it">{{#nome_it}}{{nome_it}}{{/nome_it}}{{^nome_it}}{{nome_en}}{{/nome_it}}</a></li>
+                    {{/cdlm}}
+                </div>
 
             </ul>
             

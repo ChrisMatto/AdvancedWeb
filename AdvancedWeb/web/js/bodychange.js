@@ -1,4 +1,4 @@
-var pageEnum = Object.freeze({"listcorsi": "listcorsi"}, {"home": "home"}, {"insegnanti": "insegnanti"});
+var pageEnum = Object.freeze({"listcorsi": "listcorsi", "home": "home", "insegnanti": "insegnanti"});
 
 function bodychange(page){
     switch(page) {
@@ -20,9 +20,7 @@ function bodychange(page){
                                 json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
                                 var newTemp = Mustache.render(temp,{'cdl' : json});
                                 $('#cdl').replaceWith(newTemp);
-                        }
-                    });
-                        $.ajax({
+                            $.ajax({
                             url: 'http://localhost:8084/AdvancedWeb/rest/cdlm',
                             dataType: 'json',
                             type: 'GET',
@@ -32,12 +30,24 @@ function bodychange(page){
                                 var newTemp = Mustache.render(temp,{'cdlm' : json});
                                 $('#cdlm').replaceWith(newTemp);
                             }
-                    });    
+                    }); 
+                        }
+                    });
+                           
                 });
                 }
             });
-            
-            
+            break;
+        case pageEnum.home:
+            /*$.ajax({
+                url: 'template/home.html',
+                dataType: 'html',
+                type: 'GET',
+                success: function(html) {
+                    $(document).replaceWith(html);
+                }
+            });*/
+            location.reload();
         
     }
 }
