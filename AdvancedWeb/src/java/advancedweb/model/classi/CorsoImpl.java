@@ -17,7 +17,7 @@ public class CorsoImpl implements Corso{
     
     private int id;
     
-    private List<CDL> cdl;
+    private transient List<CDL> cdl;
     
     private String nome_it;
     
@@ -37,20 +37,20 @@ public class CorsoImpl implements Corso{
     
     private int oldID;
     
-    private List<Corso> precedenti;
+    private transient List<Corso> precedenti;
     
     
     //assumiamo che un corso possa mutuare(sostituire) più corsi, e che lo stesso possa essere mutuato (sostituito) da un solo corso
-    private List<Corso> mutuati;
+    private transient List<Corso> mutuati;
     
     private Corso mutuato;
     
     
-    private List<Corso> prerequisiti;
+    private transient List<Corso> prerequisiti;
     
-    private List<Corso> modulo;
+    private transient List<Corso> modulo;
     
-    private List<Docente> docenti;
+    private transient List<Docente> docenti;
     
     private Descrizione_it descrizione_it;
     
@@ -60,13 +60,13 @@ public class CorsoImpl implements Corso{
     
     private Dublino_en dublino_en;
     
-    private List<Libro> libri;
+    private transient List<Libro> libri;
     
-    private List<Materiale> materiale;
+    private transient List<Materiale> materiale;
     
-    protected IgwDataLayer ownerdatalayer;
+    protected transient IgwDataLayer ownerdatalayer;
     
-    protected boolean dirty;
+    protected transient boolean dirty;
     
     
     public CorsoImpl(IgwDataLayer ownerdatalayer){

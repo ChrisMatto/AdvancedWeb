@@ -32,7 +32,7 @@
                 <li><a href="listcorsi">Tutti i corsi</a></li>
                 <br>
                 <h4>Corsi di laurea Triennale</h4>
-                <div id="cdl" style="display:none">
+                <div id="cdl">
                     {{#cdl}}
                     <li><a href="DetailsCorsoCdl?n=${cdl.IDCDL}&lin=it">{{#nome_it}}{{nome_it}}{{/nome_it}}{{^nome_it}}{{nome_en}}{{/nome_it}}</a></li>
                     {{/cdl}}
@@ -40,7 +40,7 @@
 
                 
                 <h4>Corsi di laurea Magistrale</h4>  
-                <div id="cdlm" style="dysplay:none">
+                <div id="cdlm">
                     {{#cdlm}}
                     <li><a href="DetailsCorsoCdl?n=${cdlm.IDCDL}&lin=it">{{#nome_it}}{{nome_it}}{{/nome_it}}{{^nome_it}}{{nome_en}}{{/nome_it}}</a></li>
                     {{/cdlm}}
@@ -78,16 +78,16 @@
                                 <th><input type="text" class="form-control" placeholder="Docenti" disabled ></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <#list corsi?sort_by("nome_it") as corso>
+                        <tbody id="courses">
+                        <!--    {{#corso}}
                             <tr>
                                 
-                                <td><strong><a href="DetailsCorso?n=${corso.ID}&lin=it"><#if corso.nome_it?trim?has_content>${corso.nome_it}<#else>${corso.nome_en}</#if></a></strong></td>
-                                <td>${corso.SSD}</td>
-                                <td>${corso.cfu}</td>
-                                <td>${corso.lingua}</td>
-                                <td>${corso.semestre}</td>
-                                <td>${corso.tipologia}</td>
+                                <td><strong><a href="DetailsCorso?n=${corso.ID}&lin=it">{{#nome_it}}{{nome_it}}{{/nome_it}}{{^nome_it}}{{nome_en}}{{/nome_it}}</a></strong></td>
+                                <td>{{ssd}}</td>
+                                <td>{{cfu}}</td>
+                                <td>{{lingua}}</td>
+                                <td>{{semestre}}</td>
+                                <td>{{tipologia}}</td>
                                 <td><#list corso.CDL as cdl>
                                     <#if cdl.abbr_it?trim?has_content>${cdl.abbr_it}<#else>${cdl.abbr_en}</#if><#if cdl?has_next>,&nbsp&nbsp</#if>
                                 </#list></td>
@@ -95,7 +95,7 @@
                                     ${docenti.cognome}<#if docenti?has_next>,&nbsp&nbsp</#if>
                                 </#list></td>
                             </tr>
-                           </#list>
+                           {{/corso}}-->
         
                         </tbody>
                 </table>

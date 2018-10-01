@@ -3,7 +3,6 @@ var pageEnum = Object.freeze({"listcorsi": "listcorsi", "home": "home", "insegna
 function bodychange(page){
     switch(page) {
         case pageEnum.listcorsi:
-            //jQuery('#body').load('template/courses_list.html');
             
             $.ajax({
                 url:'template/courses_list.html',
@@ -19,107 +18,53 @@ function bodychange(page){
                                 var temp = $('#cdl').html();
                                 json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
                                 var newTemp = Mustache.render(temp,{'cdl' : json});
-                                $('#cdl').replaceWith(newTemp);
+                                //$('#cdl').replaceWith(newTemp);
+                                $('#cdl').html(newTemp);
                             $.ajax({
                             url: 'http://localhost:8084/AdvancedWeb/rest/cdlm',
                             dataType: 'json',
                             type: 'GET',
                             success: function(json) {
                                 var temp = $('#cdlm').html();
+                                console.log(temp);
                                 json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
                                 var newTemp = Mustache.render(temp,{'cdlm' : json});
-                                $('#cdlm').replaceWith(newTemp);
+                                //$('#cdlm').replaceWith(newTemp);
+                                $('#cdlm').html(newTemp);
                             }
                     }); 
                         }
                     });
-                           
+                        $.ajax({
+                            url: 'http://localhost:8084/AdvancedWeb/rest/courses',
+                            dataType: 'json',
+                            type: 'GET',
+                            success: function(json) {
+                                if(json !== null) {
+                                    json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
+                                    for(i=0; i < json.length; i++) {
+                                        var html = '<tr> \n\
+                                                    <td><strong><a href="DetailsCorso?n =' + json[i].id + '&lin=it">' + json[i].nome_it + '</a></strong></td> \n\
+                                                    <td>'+ json[i].ssd +'</td>\n\
+                                                    <td>'+ json[i].cfu +'</td>\n\
+                                                    <td>'+ json[i].lingua +'</td>\n\
+                                                    <td>'+ json[i].semestre +'</td>\n\
+                                                    <td>'+ json[i].tipologia +'</td>';
+                                        $('#courses').append(html);
+                                    }
+                                }
+                            }
+                        });           
                 });
+                
                 }
             });
+            
+            
+            
             break;
         case pageEnum.home:
-            /*$.ajax({
-                url: 'template/home.html',
-                dataType: 'html',
-                type: 'GET',
-                success: function(html) {
-                    $(document).replaceWith(html);
-                }
-            });*/
             location.reload();
         
     }
 }
-    
-    /*$.ajax({
-                url:'template/courses_list.html',
-                dataType:'html',
-                type:'GET',
-                success:function(html){
-                $.ajax({
-                    url:'http://localhost:8084/AdvancedWeb/rest/cdl',
-                    dataType:'json',
-                    type:'GET',
-                    success:function(json){
-                        var str = html.toString();
-                        var temp = html.jQuery('#cdl').html();
-                        json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
-                        var newTemp=Mustache.render(temp,{'cdl':json});
-                        html.$('#cdl').replaceWith(newTemp);
-                    }
-                });
-                ('#body').replaceWith(html);
-                }
-                
-            });*/
-            
-            
-            /*$.ajax({
-                url:'template/courses_list.html',
-                dataType:'html',
-                type:'GET',
-                success:function(html){
-                    var template=html;
-                    $('#body').replaceWith(html)
-                    $.ajax({
-                        url:'http://localhost:8084/AdvancedWeb/rest/courses',
-                        dataType:'json',
-                        type:'GET',
-                        success:function(json){
-                            json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
-                            template=Mustache.render(template,{'corsi':json});
-                            //$('#body').replaceWith(template);
-                        }
-                    });
-                    $.ajax({
-                        url:'http://localhost:8084/AdvancedWeb/rest/cdl',
-                        dataType:'json',
-                        type:'GET',
-                        success:function(json){
-                            var temp = ('#cdl').html();
-                            json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
-                            var newTemp=Mustache.render(temp,{'cdl':json});
-                            $('#cdl').replaceWith(newTemp);
-                        }
-                    });
-                    //console.log(template);
-                    //$('#body').replaceWith(template);
-                }
-            });*/        
-            
-            
-    
-    //$('#body').load('template/courses_list.html');
-    /*
-    console.log('ciao');
-        var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-     document.getElementById("body").innerHTML = this.responseText;
-    }
-  };
-  xhttp.open("GET", "template/courses_list.html", true);
-  console.log(xhttp);
-  xhttp.send();*/
-  
