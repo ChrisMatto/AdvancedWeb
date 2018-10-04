@@ -5,12 +5,14 @@ function bodychange(page){
         case pageEnum.listcorsi:
             
             $.ajax({
+                async: false,
                 url:'template/courses_list.html',
                 dataType:'html',
                 type:'GET',
                 success:function(html){
                     $($('#body').replaceWith(html)).ready(function() {
                         $.ajax({
+                            async: false,
                             url:'http://localhost:8084/AdvancedWeb/rest/cdl',
                             dataType:'json',
                             type:'GET',
@@ -20,6 +22,7 @@ function bodychange(page){
                                 var newTemp = Mustache.render(temp,{'cdl' : json});
                                 $('#cdl').html(newTemp);
                             $.ajax({
+                            async: false,
                             url: 'http://localhost:8084/AdvancedWeb/rest/cdlm',
                             dataType: 'json',
                             type: 'GET',
@@ -33,6 +36,7 @@ function bodychange(page){
                         }
                     });
                         $.ajax({
+                            async: false,
                             url: 'http://localhost:8084/AdvancedWeb/rest/courses',
                             dataType: 'json',
                             type: 'GET',
@@ -42,6 +46,7 @@ function bodychange(page){
                                     json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
                                     for(i=0; i < json.length; i++) {
                                         var row = document.createElement("tr");
+                                        row.setAttribute("id", json[i].id);
                                         var cell = document.createElement("td");
                                         var strong = document.createElement("strong");
                                         var a = document.createElement("a");
@@ -114,6 +119,7 @@ function bodychange(page){
 
 function getCDL(index, id) {
     $.ajax({
+        async: false,
         url: 'http://localhost:8084/AdvancedWeb/rest/courses/cdl',
         dataType: 'json',
         type: 'POST',
@@ -133,7 +139,8 @@ function getCDL(index, id) {
             }
             console.log(index);
             console.log(cdlText);
-            var r = document.getElementsByTagName("tr").item(index);
+            //var r = document.getElementsByTagName("tr").item(index);
+            var r = document.getElementById(id);
             console.log(r);
             r.childNodes[column].appendChild(document.createTextNode(cdlText));
         }
