@@ -32,7 +32,7 @@ function bodychange(page){
                     }); 
                         }
                     });
-                        var request = $.ajax({
+                        $.ajax({
                             url: 'http://localhost:8084/AdvancedWeb/rest/courses',
                             dataType: 'json',
                             type: 'GET',
@@ -73,7 +73,7 @@ function bodychange(page){
                                         row.appendChild(document.createElement("td"));
                                         row.appendChild(document.createElement("td"));
                                         $('#courses').append(row);
-                                        //getCDL(i,json[i].id);
+                                        getCDL(i,json[i].id);
                                         /*var post = new XMLHttpRequest();
                                         post.open('POST', 'http://localhost:8084/AdvancedWeb/rest/courses/cdl', false);
                                         post.send(JSON.stringify({'id': json[i].id}));
@@ -97,10 +97,7 @@ function bodychange(page){
                                     }    
                                 }
                             }
-                        });   
-                        if(request.readyState === 4) {
-                            getCDL();
-                        }
+                        });     
                 });
                 
                 }
@@ -115,14 +112,8 @@ function bodychange(page){
     }
 }
 
-//function getCDL(index, id) {
-function getCDL() {
-    var rows = $('#courses tr');
-    console.log(rows);
-    for(i = 0; i < rows.length; i++){
-        
-    }
-    /*$.ajax({
+function getCDL(index, id) {
+    $.ajax({
         url: 'http://localhost:8084/AdvancedWeb/rest/courses/cdl',
         dataType: 'json',
         type: 'POST',
@@ -144,7 +135,7 @@ function getCDL() {
             console.log(cdlText);
             var r = document.getElementsByTagName("tr").item(index);
             console.log(r);
-            //r.childNodes[column].appendChild(document.createTextNode(cdlText));
+            r.childNodes[column].appendChild(document.createTextNode(cdlText));
         }
-    });*/
+    });
 }
