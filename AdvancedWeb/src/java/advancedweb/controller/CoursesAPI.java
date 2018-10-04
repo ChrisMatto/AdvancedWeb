@@ -53,6 +53,7 @@ public class CoursesAPI {
     public Response getCourseCDL(String json) throws DataLayerException, SQLException, NamingException {
         DataConnection data = new DataConnection();
         IgwDataLayer dl = data.getData();
+        System.out.print("qui");
         Properties p = new Gson().fromJson(json, Properties.class);
         int id = Integer.parseInt(p.getProperty("id"));
         Corso corso = dl.getCorso(id);
