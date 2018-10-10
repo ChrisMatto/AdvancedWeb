@@ -26,9 +26,9 @@ public class LibroImpl implements Libro {
     private int Anno;
     private String Editore;
     private String Link;
-    private List<Corso> Corso;
-    protected IgwDataLayer ownerdatalayer;
-    protected boolean dirty;
+    private transient List<Corso> Corso;
+    protected transient IgwDataLayer ownerdatalayer;
+    protected transient boolean dirty;
     
     public LibroImpl(IgwDataLayer ownerdatalayer){
         this.ownerdatalayer=ownerdatalayer;

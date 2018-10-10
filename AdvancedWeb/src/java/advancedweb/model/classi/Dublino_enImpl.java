@@ -11,7 +11,7 @@ import java.util.logging.Logger;
  */
 public class Dublino_enImpl implements Dublino_en{
     
-    private Corso corso;
+    private transient Corso corso;
     
     private int id_corso;
     
@@ -25,9 +25,9 @@ public class Dublino_enImpl implements Dublino_en{
     
     private String lifelong;
     
-    protected IgwDataLayer ownerdatalayer;
+    protected transient IgwDataLayer ownerdatalayer;
     
-    protected boolean dirty;
+    protected transient boolean dirty;
     
     public Dublino_enImpl(IgwDataLayer ownerdatalayer){
     this.ownerdatalayer=ownerdatalayer;

@@ -242,6 +242,14 @@ public class IgwDataLayerMysqlImpl extends DataLayerMysqlImpl implements IgwData
             co.setOldID(rs.getInt("OldID"));
             if(rs.getString("Tipologia").length()!=0)
                 co.setTipologia(toUpperCase(rs.getString("Tipologia").charAt(0)));
+            co.setCDLInCorso(co.getCDL());
+            co.setDocenti(co.getDocenti());
+            co.setMateriale(co.getMateriale());
+            co.setDescrizione_it(co.getDescrizione_it());
+            co.setDescrizione_en(co.getDescrizione_en());
+            co.setDublino_en(co.getDublino_en());
+            co.setDublino_it(co.getDublino_it());
+            co.setLibri(co.getLibri());
             return co;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create Corso object form ResultSet", ex);

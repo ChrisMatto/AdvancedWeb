@@ -17,7 +17,7 @@ public class CorsoImpl implements Corso{
     
     private int id;
     
-    private transient List<CDL> cdl;
+    private List<CDL> cdl;
     
     private String nome_it;
     
@@ -50,7 +50,7 @@ public class CorsoImpl implements Corso{
     
     private transient List<Corso> modulo;
     
-    private transient List<Docente> docenti;
+    private List<Docente> docenti;
     
     private Descrizione_it descrizione_it;
     
@@ -60,9 +60,9 @@ public class CorsoImpl implements Corso{
     
     private Dublino_en dublino_en;
     
-    private transient List<Libro> libri;
+    private List<Libro> libri;
     
-    private transient List<Materiale> materiale;
+    private List<Materiale> materiale;
     
     protected transient IgwDataLayer ownerdatalayer;
     
