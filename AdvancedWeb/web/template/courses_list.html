@@ -89,12 +89,12 @@
                                 <td>{{lingua}}</td>
                                 <td>{{semestre}}</td>
                                 <td>{{tipologia}}</td>
-                             <!--   <td><#list corso.CDL as cdl>
-                                    <#if cdl.abbr_it?trim?has_content>${cdl.abbr_it}<#else>${cdl.abbr_en}</#if><#if cdl?has_next>,&nbsp&nbsp</#if>
-                                </#list></td>
-                                <td><#list corso.docenti as docenti>
-                                    ${docenti.cognome}<#if docenti?has_next>,&nbsp&nbsp</#if>
-                                </#list></td> -->
+                                <td>{{#cdl}}
+                                    {{#abbr_it}}{{abbr_it}}{{/abbr_it}}{{^abbr_it}}{{abbr_en}}{{/abbr_it}}{{#hasNext}},&nbsp&nbsp{{/hasNext}}
+                                {{/cdl}}</td>
+                                <td>{{#docenti}}
+                                    {{cognome}}{{#hasNext}},&nbsp&nbsp{{/hasNext}}
+                                {{/docenti}}</td>
                             </tr>
                            {{/corso}}
                         </script>
@@ -113,3 +113,5 @@
         </div><!-- End container -->
     </section><!-- End main_content -->
 
+    
+    <script src="js/table_filter.js"></script>

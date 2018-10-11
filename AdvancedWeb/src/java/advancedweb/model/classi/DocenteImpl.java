@@ -39,6 +39,8 @@ public class DocenteImpl implements Docente {
     
     private String ricevimento;
     
+    public Boolean hasNext;
+    
     private transient List<Corso> corsi;
     
     protected transient IgwDataLayer ownerdatalayer;
@@ -61,6 +63,7 @@ public class DocenteImpl implements Docente {
         this.ricevimento=null;
         this.corsi=null;
         this.dirty=false;
+        this.hasNext = false;
     }
     
     @Override

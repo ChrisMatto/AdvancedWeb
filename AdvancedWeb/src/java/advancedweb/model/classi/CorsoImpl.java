@@ -112,6 +112,9 @@ public class CorsoImpl implements Corso{
     public List<CDL> getCDL() throws DataLayerException{
         if(cdl==null)
             cdl=ownerdatalayer.getCDLInCorso(this);
+        for(int i = 0; i < cdl.size() - 1; i++) {
+            ((CDLImpl)cdl.get(i)).hasNext = true;
+        }
         return cdl;
     }
     
@@ -289,6 +292,9 @@ public class CorsoImpl implements Corso{
     public List<Docente> getDocenti() throws DataLayerException{
         if(docenti==null)
             docenti=ownerdatalayer.getDocentiCorso(this);
+        for(int i = 0; i < docenti.size() - 1; i++) {
+            ((DocenteImpl)docenti.get(i)).hasNext = true;
+        }
         return docenti;
     }
     

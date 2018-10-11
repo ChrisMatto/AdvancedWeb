@@ -44,6 +44,8 @@ public class CDLImpl implements CDL{
     
     private String descrizione_en;
     
+    public Boolean hasNext;
+    
     protected transient IgwDataLayer ownerdatalayer;
     
     protected transient boolean dirty;
@@ -59,6 +61,7 @@ public class CDLImpl implements CDL{
         this.cfu=0;
         this.corsi=null;
         this.dirty=false;
+        this.hasNext = false;
     }
     
     @Override
