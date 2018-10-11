@@ -178,14 +178,14 @@ public class Auth {
     @Path("{SID}/cdl")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCDL() throws DataLayerException, SQLException, NamingException{
+    public Response getCDL() throws DataLayerException, SQLException, NamingException, Exception{
         return (new CDLAPI()).getCDL();
     }
     
     @Path("{SID}/cdlm")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCDLM() throws DataLayerException, SQLException, NamingException{
+    public Response getCDLM() throws DataLayerException, SQLException, NamingException, Exception{
         return (new CDLMAPI()).getCDLM();
     }
 }

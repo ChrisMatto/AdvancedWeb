@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.util.Properties;
 import javax.ws.rs.POST;
+import javax.ws.rs.PathParam;
 
 /**
  *
@@ -48,19 +49,16 @@ public class CoursesAPI {
         return Response.ok(json).build();
     }
     
-    @POST
-    @Path("cdl")
+    @Path("{CDL}")
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCourseCDL(String json) throws DataLayerException, SQLException, NamingException, Exception {
+    public Response getCourseCDL(@PathParam("CDL") int idCDL) throws DataLayerException, SQLException, NamingException, Exception {
         DataConnection data = new DataConnection();
         IgwDataLayer dl = data.getData();
-        System.out.print("qui");
-        Properties p = new Gson().fromJson(json, Properties.class);
-        int id = Integer.parseInt(p.getProperty("id"));
-        Corso corso = dl.getCorso(id);
-        List<CDL> cdl = dl.getCDLInCorso(corso);
-        String newJson = new Gson().toJson(cdl);
+        CDL cdl = dl.getCDL(idCDL);
+        List<Corso> corsi = cdl.getCorsiInCdl();
+        String json = new Gson().toJson(corsi);
         dl.close();
-        return Response.ok(newJson).build();
+        return Response.ok(json).build();
     }
 }
