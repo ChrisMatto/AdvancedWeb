@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  */
 public class Descrizione_itImpl implements Descrizione_it{
     
-    private Corso corso;
+    private transient Corso corso;
     
     private int id_corso;
     
@@ -37,9 +37,9 @@ public class Descrizione_itImpl implements Descrizione_it{
     
     private String risorse_ext;
     
-    protected IgwDataLayer ownerdatalayer;
+    protected transient IgwDataLayer ownerdatalayer;
     
-    protected boolean dirty;
+    protected transient boolean dirty;
     
     
     public Descrizione_itImpl(IgwDataLayer ownerdatalayer){

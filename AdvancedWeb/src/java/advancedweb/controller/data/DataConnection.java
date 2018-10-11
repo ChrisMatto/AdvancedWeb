@@ -9,7 +9,6 @@ import advancedweb.model.classi.IgwDataLayerMysqlImpl;
 import advancedweb.model.interfacce.IgwDataLayer;
 import java.sql.SQLException;
 import javax.naming.NamingException;
-import javax.sql.DataSource;
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 
 
@@ -21,12 +20,10 @@ import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 
 
 public class DataConnection {
-    private DataSource ds;
     private BasicDataSource bds;
-    private static IgwDataLayer dl;
+    private IgwDataLayer dl;
     
     public DataConnection(){
-        ds=null;
         if(dl==null){
             bds=new BasicDataSource();
             dl=null;

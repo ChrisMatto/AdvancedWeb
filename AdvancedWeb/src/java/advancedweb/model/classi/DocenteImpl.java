@@ -39,11 +39,11 @@ public class DocenteImpl implements Docente {
     
     private String ricevimento;
     
-    private List<Corso> corsi;
+    private transient List<Corso> corsi;
     
-    protected IgwDataLayer ownerdatalayer;
+    protected transient IgwDataLayer ownerdatalayer;
     
-    protected boolean dirty;
+    protected transient boolean dirty;
     
     
     public DocenteImpl(IgwDataLayer ownerdatalayer){

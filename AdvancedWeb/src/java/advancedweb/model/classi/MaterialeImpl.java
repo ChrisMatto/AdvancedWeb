@@ -22,7 +22,7 @@ public class MaterialeImpl implements Materiale{
     
     private int id_corso;
     
-    private Corso corso;
+    private transient Corso corso;
     
     private String nome;
     
@@ -32,9 +32,9 @@ public class MaterialeImpl implements Materiale{
     
     private String descrizione_en;
     
-    protected IgwDataLayer ownerdatalayer;
+    protected transient IgwDataLayer ownerdatalayer;
     
-    protected boolean dirty;
+    protected transient boolean dirty;
     
     public MaterialeImpl(IgwDataLayer ownerdatalayer){
         this.ownerdatalayer=ownerdatalayer;

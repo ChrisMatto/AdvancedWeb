@@ -79,7 +79,8 @@
                             </tr>
                         </thead>
                         <tbody id="courses">
-                        <!--    {{#corso}}
+                        <script id="courses_script" type="text/template">
+                            {{#corso}}
                             <tr>
                                 
                                 <td><strong><a href="DetailsCorso?n=${corso.ID}&lin=it">{{#nome_it}}{{nome_it}}{{/nome_it}}{{^nome_it}}{{nome_en}}{{/nome_it}}</a></strong></td>
@@ -88,15 +89,15 @@
                                 <td>{{lingua}}</td>
                                 <td>{{semestre}}</td>
                                 <td>{{tipologia}}</td>
-                                <td><#list corso.CDL as cdl>
+                             <!--   <td><#list corso.CDL as cdl>
                                     <#if cdl.abbr_it?trim?has_content>${cdl.abbr_it}<#else>${cdl.abbr_en}</#if><#if cdl?has_next>,&nbsp&nbsp</#if>
                                 </#list></td>
                                 <td><#list corso.docenti as docenti>
                                     ${docenti.cognome}<#if docenti?has_next>,&nbsp&nbsp</#if>
-                                </#list></td>
+                                </#list></td> -->
                             </tr>
-                           {{/corso}}-->
-        
+                           {{/corso}}
+                        </script>
                         </tbody>
                 </table>
                 </div><!-- End filterable -->
