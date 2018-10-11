@@ -34,7 +34,7 @@ public class CoursesAPI {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCourses() throws DataLayerException, SQLException, NamingException {
+    public Response getCourses() throws DataLayerException, SQLException, NamingException, Exception {
         DataConnection data = new DataConnection();
         IgwDataLayer dl = data.getData();
         LocalDate date = LocalDate.now();
@@ -44,13 +44,14 @@ public class CoursesAPI {
             year=year-1;
         List<Corso> corsi = dl.getCorsiByAnno(year);
         String json = new Gson().toJson(corsi);
+        dl.close();
         return Response.ok(json).build();
     }
     
     @POST
     @Path("cdl")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCourseCDL(String json) throws DataLayerException, SQLException, NamingException {
+    public Response getCourseCDL(String json) throws DataLayerException, SQLException, NamingException, Exception {
         DataConnection data = new DataConnection();
         IgwDataLayer dl = data.getData();
         System.out.print("qui");
@@ -59,6 +60,7 @@ public class CoursesAPI {
         Corso corso = dl.getCorso(id);
         List<CDL> cdl = dl.getCDLInCorso(corso);
         String newJson = new Gson().toJson(cdl);
+        dl.close();
         return Response.ok(newJson).build();
     }
 }

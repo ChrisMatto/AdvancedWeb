@@ -46,7 +46,7 @@ public class Auth {
     @Path("login")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(String json) throws SQLException, NamingException, DataLayerException{
+    public Response login(String json) throws SQLException, NamingException, DataLayerException, Exception{
         //Map<String,String> list=new Gson().fromJson(json,new TypeToken<Map<String,String>>() {}.getType());
         if(json.isEmpty())
             return Response.status(400).build();
@@ -62,13 +62,16 @@ public class Auth {
                 sessione.setUtente(utente);
                 sessione.setData(new Timestamp(System.currentTimeMillis()));
                 token=dl.makeSessione(sessione);
+                dl.close();
                 return Response.ok(new Gson().toJson(token)).build();
             }
             else{
+                dl.close();
                 return Response.status(401).build();
             }
         }
         else
+            dl.close();
             return Response.status(400).build();
 
     }

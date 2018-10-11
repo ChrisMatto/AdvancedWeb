@@ -24,11 +24,12 @@ public class CDLAPI{
     /*HTTP GET Request*/
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCDL() throws DataLayerException, SQLException, NamingException{
+    public Response getCDL() throws DataLayerException, SQLException, NamingException, Exception{
         DataConnection data=new DataConnection();
         IgwDataLayer dl = data.getData();
         List<CDL> cdl=dl.getCDLNoMag();
         String json = new Gson().toJson(cdl);
+        dl.close();
         return Response.ok(json).build();
        
     }

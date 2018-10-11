@@ -21,7 +21,7 @@ import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 
 public class DataConnection {
     private BasicDataSource bds;
-    private static IgwDataLayer dl;
+    private IgwDataLayer dl;
     
     public DataConnection(){
         if(dl==null){

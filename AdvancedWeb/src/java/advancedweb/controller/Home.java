@@ -31,7 +31,7 @@ public class Home {
     @Path("cdl")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCDL() throws DataLayerException, SQLException, NamingException{
+    public Response getCDL() throws DataLayerException, SQLException, NamingException, Exception{
         DataConnection data=new DataConnection();
         IgwDataLayer dl = data.getData();
         List<CDL> cdl=dl.getCDLNoMag();
@@ -49,6 +49,7 @@ public class Home {
         }
         
         String json = new Gson().toJson(rcdl);
+        dl.close();
         return Response.ok(json).build();
        
     }
@@ -57,7 +58,7 @@ public class Home {
     @Path("cdlm")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCDLM() throws DataLayerException, SQLException, NamingException{
+    public Response getCDLM() throws DataLayerException, SQLException, NamingException, Exception{
         DataConnection data=new DataConnection();
         IgwDataLayer dl = data.getData();
         List<CDL> cdlm=dl.getCDLMag();
@@ -75,6 +76,7 @@ public class Home {
         }
         
         String json = new Gson().toJson(rcdlm);
+        dl.close();
         return Response.ok(json).build();
        
     }
