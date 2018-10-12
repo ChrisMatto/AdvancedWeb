@@ -1,15 +1,20 @@
 var pageEnum = Object.freeze({"listcorsi": "listcorsi", "home": "home", "insegnanti": "insegnanti"});
 
-function bodychange(page){
+function bodychange(page, id = -1){
     switch(page) {
         case pageEnum.listcorsi:
             var newHtml;
+            var corsiUrl;
+            if(id === -1) {
+                corsiUrl = 'http://localhost:8084/AdvancedWeb/rest/courses';
+            } else {
+                corsiUrl = 'http://localhost:8084/AdvancedWeb/rest/courses/' + id;
+            }
             $.ajax({
                 url:'template/courses_list.html',
                 dataType:'html',
                 type:'GET',
                 success:function(html){
-                    //$($('#body').replaceWith(html)).ready(function() {
                     newHtml = $(html);
                     var cdlTemp;
                     var cdlmTemp;
@@ -54,7 +59,7 @@ function bodychange(page){
                         }),
                         
                         $.ajax({
-                            url: 'http://localhost:8084/AdvancedWeb/rest/courses',
+                            url: corsiUrl,
                             dataType: 'json',
                             type: 'GET',
                             success: function(json) {
@@ -74,7 +79,7 @@ function bodychange(page){
                         $('#cdl', newHtml).html(cdlTemp);
                         $('#cdlm', newHtml).html(cdlmTemp);
                         $('#courses', newHtml).html(corsiTemp);
-                        $('#body').replaceWith(newHtml);
+                        $('#body').html(newHtml);
                     });
                 }
             });
@@ -87,3 +92,32 @@ function bodychange(page){
         
     }
 }
+
+/*function filter(idcdl) {
+    $.ajax({
+        url:'template/courses_list.html',
+        dataType:'html',
+        type:'GET',
+        success:function(html){
+            var corsiTemp;
+            $.ajax({
+                url: 'http://localhost:8084/AdvancedWeb/rest/courses/'+idcdl,
+                dataType: 'json',
+                type: 'GET',
+                success: function(json) {
+                    var temp = $('#courses_script', html).html();
+                    Mustache.parse(temp);
+                    json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
+                    corsiTemp = Mustache.to_html(temp, {corso: json});
+                    console.log("corsiTemp");
+                    $('#courses').html(corsiTemp);
+                },
+               error : function(xhr, textStatus, errorThrown ) {
+                  console.log(textStatus); 
+                  console.log(xhr);
+                  console.log(errorThrown);
+               }
+            });
+        }
+    });
+}*/
