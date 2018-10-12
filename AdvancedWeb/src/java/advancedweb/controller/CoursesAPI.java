@@ -8,6 +8,7 @@ package advancedweb.controller;
 import javax.ws.rs.Path;
 import advancedweb.controller.data.DataConnection;
 import advancedweb.controller.data.DataLayerException;
+import advancedweb.model.classi.CorsoImpl;
 import advancedweb.model.interfacce.CDL;
 import advancedweb.model.interfacce.Corso;
 import advancedweb.model.interfacce.IgwDataLayer;
@@ -47,6 +48,23 @@ public class CoursesAPI {
         String json = new Gson().toJson(corsi);
         dl.close();
         return Response.ok(json).build();
+    }
+    
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addCourse(String json) throws SQLException, NamingException, DataLayerException {
+        DataConnection data = new DataConnection();
+        IgwDataLayer dl = data.getData();
+        Corso corso = new Gson().fromJson(json, CorsoImpl.class);
+        dl.storeCorso(corso);
+        LocalDate date = LocalDate.now();
+        int month = date.getMonthValue();
+        int year = date.getYear();
+        if(month <= 8)
+            year=year-1;
+        List<Corso> corsi = dl.getCorsiByAnno(year);
+        String newJson = new Gson().toJson(corsi);
+        return Response.ok(newJson).build();
     }
     
     @Path("{CDL}")

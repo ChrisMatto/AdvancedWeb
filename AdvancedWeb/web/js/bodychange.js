@@ -1,4 +1,4 @@
-var pageEnum = Object.freeze({"listcorsi": "listcorsi", "home": "home", "insegnanti": "insegnanti"});
+var pageEnum = Object.freeze({"listcorsi": "listcorsi", "detailscorso": "detailscorso", "home": "home", "insegnanti": "insegnanti"});
 
 function bodychange(page, id = -1){
     switch(page) {
@@ -76,6 +76,7 @@ function bodychange(page, id = -1){
                            }
                         }),
                     ).then(function() {
+                        document.title = "Lista Corsi";
                         $('#cdl', newHtml).html(cdlTemp);
                         $('#cdlm', newHtml).html(cdlmTemp);
                         $('#courses', newHtml).html(corsiTemp);
@@ -84,40 +85,12 @@ function bodychange(page, id = -1){
                 }
             });
             
-            
+            case pageEnum.detailcorso:
+            break;
             
             break;
         case pageEnum.home:
             location.reload();
-        
+            break;  
     }
 }
-
-/*function filter(idcdl) {
-    $.ajax({
-        url:'template/courses_list.html',
-        dataType:'html',
-        type:'GET',
-        success:function(html){
-            var corsiTemp;
-            $.ajax({
-                url: 'http://localhost:8084/AdvancedWeb/rest/courses/'+idcdl,
-                dataType: 'json',
-                type: 'GET',
-                success: function(json) {
-                    var temp = $('#courses_script', html).html();
-                    Mustache.parse(temp);
-                    json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
-                    corsiTemp = Mustache.to_html(temp, {corso: json});
-                    console.log("corsiTemp");
-                    $('#courses').html(corsiTemp);
-                },
-               error : function(xhr, textStatus, errorThrown ) {
-                  console.log(textStatus); 
-                  console.log(xhr);
-                  console.log(errorThrown);
-               }
-            });
-        }
-    });
-}*/
