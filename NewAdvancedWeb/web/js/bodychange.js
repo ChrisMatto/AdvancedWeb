@@ -1,11 +1,11 @@
 var pageEnum = Object.freeze({"listcorsi": "listcorsi", "detailscorso": "detailscorso", "home": "home", "insegnanti": "insegnanti"});
 
-function bodychange(page, id = -1){
+function bodychange(page, id){
     switch(page) {
         case pageEnum.listcorsi:
             var newHtml;
             var corsiUrl;
-            if(id === -1) {
+            if(id === undefined) {
                 corsiUrl = 'http://localhost:8084/AdvancedWeb/rest/courses';
             } else {
                 corsiUrl = 'http://localhost:8084/AdvancedWeb/rest/courses/' + id;
@@ -74,18 +74,23 @@ function bodychange(page, id = -1){
                               console.log(xhr);
                               console.log(errorThrown);
                            }
-                        }),
+                        })
                     ).then(function() {
                         document.title = "Lista Corsi";
                         $('#cdl', newHtml).html(cdlTemp);
                         $('#cdlm', newHtml).html(cdlmTemp);
                         $('#courses', newHtml).html(corsiTemp);
                         $('#body').html(newHtml);
+                    },function() {
+                        document.title = "Lista Corsi";
+                        $('#cdl',newHtml).empty();
+                        $('#cdlm',newHtml).empty();
+                        $('#body').html(newHtml);
                     });
                 }
             });
             
-            case pageEnum.detailcorso:
+            case pageEnum.detailscorso:
             break;
             
             break;
