@@ -81,14 +81,27 @@ function bodychange(page, id = -1){
                         $('#cdlm', newHtml).html(cdlmTemp);
                         $('#courses', newHtml).html(corsiTemp);
                         $('#body').html(newHtml);
+                    }).fail(function() {
+                        if(cdlTemp === undefined)
+                            $('#cdl', newHtml).empty();
+                        else
+                            $('#cdl', newHtml).html(cdlTemp);
+                        if(cdlmTemp === undefined)
+                            $('#cdlm', newHtml).empty();
+                        else
+                            $('#cdlm', newHtml).html(cdlmTemp);
+                        if(corsiTemp === undefined)
+                            $('#courses', newHtml).empty();
+                        else
+                            $('#courses', newHtml).html(corsiTemp);
+                        $('#body').html(newHtml);
                     });
                 }
             });
-            
+            break;
             case pageEnum.detailcorso:
             break;
             
-            break;
         case pageEnum.home:
             location.reload();
             break;  
