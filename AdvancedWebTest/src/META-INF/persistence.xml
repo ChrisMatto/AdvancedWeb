@@ -25,8 +25,8 @@
         <properties>
             <property name="eclipselink.jdbc.url" value="jdbc:mysql://localhost:3306/advancedweb"/>
             <property name="eclipselink.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-            <property name="eclipselink.jdbc.user" value=""/>
-            <property name="eclipselink.jdbc.password" value=""/>
+            <property name="eclipselink.jdbc.user" value="website"/>
+            <property name="eclipselink.jdbc.password" value="webpass"/>
         </properties>
     </persistence-unit>
 </persistence>
