@@ -16,9 +16,9 @@ Workspace.xml
 .idea/**/contentModel.xml
 
 # Sensitive or high-churn files
-.idea/**/dataSources/
+dataSources/
 .idea/**/dataSources.ids
-.idea/**/dataSources.local.xml
+dataSources.local.xml
 .idea/**/sqlDataSources.xml
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
