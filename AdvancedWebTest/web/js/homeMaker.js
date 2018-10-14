@@ -1,6 +1,6 @@
 function homeMaker(){
     $.ajax({
-        url:'http://localhost:8084/AdvancedWeb/rest/home/cdl',
+        url:'http://localhost:8084/AdvancedWeb/rest/cdl/random',
         dataType: 'json',
         type:'GET',
         success: function(json){

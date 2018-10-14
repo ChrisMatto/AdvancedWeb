@@ -15,8 +15,8 @@ public class Corso {
     private String lingua;
     private Integer semestre;
     private Integer cfu;
-    private Object annoInizio;
-    private Object annoFine;
+    private int annoInizio;
+    private int annoFine;
     private String tipologia;
     private Integer oldId;
 
@@ -92,21 +92,21 @@ public class Corso {
 
     @Basic
     @Column(name = "AnnoInizio")
-    public Object getAnnoInizio() {
+    public int getAnnoInizio() {
         return annoInizio;
     }
 
-    public void setAnnoInizio(Object annoInizio) {
+    public void setAnnoInizio(int annoInizio) {
         this.annoInizio = annoInizio;
     }
 
     @Basic
     @Column(name = "AnnoFine")
-    public Object getAnnoFine() {
+    public int getAnnoFine() {
         return annoFine;
     }
 
-    public void setAnnoFine(Object annoFine) {
+    public void setAnnoFine(int annoFine) {
         this.annoFine = annoFine;
     }
 
@@ -136,14 +136,14 @@ public class Corso {
         if (o == null || getClass() != o.getClass()) return false;
         Corso corso = (Corso) o;
         return idCorso == corso.idCorso &&
+                annoInizio == corso.annoInizio &&
+                annoFine == corso.annoFine &&
                 Objects.equals(nomeIt, corso.nomeIt) &&
                 Objects.equals(nomeEn, corso.nomeEn) &&
                 Objects.equals(ssd, corso.ssd) &&
                 Objects.equals(lingua, corso.lingua) &&
                 Objects.equals(semestre, corso.semestre) &&
                 Objects.equals(cfu, corso.cfu) &&
-                Objects.equals(annoInizio, corso.annoInizio) &&
-                Objects.equals(annoFine, corso.annoFine) &&
                 Objects.equals(tipologia, corso.tipologia) &&
                 Objects.equals(oldId, corso.oldId);
     }

@@ -12,7 +12,7 @@ public class Libro {
     private String autore;
     private String titolo;
     private Integer volume;
-    private Object anno;
+    private int anno;
     private String editore;
     private String link;
 
@@ -58,11 +58,11 @@ public class Libro {
 
     @Basic
     @Column(name = "Anno")
-    public Object getAnno() {
+    public int getAnno() {
         return anno;
     }
 
-    public void setAnno(Object anno) {
+    public void setAnno(int anno) {
         this.anno = anno;
     }
 
@@ -92,10 +92,10 @@ public class Libro {
         if (o == null || getClass() != o.getClass()) return false;
         Libro libro = (Libro) o;
         return idLibro == libro.idLibro &&
+                anno == libro.anno &&
                 Objects.equals(autore, libro.autore) &&
                 Objects.equals(titolo, libro.titolo) &&
                 Objects.equals(volume, libro.volume) &&
-                Objects.equals(anno, libro.anno) &&
                 Objects.equals(editore, libro.editore) &&
                 Objects.equals(link, libro.link);
     }
