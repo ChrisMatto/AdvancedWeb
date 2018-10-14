@@ -23,6 +23,8 @@ dataSources.local.xml
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
+dataSources.xml
+Classi/
 
 # Gradual
 .idea/**/gradle.xml
