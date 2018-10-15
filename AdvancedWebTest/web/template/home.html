@@ -506,7 +506,7 @@
 -->
 
     
-         <a href="listcorsi?lin=it" class="button_medium_outline pull-right">Vedi tutti i corsi</a>
+         <a onclick="bodychange('listcorsi')" class="button_medium_outline pull-right">Vedi tutti i corsi</a>
 
 
         </div>   <!--end container-->
@@ -528,20 +528,20 @@
     <div  class="col-lg-3 col-md-6 col-sm-6">
             <div class="col-item">
                 <div class="photo">
-                    <a onClick="bodychange('listcorsi', {{id_cdl}});document.body.scrollTop = 0;document.documentElement.scrollTop = 0;"><img src="{{immagine}}" alt="cdlimmagine"/></a>
-                    <div class="cat_row" >{{#nome_it}}{{nome_it}}{{/nome_it}}{{^nome_it}}{{nome_en}}{{/nome_it}}<span class="pull-right"><i class="fas fa-university"></i></span></div>
+                    <a onClick="bodychange('listcorsi', {{idcdl}});document.body.scrollTop = 0;document.documentElement.scrollTop = 0;"><img src="{{immagine}}" alt="cdlimmagine"/></a>
+                    <div class="cat_row" >{{#nomeIt}}{{nomeIt}}{{/nomeIt}}{{^nomeIt}}{{nomeEn}}{{/nomeIt}}<span class="pull-right"><i class="fas fa-university"></i></span></div>
                 </div>
                 <div class="info">
                     <div class="row">
                         <div class="course_info col-md-12 col-sm-12">
                             <h5></h5>
-                            <p id="descrizioneCdlm">{{#descrizione_it}}{{{descrizione_it}}}{{/descrizione_it}}{{^descrizione_it}}{{{descrizione_en}}}{{/descrizione_it}}</p>
+                            <p id="descrizioneCdlm">{{#descrizioneIt}}{{{descrizioneIt}}}{{/descrizioneIt}}{{^descrizioneIt}}{{{descrizioneEn}}}{{/descrizioneIt}}</p>
 
                         <div class="price pull-right" id="cfuCdlm">{{cfu}} CFU</div>
                         </div>
                     </div>
                     <div class="separator clearfix">
-                        <p class="btn-add" id="cdlink2"><a onClick="bodychange('listcorsi', {{id_cdl}});document.body.scrollTop = 0;document.documentElement.scrollTop = 0;"><i class="icon-export-4"></i></a></p>
+                        <p class="btn-add" id="cdlink2"><a onClick="bodychange('listcorsi', {{idcdl}});document.body.scrollTop = 0;document.documentElement.scrollTop = 0;"><i class="icon-export-4"></i></a></p>
                     </div>
                 </div>
             </div>
@@ -549,7 +549,7 @@
     {{/cdlm}}
 </div>
     
-         <a href="listcorsi?lin=it" class="button_medium_outline pull-right">Vedi Tutti I Corsi</a>
+         <a onclick="bodychange('liscorsi')" class="button_medium_outline pull-right">Vedi Tutti I Corsi</a>
  
 
         </div>   <!--end container-->

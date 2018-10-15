@@ -11,16 +11,29 @@ import java.util.List;
 public class DataAccess {
     private static EntityManager  em = Persistence.createEntityManagerFactory("NewPersistenceUnit").createEntityManager();
     private static JinqJPAStreamProvider stream = new JinqJPAStreamProvider(em.getMetamodel());
+    private static LocalDate date = LocalDate.now();
+    private static int month = date.getMonthValue();
+    private static int year = date.getYear();
 
     public static List<Cdl> getCDL() {
-        LocalDate date = LocalDate.now();
-        int month = date.getMonthValue();
-        int year = date.getYear();
+        int finalYear;
         if(month <= 8)
-            year = year-1;
-        int finalYear = year;
+            finalYear = year-1;
+        else
+            finalYear = year;
         return stream.streamAll(em,Cdl.class)
                 .where(cdl -> cdl.getAnnoInizio() == finalYear && cdl.getAnnoFine() == finalYear + 1 && cdl.getMagistrale() == 0)
+                .toList();
+    }
+
+    public static List<Cdl> getCDLM() {
+        int finalYear;
+        if(month <= 8)
+            finalYear = year-1;
+        else
+            finalYear = year;
+        return stream.streamAll(em,Cdl.class)
+                .where(cdl -> cdl.getAnnoInizio() == finalYear && cdl.getAnnoFine() == finalYear + 1 && cdl.getMagistrale() == 1)
                 .toList();
     }
 

@@ -1,6 +1,6 @@
 function homeMaker(){
     $.ajax({
-        url:'http://localhost:8080/AdvancedWeb/rest/cdl/random',
+        url:'http://localhost:8080/AdvancedWeb/rest/cdl/triennaleRandom',
         dataType: 'json',
         type:'GET',
         success: function(json){
@@ -9,7 +9,7 @@ function homeMaker(){
             $('#cdl').replaceWith(newTemp);
             
             $.ajax({
-                url:'http://localhost:8080/AdvancedWeb/rest/cdlm/random',
+                url:'http://localhost:8080/AdvancedWeb/rest/cdl/magistraleRandom',
                 dataType: 'json',
                 type:'GET',
                 success: function(json){

@@ -27,7 +27,7 @@ function bodychange(page, id = -1){
                            success: function(json) {
                                var temp = $('#cdl', html).html();
                                Mustache.parse(temp);
-                               json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
+                               json.sort(function(a,b){return compareStrings(a.nomeIt,b.nomeIt);});
                                cdlTemp = Mustache.to_html(temp, {cdl: json});
                                //$('#cdl', newHtml).html(newTemp);
                                console.log("cdlTemp")
