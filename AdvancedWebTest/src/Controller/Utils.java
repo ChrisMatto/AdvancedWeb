@@ -24,7 +24,7 @@ public class Utils {
         return rlist;
     }
 
-    public static int getYear() {
+    public static int getCurrentYear() {
         LocalDate date = LocalDate.now();
         int month = date.getMonthValue();
         int year = date.getYear();

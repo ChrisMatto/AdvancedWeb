@@ -6,9 +6,9 @@ function bodychange(page, id = -1){
             var newHtml;
             var corsiUrl;
             if(id === -1) {
-                corsiUrl = 'http://localhost:8084/AdvancedWeb/rest/courses';
+                corsiUrl = 'http://localhost:8080/AdvancedWeb/rest/courses/current';
             } else {
-                corsiUrl = 'http://localhost:8084/AdvancedWeb/rest/courses/' + id;
+                corsiUrl = 'http://localhost:8080/AdvancedWeb/rest/courses/' + id;
             }
             $.ajax({
                 url:'template/courses_list.html',
@@ -21,7 +21,7 @@ function bodychange(page, id = -1){
                     var corsiTemp;
                     $.when(
                         $.ajax({
-                           url: 'http://localhost:8084/AdvancedWeb/rest/cdl/triennale',
+                           url: 'http://localhost:8080/AdvancedWeb/rest/cdl/triennale',
                            dataType: 'json',
                            type: 'GET',
                            success: function(json) {
@@ -40,7 +40,7 @@ function bodychange(page, id = -1){
                         }),
                         
                         $.ajax({
-                           url: 'http://localhost:8084/AdvancedWeb/rest/cdl/magistrale',
+                           url: 'http://localhost:8080/AdvancedWeb/rest/cdl/magistrale',
                            dataType: 'json',
                            type: 'GET',
                            success: function(json) {
@@ -65,7 +65,7 @@ function bodychange(page, id = -1){
                             success: function(json) {
                                 var temp = $('#courses_script', html).html();
                                 Mustache.parse(temp);
-                                json.sort(function(a,b){return compareStrings(a.nome_it,b.nome_it);});
+                                json.sort(function(a,b){return compareStrings(a.nomeIt,b.nomeIt);});
                                 corsiTemp = Mustache.to_html(temp, {corso: json});
                                 console.log("corsiTemp");
                             },
