@@ -1,4 +1,4 @@
-var pageEnum = Object.freeze({"listcorsi": "listcorsi", "detailscorso": "detailscorso", "home": "home", "insegnanti": "insegnanti"});
+var pageEnum = Object.freeze({"listcorsi": "listcorsi", "detailscorso": "detailscorso", "home": "home", "docenti": "docenti"});
 
 function bodychange(page, id = -1){
     switch(page) {
@@ -21,7 +21,7 @@ function bodychange(page, id = -1){
                     var corsiTemp;
                     $.when(
                         $.ajax({
-                           url: 'http://localhost:8084/AdvancedWeb/rest/cdl',
+                           url: 'http://localhost:8084/AdvancedWeb/rest/cdl/triennale',
                            dataType: 'json',
                            type: 'GET',
                            success: function(json) {
@@ -40,7 +40,7 @@ function bodychange(page, id = -1){
                         }),
                         
                         $.ajax({
-                           url: 'http://localhost:8084/AdvancedWeb/rest/cdlm',
+                           url: 'http://localhost:8084/AdvancedWeb/rest/cdl/magistrale',
                            dataType: 'json',
                            type: 'GET',
                            success: function(json) {

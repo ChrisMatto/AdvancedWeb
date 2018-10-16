@@ -11,6 +11,7 @@
           <element id="library" level="project" name="org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.3" />
           <element id="library" level="project" name="com.google.code.gson:gson:2.8.5" />
           <element id="library" level="project" name="org.glassfish.jersey.bundles:jaxrs-ri:2.27" />
+          <element id="library" level="project" name="org.apache.commons:commons-lang3:3.8.1" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="AdvancedWebTest/web/Web" />

@@ -10,42 +10,4 @@
         <session-timeout>30</session-timeout>
     </session-config>
 
-    <!--   <servlet>
-           <servlet-name>Rest</servlet-name>
-           <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-           <init-param>
-               <param-name>org.glassfish.jersey.config.server.provider.packages</param-name>
-               <param-value>API</param-value>
-           </init-param>
-           <load-on-startup>1</load-on-startup>
-       </servlet>
-       <servlet-mapping>
-           <servlet-name>Rest</servlet-name>
-           <url-pattern>/rest/*</url-pattern>
-       </servlet-mapping> -->
-
-
-
-    <!--    <servlet>
-            <servlet-name>Controller.AdvancedWebApplication</servlet-name>
-            <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-            <init-param>
-                <param-name>javax.ws.rs.Application</param-name>
-                <param-value>Controller.AdvancedWebApplication</param-value>
-            </init-param>
-            <init-param>
-                <param-name>jersey.config.server.provider.packages</param-name>
-                <param-value>API.*</param-value>
-            </init-param>
-            <init-param>
-                <param-name>jersey.config.server.tracing</param-name>
-                <param-value>ALL</param-value>
-            </init-param>
-            <load-on-startup>1</load-on-startup>
-        </servlet>
-        <servlet-mapping>
-            <servlet-name>Controller.AdvancedWebApplication</servlet-name>
-            <url-pattern>/rest/*</url-pattern>
-        </servlet-mapping>-->
-
 </web-app>

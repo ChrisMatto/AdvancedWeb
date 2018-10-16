@@ -565,7 +565,7 @@
 <div class="container">
       <div class="row">
           <div class="col-md-3 col-sm-6">
-            <h4><a href="listdocenti?lin=it">Docenti</a></h4>
+            <h4><a onclick="bodychange('docenti')">Docenti</a></h4>
             <p><img src="img/pic_1.jpg" alt="Pic" class="img-responsive"/></p>
             <p>Non c'&#232; molto altro da dire sui nostri docenti, se non che sono incredibili!</p> 
         </div>
@@ -585,9 +585,9 @@
         <div class="col-md-3 col-sm-6">
             <h4>Link rapidi</h4>
             <ul class="list_1">
-                  <li><a href="Home?lin=it">Homepage</a></li>
-                  <li><a href="listcorsi?lin=it">Corsi</a></li>
-                  <li><a href="listdocenti?lin=it">Docenti</a></li>
+                  <li><a onclick="bodychange('home')">Homepage</a></li>
+                  <li><a onclick="bodychange('listcorsi')">Corsi</a></li>
+                  <li><a onclick="bodychange('docenti')">Docenti</a></li>
              </ul>
         </div>
         
@@ -689,10 +689,10 @@
                         <h4>Browse</h4>
                         <ul>
                             <li>
-                                <a href="listcorsi">Corsi</a>
+                                <a onclick="bodychange('listcorsi')">Corsi</a>
                             </li>
                             <li>
-                                <a href="listdocenti">Insegnanti</a>
+                                <a onclick="bodychange('docenti')">Insegnanti</a>
                             </li>
                             
                         </ul>
@@ -702,7 +702,7 @@
                         <h4>Next Courses</h4>
                         <ul>
                             <li>
-                                <a href="listcorsi">Tutti i corsi</a>
+                                <a onclick="bodychange('listcorsi')">Tutti i corsi</a>
                             </li>
                             
                         </ul>

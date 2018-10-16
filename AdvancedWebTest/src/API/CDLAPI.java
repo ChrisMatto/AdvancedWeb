@@ -1,6 +1,7 @@
 package API;
 
 import Classi.Cdl;
+import Controller.Utils;
 import DataAccess.DataAccess;
 import com.google.gson.Gson;
 
@@ -30,17 +31,7 @@ public class CDLAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRandomCDL() {
         List<Cdl> cdl = DataAccess.getCDL();
-        Random rand = new Random();
-        List<Cdl> rcdl = new ArrayList();
-        int n=4;
-        int cdlsize = cdl.size();
-        for (int i = 0; i < n; i++){
-            if(!cdl.isEmpty() && i <= cdlsize){
-                int randomIndex=rand.nextInt(cdl.size());
-                rcdl.add(cdl.get(randomIndex));
-                cdl.remove(randomIndex);
-            }
-        }
+        List<Cdl> rcdl = Utils.randomizeCDL(cdl);
         return Response.ok(gson.toJson(rcdl)).build();
     }
 
@@ -57,17 +48,7 @@ public class CDLAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRandomCDLM() {
         List<Cdl> cdlm = DataAccess.getCDLM();
-        Random rand = new Random();
-        List<Cdl> rcdlm = new ArrayList();
-        int n=4;
-        int cdlmsize = cdlm.size();
-        for (int i = 0; i < n; i++){
-            if(!cdlm.isEmpty() && i <= cdlmsize){
-                int randomIndex=rand.nextInt(cdlm.size());
-                rcdlm.add(cdlm.get(randomIndex));
-                cdlm.remove(randomIndex);
-            }
-        }
+        List<Cdl> rcdlm = Utils.randomizeCDL(cdlm);
         return Response.ok(gson.toJson(rcdlm)).build();
     }
 }
