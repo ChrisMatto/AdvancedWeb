@@ -1,5 +1,6 @@
 package Controller;
 
+import API.AuthAPI;
 import API.CDLAPI;
 import API.CoursesAPI;
 import API.DocentiAPI;
@@ -18,6 +19,7 @@ public class AdvancedWebApplication extends Application {
         h.add(CDLAPI.class);
         h.add(CoursesAPI.class);
         h.add(DocentiAPI.class);
+        h.add(AuthAPI.class);
         return h;
     }
 }
