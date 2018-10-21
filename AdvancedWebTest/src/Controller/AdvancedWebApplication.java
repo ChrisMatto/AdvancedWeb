@@ -4,6 +4,7 @@ import API.AuthAPI;
 import API.CDLAPI;
 import API.CoursesAPI;
 import API.DocentiAPI;
+import org.glassfish.jersey.jackson.JacksonFeature;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -20,6 +21,7 @@ public class AdvancedWebApplication extends Application {
         h.add(CoursesAPI.class);
         h.add(DocentiAPI.class);
         h.add(AuthAPI.class);
+        h.add(JacksonFeature.class);
         return h;
     }
 }

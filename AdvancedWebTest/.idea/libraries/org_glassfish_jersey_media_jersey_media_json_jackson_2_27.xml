@@ -1,0 +1,20 @@
+<component name="libraryTable">
+  <library name="org.glassfish.jersey.media:jersey-media-json-jackson:2.27" type="repository">
+    <properties maven-id="org.glassfish.jersey.media:jersey-media-json-jackson:2.27" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jersey-media-json-jackson-2.27.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jersey-common-2.27.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javax.ws.rs-api-2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javax.annotation-api-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javax.inject-2.5.0-b42.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/osgi-resource-locator-1.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jersey-entity-filtering-2.27.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-annotations-2.8.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-databind-2.8.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-core-2.8.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-module-jaxb-annotations-2.8.10.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

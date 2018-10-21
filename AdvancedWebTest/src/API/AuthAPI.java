@@ -12,10 +12,10 @@ public class AuthAPI {
     @Path("login")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(String json) {
-        if(json.isEmpty())
+    public Response login(Login login) {
+        if(login == null)
             return Response.status(400).build();
 
-        return Response.ok(json).build();
+        return Response.ok(login).build();
     }
 }
