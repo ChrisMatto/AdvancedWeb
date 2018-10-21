@@ -23,10 +23,10 @@
         <class>Classi.Sessione</class>
         <class>Classi.Utente</class>
         <properties>
-            <property name="eclipselink.jdbc.url" value="jdbc:mysql://localhost:3306/advancedweb"/>
-            <property name="eclipselink.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-            <property name="eclipselink.jdbc.user" value="website"/>
-            <property name="eclipselink.jdbc.password" value="webpass"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/advancedweb"/>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+            <property name="javax.persistence.jdbc.user" value="website"/>
+            <property name="javax.persistence.jdbc.password" value="webpass"/>
         </properties>
     </persistence-unit>
 </persistence>
