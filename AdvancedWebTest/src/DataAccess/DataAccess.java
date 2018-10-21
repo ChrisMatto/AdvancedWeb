@@ -11,12 +11,14 @@ import org.jinq.jpa.JinqJPAStreamProvider;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
 public class DataAccess {
     private static EntityManager  em = Persistence.createEntityManagerFactory("NewPersistenceUnit").createEntityManager();
     private static JinqJPAStreamProvider stream = new JinqJPAStreamProvider(em.getMetamodel());
+    private static EntityTransaction entityTransaction = em.getTransaction();
 
     public static List<Cdl> getCDL() {
         int year = Utils.getCurrentYear();
@@ -45,16 +47,24 @@ public class DataAccess {
         return u.orElse(null);
     }
 
-    public static String makeSessione(Sessione sessione) {
+    public static String makeSessione(Utente utente) {
+        Sessione sessione = new Sessione();
+        sessione.setUtente(utente.getIdUtente());
+        sessione.setData(new Timestamp(System.currentTimeMillis()));
         sessione.setToken(RandomStringUtils.randomAlphanumeric(32));
         String token = sessione.getToken();
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
+        entityTransaction.begin();
         em.persist(sessione);
-        transaction.commit();
+        entityTransaction.commit();
         Optional<Sessione> optionalSessione = stream.streamAll(em, Sessione.class)
                 .where(s -> s.getToken().equals(token)).findFirst();
         return optionalSessione.map(Sessione::getToken).orElse(null);
     }
 
+    public static void deleteSession(String token) {
+        Optional<Sessione> sessione = stream.streamAll(em, Sessione.class)
+                .where(s -> s.getToken().equals(token))
+                .findFirst();
+        em.remove(sessione);
+    }
 }
