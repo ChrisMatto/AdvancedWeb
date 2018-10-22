@@ -65,6 +65,10 @@ public class DataAccess {
         Optional<Sessione> sessione = stream.streamAll(em, Sessione.class)
                 .where(s -> s.getToken().equals(token))
                 .findFirst();
-        em.remove(sessione);
+        if(sessione.isPresent()) {
+            entityTransaction.begin();
+            em.remove(sessione);
+            entityTransaction.commit();
+        }
     }
 }
