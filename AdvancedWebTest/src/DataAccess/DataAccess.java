@@ -1,9 +1,6 @@
 package DataAccess;
 
-import Classi.Cdl;
-import Classi.Corso;
-import Classi.Sessione;
-import Classi.Utente;
+import Classi.*;
 import Controller.Utils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jinq.jpa.JinqJPAStreamProvider;
@@ -70,5 +67,30 @@ public class DataAccess {
             em.remove(sessione);
             entityTransaction.commit();
         }
+    }
+
+    public static Boolean checkAccessToken(String token, String service) {
+        Optional<Sessione> optionalSessione = stream.streamAll(em, Sessione.class)
+                .where(s -> s.getToken().equals(token))
+                .findFirst();
+        if(!optionalSessione.isPresent())
+            return false;
+        int idUtente = optionalSessione.get().getUtente();
+        Optional<Utente> optionalUtente = stream.streamAll(em, Utente.class)
+                .where(u -> u.getIdUtente() == idUtente)
+                .findFirst();
+        if(!optionalUtente.isPresent())
+            return false;
+        Optional<Servizio> optionalServizio = stream.streamAll(em, Servizio.class)
+                .where(s -> s.getNome().equals(service))
+                .findFirst();
+        if(!optionalServizio.isPresent())
+            return false;
+        int idServizio = optionalServizio.get().getIdServizio();
+        int idGruppo = optionalUtente.get().getGruppo();
+        Optional<GroupServices> optionalGroupServices = stream.streamAll(em, GroupServices.class)
+                .where(gs -> gs.getGruppo() == idGruppo && gs.getServizio() == idServizio)
+                .findFirst();
+        return optionalGroupServices.isPresent();
     }
 }
