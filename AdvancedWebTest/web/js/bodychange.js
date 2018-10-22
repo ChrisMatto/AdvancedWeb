@@ -66,6 +66,11 @@ function bodychange(page, id = -1){
                                 var temp = $('#courses_script', html).html();
                                 Mustache.parse(temp);
                                 json.sort(function(a,b){return compareStrings(a.nomeIt,b.nomeIt);});
+                                var docenti = [];
+                                var cdl = [];
+                                for(var corso in json) {
+                                    console.log(corso.idCorso);
+                                }
                                 corsiTemp = Mustache.to_html(temp, {corso: json});
                                 console.log("corsiTemp");
                             },
