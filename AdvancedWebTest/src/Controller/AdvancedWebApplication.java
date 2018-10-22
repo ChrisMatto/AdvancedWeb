@@ -22,6 +22,7 @@ public class AdvancedWebApplication extends Application {
         h.add(DocentiAPI.class);
         h.add(AuthAPI.class);
         h.add(JacksonFeature.class);
+        h.add(AuthorizationFilter.class);
         return h;
     }
 }

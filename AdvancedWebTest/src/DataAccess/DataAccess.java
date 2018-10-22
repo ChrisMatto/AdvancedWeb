@@ -1,17 +1,17 @@
 package DataAccess;
 
-import Classi.Cdl;
-import Classi.Corso;
-import Classi.Sessione;
-import Classi.Utente;
+import Classi.*;
 import Controller.Utils;
+import javafx.util.Pair;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jinq.jpa.JinqJPAStreamProvider;
+import org.jinq.orm.stream.JinqStream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +38,29 @@ public class DataAccess {
         return stream.streamAll(em, Corso.class)
                 .where(corso -> corso.getAnnoInizio() == year && corso.getAnnoFine() == year + 1)
                 .toList();
+    }
+
+    public static List<Corso> getCorsi() {
+        return stream.streamAll(em, Corso.class).toList();
+    }
+
+    public static List<Docente> getDocenti() {
+        return stream.streamAll(em, Docente.class).toList();
+    }
+
+    public static List<Docente> getDocentiInCorso(int idCorso) {
+        List<Integer> idDocenti = stream.streamAll(em, DocentiCorso.class)
+                .where(docentiCorso -> docentiCorso.getCorso() == idCorso)
+                .select(DocentiCorso::getCorso)
+                .toList();
+        List<Docente> docenti = new ArrayList();
+        for(int id: idDocenti) {
+            Optional<Docente> docente = stream.streamAll(em, Docente.class)
+                    .where(doc -> doc.getIdDocente() == id)
+                    .findFirst();
+            docenti.add(docente.get());
+        }
+        return docenti;
     }
 
     public static Utente getUtente(String username, String password) {
@@ -70,5 +93,38 @@ public class DataAccess {
             em.remove(sessione);
             entityTransaction.commit();
         }
+    }
+
+    public static Boolean checkAccessToken(String token, String service) {
+        Optional<Servizio> optionalServizio = stream.streamAll(em, Servizio.class)
+                .where(s -> s.getNome().equals(service))
+                .findFirst();
+        if(!optionalServizio.isPresent()) {
+            return true;
+        }
+        Optional<Sessione> optionalSessione = stream.streamAll(em, Sessione.class)
+                .where(s -> s.getToken().equals(token))
+                .findFirst();
+        if(!optionalSessione.isPresent())
+            return false;
+        int idUtente = optionalSessione.get().getUtente();
+        Optional<Utente> optionalUtente = stream.streamAll(em, Utente.class)
+                .where(u -> u.getIdUtente() == idUtente)
+                .findFirst();
+        if(!optionalUtente.isPresent())
+            return false;
+        int idServizio = optionalServizio.get().getIdServizio();
+        int idGruppo = optionalUtente.get().getGruppo();
+        Optional<GroupServices> optionalGroupServices = stream.streamAll(em, GroupServices.class)
+                .where(gs -> gs.getGruppo() == idGruppo && gs.getServizio() == idServizio)
+                .findFirst();
+        return optionalGroupServices.isPresent();
+    }
+
+    public static Boolean checkAccessNoToken(String service) {
+        Optional<Servizio> optionalServizio = stream.streamAll(em, Servizio.class)
+                .where(s -> s.getNome().equals(service))
+                .findFirst();
+        return !optionalServizio.isPresent();
     }
 }
