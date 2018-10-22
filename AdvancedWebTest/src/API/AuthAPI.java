@@ -17,7 +17,7 @@ public class AuthAPI {
     public Response login(Login login) {
         if(login == null)
             return Response.status(400).build();
-        String token = null;
+        String token;
         if(login.getUsername() != null && login.getPassword() != null && !login.getUsername().isEmpty() && !login.getPassword().isEmpty()) {
             Utente utente = DataAccess.getUtente(login.getUsername(), login.getPassword());
             if(utente != null) {

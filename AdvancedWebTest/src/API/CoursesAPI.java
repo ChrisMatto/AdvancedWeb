@@ -16,6 +16,12 @@ import java.util.List;
 @Path("courses")
 public class CoursesAPI {
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCourses() {
+        return Response.ok(DataAccess.getCorsi()).build();
+    }
+
     @Path("{year}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)

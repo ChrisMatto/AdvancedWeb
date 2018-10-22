@@ -2,13 +2,16 @@ package DataAccess;
 
 import Classi.*;
 import Controller.Utils;
+import javafx.util.Pair;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jinq.jpa.JinqJPAStreamProvider;
+import org.jinq.orm.stream.JinqStream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +38,29 @@ public class DataAccess {
         return stream.streamAll(em, Corso.class)
                 .where(corso -> corso.getAnnoInizio() == year && corso.getAnnoFine() == year + 1)
                 .toList();
+    }
+
+    public static List<Corso> getCorsi() {
+        return stream.streamAll(em, Corso.class).toList();
+    }
+
+    public static List<Docente> getDocenti() {
+        return stream.streamAll(em, Docente.class).toList();
+    }
+
+    public static List<Docente> getDocentiInCorso(int idCorso) {
+        List<Integer> idDocenti = stream.streamAll(em, DocentiCorso.class)
+                .where(docentiCorso -> docentiCorso.getCorso() == idCorso)
+                .select(DocentiCorso::getCorso)
+                .toList();
+        List<Docente> docenti = new ArrayList();
+        for(int id: idDocenti) {
+            Optional<Docente> docente = stream.streamAll(em, Docente.class)
+                    .where(doc -> doc.getIdDocente() == id)
+                    .findFirst();
+            docenti.add(docente.get());
+        }
+        return docenti;
     }
 
     public static Utente getUtente(String username, String password) {
