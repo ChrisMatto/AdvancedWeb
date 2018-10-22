@@ -22,22 +22,26 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             String methodPath;
             if(endIndex == -1) {
                 methodPath = path.substring(startIndex - 5);
-                if(methodPath.equals("login")) {
-                    containerRequestContext.setRequestUri(URI.create(methodPath));
+                if(methodPath.equals("auth/login")) {
+                    containerRequestContext.setRequestUri(URI.create(containerRequestContext.getUriInfo().getBaseUri() + methodPath));
                 }
-                if(methodPath.equals("logout")) {
-                    containerRequestContext.setRequestUri(URI.create(methodPath));
+                if(methodPath.equals("auth/logout")) {
+                    containerRequestContext.setRequestUri(URI.create(containerRequestContext.getUriInfo().getBaseUri() + methodPath));
                 }
-            }
-            else {
+            } else {
                 token = path.substring(startIndex, endIndex);
                 methodPath = path.substring(endIndex + 1);
                 if (DataAccess.checkAccessToken(token, methodPath)) {
-                    containerRequestContext.setRequestUri(URI.create(methodPath));
+                    containerRequestContext.setRequestUri(URI.create(containerRequestContext.getUriInfo().getBaseUri() + methodPath));
                 } else {
                     Response.ResponseBuilder responseBuilder = Response.status(403);
                     throw new WebApplicationException(responseBuilder.build());
                 }
+            }
+        } else {
+            if(!DataAccess.checkAccessNoToken(path)) {
+                Response.ResponseBuilder responseBuilder = Response.status(403);
+                throw new WebApplicationException(responseBuilder.build());
             }
         }
     }

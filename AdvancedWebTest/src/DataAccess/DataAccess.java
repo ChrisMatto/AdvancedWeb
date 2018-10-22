@@ -70,6 +70,12 @@ public class DataAccess {
     }
 
     public static Boolean checkAccessToken(String token, String service) {
+        Optional<Servizio> optionalServizio = stream.streamAll(em, Servizio.class)
+                .where(s -> s.getNome().equals(service))
+                .findFirst();
+        if(!optionalServizio.isPresent()) {
+            return true;
+        }
         Optional<Sessione> optionalSessione = stream.streamAll(em, Sessione.class)
                 .where(s -> s.getToken().equals(token))
                 .findFirst();
@@ -81,16 +87,18 @@ public class DataAccess {
                 .findFirst();
         if(!optionalUtente.isPresent())
             return false;
-        Optional<Servizio> optionalServizio = stream.streamAll(em, Servizio.class)
-                .where(s -> s.getNome().equals(service))
-                .findFirst();
-        if(!optionalServizio.isPresent())
-            return false;
         int idServizio = optionalServizio.get().getIdServizio();
         int idGruppo = optionalUtente.get().getGruppo();
         Optional<GroupServices> optionalGroupServices = stream.streamAll(em, GroupServices.class)
                 .where(gs -> gs.getGruppo() == idGruppo && gs.getServizio() == idServizio)
                 .findFirst();
         return optionalGroupServices.isPresent();
+    }
+
+    public static Boolean checkAccessNoToken(String service) {
+        Optional<Servizio> optionalServizio = stream.streamAll(em, Servizio.class)
+                .where(s -> s.getNome().equals(service))
+                .findFirst();
+        return !optionalServizio.isPresent();
     }
 }
