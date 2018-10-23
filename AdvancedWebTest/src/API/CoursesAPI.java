@@ -44,7 +44,7 @@ public class CoursesAPI {
                 if(year.length() != 4)
                     return Response.status(400).build();
                 if(idCdl != null) {
-                    corsi = DataAccess.getCorsiByCdl(anno,idCdl);
+                    corsi = DataAccess.getCorsiByCdl(anno, idCdl);
                 } else {
                     corsi = DataAccess.getCorsi(anno);
                 }
@@ -56,5 +56,17 @@ public class CoursesAPI {
             }
         }
         return Response.status(404).build();
+    }
+
+    @Path("{year}/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Corso getCorso(@PathParam("year") String year, @PathParam("id") Integer id) {
+        List<Corso> corsi;
+        if(year.equals("current")) {
+            if(id != null) {
+                corsi = DataAccess
+            }
+        }
     }
 }
