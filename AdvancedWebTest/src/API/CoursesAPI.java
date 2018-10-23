@@ -1,16 +1,15 @@
 package API;
 
 import Classi.Corso;
+import ClassiTemp.CorsoCompleto;
 import Controller.Utils;
 import DataAccess.DataAccess;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("courses")
@@ -25,11 +24,15 @@ public class CoursesAPI {
     @Path("{year}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCourses(@PathParam("year") String year) {
+    public Response getCourses(@PathParam("year") String year, @QueryParam("cdl") int idCdl) {
         List<Corso> corsi;
         if(year.equals("current")) {
             corsi = DataAccess.getCorsi(Utils.getCurrentYear());
-            return Response.ok(corsi).build();
+            List<CorsoCompleto> corsiCompleti = new ArrayList();
+            for(Corso corso: corsi) {
+                corsiCompleti.add(new CorsoCompleto(corso));
+            }
+            return Response.ok(corsiCompleti).build();
         }
         if(NumberUtils.isParsable(year)) {
             int anno = Integer.parseInt(year);
@@ -37,7 +40,11 @@ public class CoursesAPI {
                 if(year.length() != 4)
                     return Response.status(400).build();
                 corsi = DataAccess.getCorsi(anno);
-                return Response.ok(corsi).build();
+                List<CorsoCompleto> corsiCompleti = new ArrayList();
+                for(Corso corso: corsi) {
+                    corsiCompleti.add(new CorsoCompleto(corso));
+                }
+                return Response.ok(corsiCompleti).build();
             }
         }
         return Response.status(404).build();

@@ -8,7 +8,7 @@ function bodychange(page, id = -1){
             if(id === -1) {
                 corsiUrl = 'http://localhost:8080/AdvancedWeb/rest/courses/current';
             } else {
-                corsiUrl = 'http://localhost:8080/AdvancedWeb/rest/courses/' + id;
+                corsiUrl = 'http://localhost:8080/AdvancedWeb/rest/courses/current?cdl=' + id;
             }
             $.ajax({
                 url:'template/courses_list.html',
@@ -29,7 +29,6 @@ function bodychange(page, id = -1){
                                Mustache.parse(temp);
                                json.sort(function(a,b){return compareStrings(a.nomeIt,b.nomeIt);});
                                cdlTemp = Mustache.to_html(temp, {cdl: json});
-                               //$('#cdl', newHtml).html(newTemp);
                                console.log("cdlTemp")
                            },
                            error : function(xhr, textStatus, errorThrown ) {
@@ -48,7 +47,6 @@ function bodychange(page, id = -1){
                                Mustache.parse(temp);
                                json.sort(function(a,b){return compareStrings(a.nomeIt,b.nomeIt);});
                                cdlmTemp = Mustache.to_html(temp, {cdlm: json});
-                               //$('#cdlm', newHtml).html(newTemp);
                                console.log("cdlmTemp");
                            },
                            error : function(xhr, textStatus, errorThrown ) {
@@ -66,10 +64,12 @@ function bodychange(page, id = -1){
                                 var temp = $('#courses_script', html).html();
                                 Mustache.parse(temp);
                                 json.sort(function(a,b){return compareStrings(a.nomeIt,b.nomeIt);});
-                                var docenti = [];
-                                var cdl = [];
                                 for(var corso in json) {
-                                    console.log(corso.idCorso);
+                                    for(var i = 0; i < json[corso]["docenti"].length; i++) {
+                                        if(json[corso]["docenti"][i + 1] != null) {
+                                            json[corso]["docenti"][i]["hasNext"] = true;
+                                        }
+                                    }
                                 }
                                 corsiTemp = Mustache.to_html(temp, {corso: json});
                                 console.log("corsiTemp");

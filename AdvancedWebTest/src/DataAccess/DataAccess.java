@@ -34,10 +34,29 @@ public class DataAccess {
                 .toList();
     }
 
+    public static List<Cdl> getCdlInCorso(int idCorso) {
+        List<Integer> idCdl = stream.streamAll(em, CorsiCdl.class)
+                .where(corsiCdl -> corsiCdl.getCorso() == idCorso)
+                .select(CorsiCdl::getCorso)
+                .toList();
+        List<Cdl> cdl = new ArrayList();
+        for(int id: idCdl) {
+            Optional<Cdl> optionalCdl = stream.streamAll(em, Cdl.class)
+                    .where(cd -> cd.getIdcdl() == id)
+                    .findFirst();
+            optionalCdl.ifPresent(cdl::add);
+        }
+        return cdl;
+    }
+
     public static List<Corso> getCorsi(int year) {
         return stream.streamAll(em, Corso.class)
                 .where(corso -> corso.getAnnoInizio() == year && corso.getAnnoFine() == year + 1)
                 .toList();
+    }
+
+    public static List<Corso> getCorsiByCdl(int year, int idCdl) {
+        
     }
 
     public static List<Corso> getCorsi() {
@@ -58,7 +77,7 @@ public class DataAccess {
             Optional<Docente> docente = stream.streamAll(em, Docente.class)
                     .where(doc -> doc.getIdDocente() == id)
                     .findFirst();
-            docenti.add(docente.get());
+            docente.ifPresent(docenti::add);
         }
         return docenti;
     }
