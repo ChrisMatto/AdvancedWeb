@@ -37,7 +37,7 @@ public class DataAccess {
     public static List<Cdl> getCdlInCorso(int idCorso) {
         List<Integer> idCdl = stream.streamAll(em, CorsiCdl.class)
                 .where(corsiCdl -> corsiCdl.getCorso() == idCorso)
-                .select(CorsiCdl::getCorso)
+                .select(CorsiCdl::getCdl)
                 .toList();
         List<Cdl> cdl = new ArrayList();
         for(int id: idCdl) {
@@ -56,7 +56,18 @@ public class DataAccess {
     }
 
     public static List<Corso> getCorsiByCdl(int year, int idCdl) {
-        
+        List<Integer> idCorsi = stream.streamAll(em, CorsiCdl.class)
+                .where(corsiCdl -> corsiCdl.getCdl() == idCdl)
+                .select(corsiCdl -> corsiCdl.getCorso())
+                .toList();
+        List<Corso> corsi = new ArrayList();
+        for(int id: idCorsi) {
+            Optional<Corso> corso = stream.streamAll(em, Corso.class)
+                    .where(c -> c.getIdCorso() == id && c.getAnnoInizio() == year && c.getAnnoFine() == year + 1)
+                    .findFirst();
+            corso.ifPresent(corsi::add);
+        }
+        return corsi;
     }
 
     public static List<Corso> getCorsi() {
@@ -70,7 +81,7 @@ public class DataAccess {
     public static List<Docente> getDocentiInCorso(int idCorso) {
         List<Integer> idDocenti = stream.streamAll(em, DocentiCorso.class)
                 .where(docentiCorso -> docentiCorso.getCorso() == idCorso)
-                .select(DocentiCorso::getCorso)
+                .select(DocentiCorso::getDocente)
                 .toList();
         List<Docente> docenti = new ArrayList();
         for(int id: idDocenti) {
