@@ -70,6 +70,11 @@ function bodychange(page, id = -1){
                                             json[corso]["docenti"][i]["hasNext"] = true;
                                         }
                                     }
+                                    for(var i = 0; i < json[corso]["cdl"].length; i++) {
+                                        if(json[corso]["cdl"][i + 1] != null) {
+                                            json[corso]["cdl"][i]["hasNext"] = true;
+                                        }
+                                    }
                                 }
                                 corsiTemp = Mustache.to_html(temp, {corso: json});
                                 console.log("corsiTemp");
