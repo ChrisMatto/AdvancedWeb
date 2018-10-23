@@ -90,6 +90,7 @@ public class DataAccess {
                     } else {
                         break;
                     }
+                    //sbagliato: se prima metto un altro query param, questo mi cancella tutto.
                     finalCorsi = getCorsiByCdl(year, idCdl);
                     corsi.clear();
                     corsi.addAll(finalCorsi);
