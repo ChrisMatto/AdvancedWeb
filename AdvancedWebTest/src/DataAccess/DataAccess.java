@@ -4,12 +4,14 @@ import Classi.*;
 import Controller.Utils;
 import javafx.util.Pair;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jinq.jpa.JinqJPAStreamProvider;
 import org.jinq.orm.stream.JinqStream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.ws.rs.core.MultivaluedMap;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +58,12 @@ public class DataAccess {
     }
 
     public static List<Corso> getCorsiByCdl(int year, int idCdl) {
-        List<Integer> idCorsi = stream.streamAll(em, CorsiCdl.class)
+        return stream.streamAll(em, Corso.class)
+                .where(c -> c.getAnnoInizio() == year)
+                .join((c,source) -> source.stream(CorsiCdl.class)
+                        .where(corsiCdl -> corsiCdl.getCdl() == idCdl))
+                .select(org.jinq.tuples.Pair::getOne).toList();
+        /*List<Integer> idCorsi = stream.streamAll(em, CorsiCdl.class)
                 .where(corsiCdl -> corsiCdl.getCdl() == idCdl)
                 .select(corsiCdl -> corsiCdl.getCorso())
                 .toList();
@@ -67,7 +74,92 @@ public class DataAccess {
                     .findFirst();
             corso.ifPresent(corsi::add);
         }
-        return corsi;
+        return corsi;*/
+    }
+
+    public static List<Corso> getCorsiByFilter(int year, MultivaluedMap<String,String> queryParams) {
+        List<Corso> corsi = new ArrayList();
+        JinqStream<Corso> streamCorsi = stream.streamAll(em, Corso.class).where(c -> c.getAnnoInizio() == year);
+        queryParams.forEach((String filter, List<String> values) -> {
+            List<Corso> finalCorsi;
+            switch(filter) {
+                case "cdl":
+                    int idCdl;
+                    if(NumberUtils.isParsable(values.get(0))) {
+                        idCdl = Integer.parseInt(values.get(0));
+                    } else {
+                        break;
+                    }
+                    finalCorsi = getCorsiByCdl(year, idCdl);
+                    corsi.clear();
+                    corsi.addAll(finalCorsi);
+                case "id":
+                    int idCorso;
+                    if(NumberUtils.isParsable(values.get(0))) {
+                        idCorso = Integer.parseInt(values.get(0));
+                    } else {
+                        break;
+                    }
+
+            }
+        });
+        /*switch (filter) {
+            case "cdl":
+                int idCdl;
+                if(NumberUtils.isParsable(filterValue)) {
+                    idCdl = Integer.parseInt(filterValue);
+                } else {
+                    return null;
+                }
+                return getCorsiByCdl(year, idCdl);
+            case "id":
+                int idCorso;
+                if(NumberUtils.isParsable(filterValue)) {
+                    idCorso = Integer.parseInt(filterValue);
+                } else {
+                    return null;
+                }
+                corsi.add(getCorso(year, idCorso));
+                return corsi;
+            case "nome":
+                return getCorsiByNome(year, filterValue);
+            case "ssd":
+                return getCorsiBySsd(year, filterValue);
+            case "semestre":
+                int semestre;
+                if(NumberUtils.isParsable(filterValue)) {
+                    semestre = Integer.parseInt(filterValue);
+                } else {
+                    return null;
+                }
+                return getCorsiBySemestre(year, semestre);
+        }
+        return corsi;*/
+    }
+
+    public static List<Corso> getCorsiByNome(int year, String nome) {
+        return stream.streamAll(em, Corso.class)
+                .where(corso -> corso.getAnnoInizio() == year && (corso.getNomeIt().equals(nome) || corso.getNomeEn().equals(nome)))
+                .toList();
+    }
+
+    public static List<Corso> getCorsiBySsd(int year, String ssd) {
+        return stream.streamAll(em, Corso.class)
+                .where(corso -> corso.getAnnoInizio() == year && corso.getSsd().equals(ssd))
+                .toList();
+    }
+
+    public static List<Corso> getCorsiBySemestre(int year, int semestre) {
+        return stream.streamAll(em, Corso.class)
+                .where(corso -> corso.getAnnoInizio() == year && corso.getSemestre() == semestre)
+                .toList();
+    }
+
+    public static Corso getCorso(int year, int id) {
+        Optional<Corso> optionalCorso = stream.streamAll(em, Corso.class)
+                .where(corso -> corso.getAnnoInizio() == year && corso.getAnnoFine() == year + 1 && corso.getIdCorso() == id)
+                .findFirst();
+        return optionalCorso.orElse(null);
     }
 
     public static List<Corso> getCorsi() {
