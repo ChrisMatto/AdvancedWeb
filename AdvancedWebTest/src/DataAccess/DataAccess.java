@@ -14,6 +14,7 @@ import javax.persistence.Persistence;
 import javax.ws.rs.core.MultivaluedMap;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,11 +79,29 @@ public class DataAccess {
     }
 
     public static List<Corso> getCorsiByFilter(int year, MultivaluedMap<String,String> queryParams) {
-        String query = "SELECT * FROM Corso WHERE ";
-        queryParams.forEach((String filter, List<String> values) -> {
+        List<Corso> corsi = new ArrayList<>();
+        JinqStream<Corso> streamCorsi = stream.streamAll(em,Corso.class);
+        Iterator<String> itr = queryParams.keySet().iterator();
+        while (itr.hasNext()) {
+            String key = itr.next();
+            switch(key) {
+                case "cdl":
+                    String param = queryParams.get(key).get(0);
+                    int idCdl;
+                    if(NumberUtils.isParsable(param)) {
+                        idCdl = Integer.parseInt(param);
+                    } else {
+                        break;
+                    }
+                    streamCorsi = stream.streamAll(em, Corso.class)
+                            .where(c -> c.getAnnoInizio() == year)
+                            .join((c,source) -> source.stream(CorsiCdl.class)
+                                    .where(corsiCdl -> corsiCdl.getCdl() == idCdl))
+                            .select(Pair::getOne);
 
-        });
-        em.createQuery("SELECT * FROM Corso WHERE ")
+            }
+        }
+        return streamCorsi.toList();
     }
 
     public static List<Corso> getCorsiByNome(int year, String nome) {
