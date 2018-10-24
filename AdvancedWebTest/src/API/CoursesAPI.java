@@ -61,7 +61,7 @@ public class CoursesAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCorsi(@PathParam("year") String year, @Context UriInfo uriInfo) {
         MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
-        List<Corso> corsi;
+/*        List<Corso> corsi;
         if(year.equals("current")) {
             if(queryParams != null) {
                 corsi = DataAccess.getCorsiByFilter(Utils.getCurrentYear(),queryParams);
@@ -93,6 +93,7 @@ public class CoursesAPI {
         }
         return Response.status(404).build();
     }*/
+return Response.ok().build();
     }
 
 

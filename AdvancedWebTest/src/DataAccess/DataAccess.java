@@ -2,11 +2,11 @@ package DataAccess;
 
 import Classi.*;
 import Controller.Utils;
-import javafx.util.Pair;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jinq.jpa.JinqJPAStreamProvider;
 import org.jinq.orm.stream.JinqStream;
+import org.jinq.tuples.Pair;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -78,64 +78,11 @@ public class DataAccess {
     }
 
     public static List<Corso> getCorsiByFilter(int year, MultivaluedMap<String,String> queryParams) {
-        List<Corso> corsi = new ArrayList();
-        JinqStream<Corso> streamCorsi = stream.streamAll(em, Corso.class).where(c -> c.getAnnoInizio() == year);
+        String query = "SELECT * FROM Corso WHERE ";
         queryParams.forEach((String filter, List<String> values) -> {
-            List<Corso> finalCorsi;
-            switch(filter) {
-                case "cdl":
-                    int idCdl;
-                    if(NumberUtils.isParsable(values.get(0))) {
-                        idCdl = Integer.parseInt(values.get(0));
-                    } else {
-                        break;
-                    }
-                    //sbagliato: se prima metto un altro query param, questo mi cancella tutto.
-                    finalCorsi = getCorsiByCdl(year, idCdl);
-                    corsi.clear();
-                    corsi.addAll(finalCorsi);
-                case "id":
-                    int idCorso;
-                    if(NumberUtils.isParsable(values.get(0))) {
-                        idCorso = Integer.parseInt(values.get(0));
-                    } else {
-                        break;
-                    }
 
-            }
         });
-        /*switch (filter) {
-            case "cdl":
-                int idCdl;
-                if(NumberUtils.isParsable(filterValue)) {
-                    idCdl = Integer.parseInt(filterValue);
-                } else {
-                    return null;
-                }
-                return getCorsiByCdl(year, idCdl);
-            case "id":
-                int idCorso;
-                if(NumberUtils.isParsable(filterValue)) {
-                    idCorso = Integer.parseInt(filterValue);
-                } else {
-                    return null;
-                }
-                corsi.add(getCorso(year, idCorso));
-                return corsi;
-            case "nome":
-                return getCorsiByNome(year, filterValue);
-            case "ssd":
-                return getCorsiBySsd(year, filterValue);
-            case "semestre":
-                int semestre;
-                if(NumberUtils.isParsable(filterValue)) {
-                    semestre = Integer.parseInt(filterValue);
-                } else {
-                    return null;
-                }
-                return getCorsiBySemestre(year, semestre);
-        }
-        return corsi;*/
+        em.createQuery("SELECT * FROM Corso WHERE ")
     }
 
     public static List<Corso> getCorsiByNome(int year, String nome) {
