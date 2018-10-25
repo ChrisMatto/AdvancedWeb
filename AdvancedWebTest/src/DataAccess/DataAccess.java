@@ -38,32 +38,10 @@ public class DataAccess {
     }
 
     public static List<Cdl> getCdlInCorso(int idCorso) {
-        List<Integer> idCdl = stream.streamAll(em, CorsiCdl.class)
-                .where(corsiCdl -> corsiCdl.getCorso() == idCorso)
-                .select(CorsiCdl::getCdl)
-                .toList();
-        List<Cdl> cdl = new ArrayList();
-        for(int id: idCdl) {
-            Optional<Cdl> optionalCdl = stream.streamAll(em, Cdl.class)
-                    .where(cd -> cd.getIdcdl() == id)
-                    .findFirst();
-            optionalCdl.ifPresent(cdl::add);
-        }
-        return cdl;
-    }
-
-    public static List<Corso> getCorsi(int year) {
-        return stream.streamAll(em, Corso.class)
-                .where(corso -> corso.getAnnoInizio() == year && corso.getAnnoFine() == year + 1)
-                .toList();
-    }
-
-    public static List<Corso> getCorsiByCdl(int year, int idCdl) {
-        return stream.streamAll(em, Corso.class)
-                .where(c -> c.getAnnoInizio() == year)
-                .join((c,source) -> source.stream(CorsiCdl.class))
-                .where(corsoCorsiCdlPair -> corsoCorsiCdlPair.getTwo().getCdl() == idCdl && corsoCorsiCdlPair.getOne().getIdCorso() == corsoCorsiCdlPair.getTwo().getCorso())
-                .select(org.jinq.tuples.Pair::getOne).toList();
+        return stream.streamAll(em, Cdl.class)
+                .join((cdl, source) -> source.stream(CorsiCdl.class))
+                .where(cdlCorsiCdlPair -> cdlCorsiCdlPair.getTwo().getCorso() == idCorso && cdlCorsiCdlPair.getOne().getIdcdl() == cdlCorsiCdlPair.getTwo().getCdl())
+                .select(Pair::getOne).toList();
     }
 
     public static List<Corso> getCorsiByFilter(int year, MultivaluedMap<String,String> queryParams) {
@@ -119,24 +97,6 @@ public class DataAccess {
         return streamCorsi.toList();
     }
 
-    public static List<Corso> getCorsiByNome(int year, String nome) {
-        return stream.streamAll(em, Corso.class)
-                .where(corso -> corso.getAnnoInizio() == year && (corso.getNomeIt().equals(nome) || corso.getNomeEn().equals(nome)))
-                .toList();
-    }
-
-    public static List<Corso> getCorsiBySsd(int year, String ssd) {
-        return stream.streamAll(em, Corso.class)
-                .where(corso -> corso.getAnnoInizio() == year && corso.getSsd().equals(ssd))
-                .toList();
-    }
-
-    public static List<Corso> getCorsiBySemestre(int year, int semestre) {
-        return stream.streamAll(em, Corso.class)
-                .where(corso -> corso.getAnnoInizio() == year && corso.getSemestre() == semestre)
-                .toList();
-    }
-
     public static Corso getCorso(int year, int id) {
         Optional<Corso> optionalCorso = stream.streamAll(em, Corso.class)
                 .where(corso -> corso.getAnnoInizio() == year && corso.getAnnoFine() == year + 1 && corso.getIdCorso() == id)
@@ -153,18 +113,10 @@ public class DataAccess {
     }
 
     public static List<Docente> getDocentiInCorso(int idCorso) {
-        List<Integer> idDocenti = stream.streamAll(em, DocentiCorso.class)
-                .where(docentiCorso -> docentiCorso.getCorso() == idCorso)
-                .select(DocentiCorso::getDocente)
-                .toList();
-        List<Docente> docenti = new ArrayList();
-        for(int id: idDocenti) {
-            Optional<Docente> docente = stream.streamAll(em, Docente.class)
-                    .where(doc -> doc.getIdDocente() == id)
-                    .findFirst();
-            docente.ifPresent(docenti::add);
-        }
-        return docenti;
+        return stream.streamAll(em, Docente.class)
+                .join((docente, source) -> source.stream(DocentiCorso.class))
+                .where(docenteDocentiCorsoPair -> docenteDocentiCorsoPair.getTwo().getCorso() == idCorso && docenteDocentiCorsoPair.getOne().getIdDocente() == docenteDocentiCorsoPair.getTwo().getDocente())
+                .select(Pair::getOne).toList();
     }
 
     public static Utente getUtente(String username, String password) {
@@ -200,7 +152,14 @@ public class DataAccess {
     }
 
     public static Boolean checkAccessToken(String token, String service) {
-        Optional<Servizio> optionalServizio = stream.streamAll(em, Servizio.class)
+        return stream.streamAll(em, Servizio.class)
+                .where(servizio -> servizio.getNome().equals(service))
+                .join((s, source) -> source.stream(GroupServices.class))
+                .where(servizioGroupServicesPair -> servizioGroupServicesPair.getTwo().getServizio() == servizioGroupServicesPair.getOne().getIdServizio())
+                .select(Pair::getTwo)
+                .join()
+
+        /*Optional<Servizio> optionalServizio = stream.streamAll(em, Servizio.class)
                 .where(s -> s.getNome().equals(service))
                 .findFirst();
         if(!optionalServizio.isPresent()) {
@@ -222,7 +181,7 @@ public class DataAccess {
         Optional<GroupServices> optionalGroupServices = stream.streamAll(em, GroupServices.class)
                 .where(gs -> gs.getGruppo() == idGruppo && gs.getServizio() == idServizio)
                 .findFirst();
-        return optionalGroupServices.isPresent();
+        return optionalGroupServices.isPresent();*/
     }
 
     public static Boolean checkAccessNoToken(String service) {
