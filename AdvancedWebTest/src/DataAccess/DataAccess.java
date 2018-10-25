@@ -61,44 +61,59 @@ public class DataAccess {
     public static List<Corso> getCorsiByCdl(int year, int idCdl) {
         return stream.streamAll(em, Corso.class)
                 .where(c -> c.getAnnoInizio() == year)
-                .join((c,source) -> source.stream(CorsiCdl.class)
-                        .where(corsiCdl -> corsiCdl.getCdl() == idCdl))
+                .join((c,source) -> source.stream(CorsiCdl.class))
+                .where(corsoCorsiCdlPair -> corsoCorsiCdlPair.getTwo().getCdl() == idCdl && corsoCorsiCdlPair.getOne().getIdCorso() == corsoCorsiCdlPair.getTwo().getCorso())
                 .select(org.jinq.tuples.Pair::getOne).toList();
-        /*List<Integer> idCorsi = stream.streamAll(em, CorsiCdl.class)
-                .where(corsiCdl -> corsiCdl.getCdl() == idCdl)
-                .select(corsiCdl -> corsiCdl.getCorso())
-                .toList();
-        List<Corso> corsi = new ArrayList();
-        for(int id: idCorsi) {
-            Optional<Corso> corso = stream.streamAll(em, Corso.class)
-                    .where(c -> c.getIdCorso() == id && c.getAnnoInizio() == year && c.getAnnoFine() == year + 1)
-                    .findFirst();
-            corso.ifPresent(corsi::add);
-        }
-        return corsi;*/
     }
 
     public static List<Corso> getCorsiByFilter(int year, MultivaluedMap<String,String> queryParams) {
-        List<Corso> corsi = new ArrayList<>();
-        JinqStream<Corso> streamCorsi = stream.streamAll(em,Corso.class);
-        Iterator<String> itr = queryParams.keySet().iterator();
-        while (itr.hasNext()) {
-            String key = itr.next();
-            switch(key) {
+        JinqStream<Corso> streamCorsi = stream.streamAll(em,Corso.class)
+                .where(corso -> corso.getAnnoInizio() == year);
+        for (String key : queryParams.keySet()) {
+            String param = queryParams.get(key).get(0);
+            switch (key) {
                 case "cdl":
-                    String param = queryParams.get(key).get(0);
                     int idCdl;
-                    if(NumberUtils.isParsable(param)) {
+                    if (NumberUtils.isParsable(param)) {
                         idCdl = Integer.parseInt(param);
                     } else {
                         break;
                     }
-                    streamCorsi = stream.streamAll(em, Corso.class)
-                            .where(c -> c.getAnnoInizio() == year)
-                            .join((c,source) -> source.stream(CorsiCdl.class)
-                                    .where(corsiCdl -> corsiCdl.getCdl() == idCdl))
-                            .select(Pair::getOne);
-
+                    streamCorsi = streamCorsi
+                            .join((c,source) -> source.stream(CorsiCdl.class))
+                            .where(corsoCorsiCdlPair -> corsoCorsiCdlPair.getTwo().getCdl() == idCdl && corsoCorsiCdlPair.getOne().getIdCorso() == corsoCorsiCdlPair.getTwo().getCorso())
+                            .select(org.jinq.tuples.Pair::getOne);
+                    break;
+                case "nome":
+                    streamCorsi = streamCorsi.where(corso -> corso.getNomeIt().equals(param) || corso.getNomeEn().equals(param));
+                    break;
+                case "lingua":
+                    streamCorsi = streamCorsi.where(corso -> corso.getLingua().equals(param));
+                    break;
+                case "ssd":
+                    streamCorsi = streamCorsi.where(corso -> corso.getSsd().equals(param));
+                    break;
+                case "semestre":
+                    int semestre;
+                    if (NumberUtils.isParsable(param)) {
+                        semestre = Integer.parseInt(param);
+                    } else {
+                        break;
+                    }
+                    streamCorsi = streamCorsi.where(corso -> corso.getSemestre() == semestre);
+                    break;
+                case "cfu":
+                    int cfu;
+                    if (NumberUtils.isParsable(param)) {
+                        cfu = Integer.parseInt(param);
+                    } else {
+                        break;
+                    }
+                    streamCorsi = streamCorsi.where(corso -> corso.getCfu() == cfu);
+                    break;
+                case "tipologia":
+                    streamCorsi = streamCorsi.where(corso -> corso.getTipologia().equals(param));
+                    break;
             }
         }
         return streamCorsi.toList();

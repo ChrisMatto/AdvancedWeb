@@ -94,7 +94,7 @@ public class CoursesAPI {
         }
         return Response.status(404).build();
     }*/
-return Response.ok().build();
+return Response.ok(corsi).build();
     }
 
 
