@@ -33,6 +33,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
                 methodPath = path.substring(endIndex + 1);
                 if (DataAccess.checkAccessToken(token, methodPath)) {
                     containerRequestContext.setRequestUri(URI.create(containerRequestContext.getUriInfo().getBaseUri() + methodPath));
+                    containerRequestContext.setProperty("token", token);
                 } else {
                     Response.ResponseBuilder responseBuilder = Response.status(403);
                     throw new WebApplicationException(responseBuilder.build());

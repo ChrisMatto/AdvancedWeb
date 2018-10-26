@@ -7,8 +7,7 @@ import DataAccess.DataAccess;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,49 +23,55 @@ public class CoursesAPI {
     @Path("{year}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCourses(@PathParam("year") String year, @QueryParam("cdl") Integer idCdl) {
-        List<Corso> corsi;
-        if(year.equals("current")) {
-            if(idCdl != null) {
-                corsi = DataAccess.getCorsiByCdl(Utils.getCurrentYear(),idCdl);
-            } else {
-                corsi = DataAccess.getCorsi(Utils.getCurrentYear());
-            }
-            List<CorsoCompleto> corsiCompleti = new ArrayList();
-            for(Corso corso: corsi) {
-                corsiCompleti.add(new CorsoCompleto(corso));
-            }
-            return Response.ok(corsiCompleti).build();
-        }
-        if(NumberUtils.isParsable(year)) {
-            int anno = Integer.parseInt(year);
-            if(anno > 0) {
-                if(year.length() != 4)
-                    return Response.status(400).build();
-                if(idCdl != null) {
-                    corsi = DataAccess.getCorsiByCdl(anno, idCdl);
+    public Response getCorsi(@PathParam("year") String year, @Context UriInfo uriInfo) {
+        MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
+        int anno;
+        if (year.equals("current")) {
+            anno = Utils.getCurrentYear();
+        } else {
+            if (NumberUtils.isParsable(year)) {
+                anno = Integer.parseInt(year);
+                if (anno > 0) {
+                    if (year.length() != 4) {
+                        return Response.status(400).build();
+                    }
                 } else {
-                    corsi = DataAccess.getCorsi(anno);
+                    return Response.status(404).build();
                 }
-                List<CorsoCompleto> corsiCompleti = new ArrayList();
-                for(Corso corso: corsi) {
-                    corsiCompleti.add(new CorsoCompleto(corso));
-                }
-                return Response.ok(corsiCompleti).build();
+            } else {
+                return Response.status(404).build();
             }
         }
-        return Response.status(404).build();
+        List<Corso> corsi = DataAccess.getCorsiByFilter(anno,queryParams);
+        List<CorsoCompleto> corsiCompleti = new ArrayList<>();
+        for (Corso corso: corsi) {
+            corsiCompleti.add(new CorsoCompleto(corso));
+        }
+        return Response.ok(corsiCompleti).build();
     }
+
 
     @Path("{year}/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Corso getCorso(@PathParam("year") String year, @PathParam("id") Integer id) {
-        List<Corso> corsi;
+    public Response getCorso(@PathParam("year") String year, @PathParam("id") Integer id) {
+        if(id == null)
+            return Response.status(400).build();
+        Corso corso;
         if(year.equals("current")) {
-            if(id != null) {
-                corsi = DataAccess
+            corso = DataAccess.getCorso(Utils.getCurrentYear(), id);
+            return Response.ok(corso).build();
+        } else {
+            if(NumberUtils.isParsable(year)) {
+                int anno = Integer.parseInt(year);
+                if(anno > 0) {
+                    if(year.length() != 4)
+                        return Response.status(400).build();
+                    corso = DataAccess.getCorso(anno, id);
+                    return Response.ok(corso).build();
+                }
             }
         }
+        return Response.status(404).build();
     }
 }

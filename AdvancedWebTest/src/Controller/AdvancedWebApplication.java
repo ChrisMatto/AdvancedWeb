@@ -1,9 +1,6 @@
 package Controller;
 
-import API.AuthAPI;
-import API.CDLAPI;
-import API.CoursesAPI;
-import API.DocentiAPI;
+import API.*;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
 import javax.ws.rs.ApplicationPath;
@@ -23,6 +20,7 @@ public class AdvancedWebApplication extends Application {
         h.add(AuthAPI.class);
         h.add(JacksonFeature.class);
         h.add(AuthorizationFilter.class);
+        h.add(UsersAPI.class);
         return h;
     }
 }
