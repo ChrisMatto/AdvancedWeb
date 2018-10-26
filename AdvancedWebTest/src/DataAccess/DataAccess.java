@@ -146,18 +146,44 @@ public class DataAccess {
                 .findFirst();
         if(sessione.isPresent()) {
             entityTransaction.begin();
-            em.remove(sessione);
+            em.remove(sessione.get());
             entityTransaction.commit();
         }
     }
 
     public static Boolean checkAccessToken(String token, String service) {
-        return stream.streamAll(em, Servizio.class)
+        Optional<Servizio> optionalServizio = stream.streamAll(em, Servizio.class)
+                .where(s -> s.getNome().equals(service))
+                .findFirst();
+        if(!optionalServizio.isPresent()) {
+            return true;
+        }
+
+        Optional<Servizio> servizio = stream.streamAll(em, Sessione.class)
+                .where(sessione -> sessione.getToken().equals(token))
+                .join((s, source) -> source.stream(Utente.class))
+                .where(sessioneUtentePair -> sessioneUtentePair.getOne().getUtente() == sessioneUtentePair.getTwo().getIdUtente())
+                .select(Pair::getTwo)
+                .join((s, source) -> source.stream(GroupServices.class))
+                .where(utenteGroupServicesPair -> utenteGroupServicesPair.getOne().getGruppo() == utenteGroupServicesPair.getTwo().getGruppo())
+                .select(Pair::getTwo)
+                .join((s, source) -> source.stream(Servizio.class))
+                .where(groupServicesServizioPair -> groupServicesServizioPair.getOne().getServizio() == groupServicesServizioPair.getTwo().getIdServizio() &&
+                        groupServicesServizioPair.getTwo().getNome().equals(service))
+                .select(Pair::getTwo)
+                .findFirst();
+        return servizio.isPresent();
+
+        /*return stream.streamAll(em, Servizio.class)
                 .where(servizio -> servizio.getNome().equals(service))
                 .join((s, source) -> source.stream(GroupServices.class))
-                .where(servizioGroupServicesPair -> servizioGroupServicesPair.getTwo().getServizio() == servizioGroupServicesPair.getOne().getIdServizio())
-                .select(Pair::getTwo)
-                .join()
+                .join((s, source) -> source.stream(Utente.class))
+                .join((s, source) -> source.stream(Sessione.class))
+                .where(pairSessionePair -> pairSessionePair.getTwo().getToken().equals(token) &&
+                        pairSessionePair.getOne().getTwo().getIdUtente() == pairSessionePair.getTwo().getUtente() &&
+                        pairSessionePair.getOne().getOne().getTwo().getGruppo() == pairSessionePair.getOne().getTwo().getGruppo() &&
+                        pairSessionePair.getOne().getOne().getTwo().getServizio() == pairSessionePair.getOne().getOne().getOne().getIdServizio())
+                .findFirst().isPresent();*/
 
         /*Optional<Servizio> optionalServizio = stream.streamAll(em, Servizio.class)
                 .where(s -> s.getNome().equals(service))
