@@ -11,6 +11,7 @@ import org.jinq.tuples.Pair;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.swing.text.html.Option;
 import javax.ws.rs.core.MultivaluedMap;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -126,6 +127,11 @@ public class DataAccess {
                 .select(Pair::getOne).toList();
     }
 
+    public static List<Utente> getUtenti() {
+        return stream.streamAll(em, Utente.class)
+                .toList();
+    }
+
     public static Utente getUtente(String username, String password) {
         Optional<Utente> u = stream.streamAll(em, Utente.class)
                 .where(utente -> utente.getUsername().equals(username) && utente.getPassword().equals(password))
@@ -159,11 +165,18 @@ public class DataAccess {
     }
 
     public static Boolean checkAccessToken(String token, String service) {
+        Optional<Sessione> optionalSessione = stream.streamAll(em, Sessione.class)
+                .where(sessione -> sessione.getToken().equals(token))
+                .findFirst();
         Optional<Servizio> optionalServizio = stream.streamAll(em, Servizio.class)
                 .where(s -> s.getNome().equals(service))
                 .findFirst();
-        if(!optionalServizio.isPresent()) {
-            return true;
+        if(!optionalSessione.isPresent()) {
+            return false;
+        } else {
+            if(!optionalServizio.isPresent()) {
+                return true;
+            }
         }
 
         Optional<Servizio> servizio = stream.streamAll(em, Sessione.class)
