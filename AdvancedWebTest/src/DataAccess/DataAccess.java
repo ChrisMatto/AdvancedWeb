@@ -37,6 +37,13 @@ public class DataAccess {
                 .toList();
     }
 
+    public static Cdl getCdlById(int id) {
+        return stream.streamAll(em, Cdl.class)
+                .where(cdl -> cdl.getIdcdl() == id)
+                .findFirst()
+                .orElse(null);
+    }
+
     public static List<Cdl> getCdlInCorso(int idCorso) {
         return stream.streamAll(em, Cdl.class)
                 .join((cdl, source) -> source.stream(CorsiCdl.class))

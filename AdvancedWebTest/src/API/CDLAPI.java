@@ -6,6 +6,7 @@ import DataAccess.DataAccess;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -46,5 +47,15 @@ public class CDLAPI {
         List<Cdl> cdlm = DataAccess.getCDLM();
         List<Cdl> rcdlm = Utils.randomizeCDL(cdlm);
         return Response.ok(rcdlm).build();
+    }
+
+    @Path("{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCdlById(@PathParam("id") int id) {
+        if(id < 0) {
+            return Response.status(400).build();
+        }
+        return Response.ok(DataAccess.getCdlById(id)).build();
     }
 }
