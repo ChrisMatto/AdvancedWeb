@@ -127,6 +127,13 @@ public class DataAccess {
                 .select(Pair::getOne).toList();
     }
 
+    public static Boolean existDocente(int id) {
+        return stream.streamAll(em, Docente.class)
+                .where(docente -> docente.getIdDocente() == id)
+                .findFirst()
+                .isPresent();
+    }
+
     public static List<Utente> getUtenti() {
         return stream.streamAll(em, Utente.class)
                 .toList();
@@ -137,6 +144,33 @@ public class DataAccess {
                 .where(utente -> utente.getUsername().equals(username) && utente.getPassword().equals(password))
                 .findFirst();
         return u.orElse(null);
+    }
+
+    public static void insertUtente(Utente utente) {
+        entityTransaction.begin();
+        em.persist(utente);
+        entityTransaction.commit();
+    }
+
+    public static Boolean existUtente(Utente utente) {
+        String username = utente.getUsername();
+        return stream.streamAll(em, Utente.class)
+                .where(u -> u.getUsername().equals(username))
+                .findFirst().isPresent();
+    }
+
+    public static Boolean existDocenteInUtente(int idDocente) {
+        return stream.streamAll(em, Utente.class)
+                .where(u -> u.getDocente() == idDocente)
+                .findFirst()
+                .isPresent();
+    }
+
+    public static Boolean existGruppo(int id) {
+        return stream.streamAll(em, Gruppo.class)
+                .where(gruppo -> gruppo.getIdGruppo() == id)
+                .findFirst()
+                .isPresent();
     }
 
     public static String makeSessione(Utente utente) {
