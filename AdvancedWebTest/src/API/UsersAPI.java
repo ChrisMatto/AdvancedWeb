@@ -5,6 +5,7 @@ import DataAccess.DataAccess;
 
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class UsersAPI {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUtenti(ContainerRequestContext containerRequestContext) {
+    public Response getUtenti(@Context ContainerRequestContext containerRequestContext) {
         String token = (String)containerRequestContext.getProperty("token");
         List<Utente> utenti = DataAccess.getUtenti();
         String baseUri = containerRequestContext.getUriInfo().getBaseUri() + "auth/" + token + "/users/";
