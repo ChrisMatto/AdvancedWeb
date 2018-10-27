@@ -6,9 +6,9 @@ function bodychange(page, id = -1){
             var newHtml;
             var corsiUrl;
             if(id === -1) {
-                corsiUrl = 'http://localhost:8080/AdvancedWeb/rest/courses/current';
+                corsiUrl = 'http://localhost:8080/AdvancedWeb/rest/completeCourses/current';
             } else {
-                corsiUrl = 'http://localhost:8080/AdvancedWeb/rest/courses/current?cdl=' + id;
+                corsiUrl = 'http://localhost:8080/AdvancedWeb/rest/completeCourses/current?cdl=' + id;
             }
             $.ajax({
                 url:'template/courses_list.html',

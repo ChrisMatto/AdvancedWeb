@@ -6,13 +6,16 @@ import Controller.Utils;
 import DataAccess.DataAccess;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Path("courses")
-public class CoursesAPI {
+@Path("completeCourses")
+public class CompleteCoursesAPI {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -43,12 +46,11 @@ public class CoursesAPI {
             }
         }
         List<Corso> corsi = DataAccess.getCorsiByFilter(anno,queryParams);
-        List<String> corsiUri = new ArrayList<>();
-        String baseUri = "http://localhost:8080/AdvancedWeb/rest/courses/" + year + "/";
+        List<CorsoCompleto> corsiCompleti = new ArrayList<>();
         for (Corso corso: corsi) {
-            corsiUri.add(baseUri + corso.getIdCorso());
+            corsiCompleti.add(new CorsoCompleto(corso));
         }
-        return Response.ok(corsiUri).build();
+        return Response.ok(corsiCompleti).build();
     }
 
 
