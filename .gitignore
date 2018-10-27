@@ -24,6 +24,7 @@ dataSources.local.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 dataSources.xml
+uiDesigner.xml
 Classi/
 
 # Gradual

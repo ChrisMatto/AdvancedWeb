@@ -15,24 +15,34 @@ public class AuthorizationFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext containerRequestContext) {
         String path = containerRequestContext.getUriInfo().getPath();
+        String method = containerRequestContext.getMethod();
         if(path.contains("auth")) {
             int startIndex = path.indexOf("auth") + 5;
             int endIndex = path.indexOf("/", startIndex);
+            int classEndIndex;
             String token;
-            String methodPath;
+            String fullMethodPath;
             if(endIndex == -1) {
-                methodPath = path.substring(startIndex - 5);
-                if(methodPath.equals("auth/login")) {
-                    containerRequestContext.setRequestUri(URI.create(containerRequestContext.getUriInfo().getBaseUri() + methodPath));
+                fullMethodPath = path.substring(startIndex - 5);
+                if(fullMethodPath.equals("auth/login")) {
+                    containerRequestContext.setRequestUri(URI.create(containerRequestContext.getUriInfo().getBaseUri() + fullMethodPath));
                 }
-                if(methodPath.equals("auth/logout")) {
-                    containerRequestContext.setRequestUri(URI.create(containerRequestContext.getUriInfo().getBaseUri() + methodPath));
+                if(fullMethodPath.equals("auth/logout")) {
+                    containerRequestContext.setRequestUri(URI.create(containerRequestContext.getUriInfo().getBaseUri() + fullMethodPath));
                 }
             } else {
                 token = path.substring(startIndex, endIndex);
-                methodPath = path.substring(endIndex + 1);
-                if (DataAccess.checkAccessToken(token, methodPath)) {
-                    containerRequestContext.setRequestUri(URI.create(containerRequestContext.getUriInfo().getBaseUri() + methodPath));
+                classEndIndex = path.indexOf("/", endIndex + 1);
+                if (classEndIndex > -1) {
+                    String classPath = path.substring(endIndex + 1, classEndIndex);
+                    if (!DataAccess.checkAccessToken(token, classPath, method)) {
+                        Response.ResponseBuilder responseBuilder = Response.status(403);
+                        throw  new WebApplicationException(responseBuilder.build());
+                    }
+                }
+                fullMethodPath = path.substring(endIndex + 1);
+                if (DataAccess.checkAccessToken(token, fullMethodPath, method)) {
+                    containerRequestContext.setRequestUri(URI.create(containerRequestContext.getUriInfo().getBaseUri() + fullMethodPath));
                     containerRequestContext.setProperty("token", token);
                 } else {
                     Response.ResponseBuilder responseBuilder = Response.status(403);
@@ -40,7 +50,15 @@ public class AuthorizationFilter implements ContainerRequestFilter {
                 }
             }
         } else {
-            if(!DataAccess.checkAccessNoToken(path)) {
+            int classEndIndex = path.indexOf("/");
+            if (classEndIndex > -1) {
+                String classPath = path.substring(0,classEndIndex);
+                if (!DataAccess.checkAccessNoToken(classPath, method)) {
+                    Response.ResponseBuilder responseBuilder = Response.status(403);
+                    throw  new WebApplicationException(responseBuilder.build());
+                }
+            }
+            if(!DataAccess.checkAccessNoToken(path, method)) {
                 Response.ResponseBuilder responseBuilder = Response.status(403);
                 throw new WebApplicationException(responseBuilder.build());
             }
