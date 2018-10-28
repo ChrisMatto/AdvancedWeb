@@ -21,6 +21,7 @@ public class AdvancedWebApplication extends Application {
         h.add(JacksonFeature.class);
         h.add(AuthorizationFilter.class);
         h.add(UsersAPI.class);
+        h.add(CompleteCoursesAPI.class);
         return h;
     }
 }

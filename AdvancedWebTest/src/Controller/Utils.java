@@ -1,6 +1,7 @@
 package Controller;
 
 import Classi.Cdl;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -32,4 +33,26 @@ public class Utils {
             year = year-1;
         return year;
     }
+
+    public static Object getYear(String year) {
+        int anno;
+        if (year.equals("current")) {
+            anno = Utils.getCurrentYear();
+        } else {
+            if (NumberUtils.isParsable(year)) {
+                anno = Integer.parseInt(year);
+                if (anno > 0) {
+                    if (year.length() != 4) {
+                        return YearError.error400;
+                    }
+                } else {
+                    return YearError.error404;
+                }
+            } else {
+                return YearError.error404;
+            }
+        }
+        return anno;
+    }
 }
+

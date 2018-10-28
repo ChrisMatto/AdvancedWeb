@@ -3,6 +3,7 @@ package API;
 import Classi.Corso;
 import ClassiTemp.CorsoCompleto;
 import Controller.Utils;
+import Controller.YearError;
 import DataAccess.DataAccess;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -10,7 +11,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.*;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,21 +32,11 @@ public class CompleteCoursesAPI {
     public Response getCorsi(@PathParam("year") String year, @Context UriInfo uriInfo) {
         MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
         int anno;
-        if (year.equals("current")) {
-            anno = Utils.getCurrentYear();
+        Object obj = Utils.getYear(year);
+        if (obj instanceof YearError) {
+            return Response.status(((YearError) obj).getError()).build();
         } else {
-            if (NumberUtils.isParsable(year)) {
-                anno = Integer.parseInt(year);
-                if (anno > 0) {
-                    if (year.length() != 4) {
-                        return Response.status(400).build();
-                    }
-                } else {
-                    return Response.status(404).build();
-                }
-            } else {
-                return Response.status(404).build();
-            }
+            anno = (int)obj;
         }
         List<Corso> corsi = DataAccess.getCorsiByFilter(anno,queryParams);
         List<CorsoCompleto> corsiCompleti = new ArrayList<>();
@@ -56,25 +49,9 @@ public class CompleteCoursesAPI {
 
     @Path("{year}/{id}")
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getCorso(@PathParam("year") String year, @PathParam("id") Integer id) {
-        if(id == null)
-            return Response.status(400).build();
-        Corso corso;
-        if(year.equals("current")) {
-            corso = DataAccess.getCorso(Utils.getCurrentYear(), id);
-            return Response.ok(corso).build();
-        } else {
-            if(NumberUtils.isParsable(year)) {
-                int anno = Integer.parseInt(year);
-                if(anno > 0) {
-                    if(year.length() != 4)
-                        return Response.status(400).build();
-                    corso = DataAccess.getCorso(anno, id);
-                    return Response.ok(corso).build();
-                }
-            }
-        }
-        return Response.status(404).build();
+    public Response getCorso(@Context ContainerRequestContext containerRequestContext) {
+        String methodPath = containerRequestContext.getUriInfo().getPath().replace("completeCourses", "courses");
+        URI uri = URI.create(containerRequestContext.getUriInfo().getBaseUri() + methodPath);
+        return Response.temporaryRedirect(uri).build();
     }
 }

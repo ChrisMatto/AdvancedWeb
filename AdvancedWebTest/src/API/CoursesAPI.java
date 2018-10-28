@@ -1,8 +1,8 @@
 package API;
 
 import Classi.Corso;
-import ClassiTemp.CorsoCompleto;
 import Controller.Utils;
+import Controller.YearError;
 import DataAccess.DataAccess;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -26,21 +26,11 @@ public class CoursesAPI {
     public Response getCorsi(@PathParam("year") String year, @Context UriInfo uriInfo) {
         MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
         int anno;
-        if (year.equals("current")) {
-            anno = Utils.getCurrentYear();
+        Object obj = Utils.getYear(year);
+        if (obj instanceof YearError) {
+            return Response.status(((YearError) obj).getError()).build();
         } else {
-            if (NumberUtils.isParsable(year)) {
-                anno = Integer.parseInt(year);
-                if (anno > 0) {
-                    if (year.length() != 4) {
-                        return Response.status(400).build();
-                    }
-                } else {
-                    return Response.status(404).build();
-                }
-            } else {
-                return Response.status(404).build();
-            }
+            anno = (int)obj;
         }
         List<Corso> corsi = DataAccess.getCorsiByFilter(anno,queryParams);
         List<String> corsiUri = new ArrayList<>();
@@ -59,20 +49,14 @@ public class CoursesAPI {
         if(id == null)
             return Response.status(400).build();
         Corso corso;
-        if(year.equals("current")) {
-            corso = DataAccess.getCorso(Utils.getCurrentYear(), id);
-            return Response.ok(corso).build();
+        int anno;
+        Object obj = Utils.getYear(year);
+        if (obj instanceof YearError) {
+            return Response.status(((YearError) obj).getError()).build();
         } else {
-            if(NumberUtils.isParsable(year)) {
-                int anno = Integer.parseInt(year);
-                if(anno > 0) {
-                    if(year.length() != 4)
-                        return Response.status(400).build();
-                    corso = DataAccess.getCorso(anno, id);
-                    return Response.ok(corso).build();
-                }
-            }
+            anno = (int)obj;
         }
-        return Response.status(404).build();
+        corso = DataAccess.getCorso(anno, id);
+        return Response.ok(corso).build();
     }
 }
