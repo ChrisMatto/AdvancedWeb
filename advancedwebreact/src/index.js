@@ -1,15 +1,66 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ListaCorsi from './listacorsi';
 
 class Page extends React.Component {
+
+    constructor() {
+        super();
+        this.state = {
+            page: "home",
+        };
+        this.changePage = this.changePage.bind(this);
+        this.PageBody = this.PageBody.bind(this);
+    }
+
+    changePage(page) {
+        switch (page) {
+            case "listacorsi":
+            this.setState({
+                page: "listacorsi",
+            });
+            break;
+            case "home":
+            this.setState({
+                page: "home",
+            });
+            break;
+            case "reload":
+            this.setState({
+                page: "reload",
+            });
+            break;
+        }
+    }
+
+    PageBody() {
+        switch (this.state.page) {
+            case "home":
+                return (
+                    <div>
+                        <Body/>
+                        <Testimonials/>
+                    </div>
+                );
+            case "listacorsi":
+                return (
+                    <ListaCorsi/>
+                );
+            case "reload":
+                    window.location.reload();
+        }
+    }
+
     render() {
         return (
             <div>
                 <Header />
-                <Nav />
-                <Body />
+                <Nav onClick={this.changePage} />
+                <this.PageBody />
+                <Footer />
             </div>
         );
+        
     }
 }
 
@@ -20,11 +71,11 @@ class Header extends React.Component {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-2 col-sm-2 col-xs-2">
-                            <a href="Home" id="logo">Learn</a>
+                            <a href="#" id="logo">Learn</a>
                         </div>
                         <div className="col-md-10 col-sm-10 col-xs-10"> 
                             <div className="pull-right">
-                                <a href="Login" className="button_top" id="login_top">Login</a>
+                                <a href="#" className="button_top" id="login_top">Login</a>
                             </div>
                         </div>
                     </div>
@@ -43,16 +94,16 @@ class Nav extends React.Component {
                         <div className="col-md-12">
                             <ul className="sf-menu">
                                     <li>
-                                        <a /*onClick={}*/>Home</a>
+                                        <a onClick={() => this.props.onClick("reload")}>Home</a>
                                     </li>
                                     <li>
-                                        <a /*onClick={}*/>Corsi</a>
+                                        <a onClick={() => this.props.onClick("listacorsi")}>Corsi</a>
                                     </li>
                                     <li>
                                         <a /*onClick={}*/>Insegnanti</a>
                                     </li>              
                                     <div className="pull-right">                           
-                                                <a href="home_en.html" className="lnbar">
+                                                <a href="#" className="lnbar">
                                                     <img alt="flag" id="flag" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAAAvCAYAAABe1bwWAAAH0klEQVRoge2b91NbVxbH9ePmv9qfEHHJOGsDj2pwQPQSijGYErDDAsGYcTChDA4MLObRRDfFYKoxGCxYOsLqoklPBVB5mkm++wMWA7nCSIAoWc7M+Qmde8/93HbePQcO54DUtcy73vJt4HM96HUXD/pPLkXDGWoVxi3oq2oVZ/nh4kH/yfWg17/1ovnFVVOunL+K+J/+/2DceLWGChpKKYPEJ++c5sxlAsOlaIQldkO4qoap+Q0Yr9BauZvbN/tg1PcCq6zOaMOTwArm0NUvwt0HTX9bMLf9GvCavwBWKIEuIXO/T/W9wCoOh8Ph7Lb1uGh8IgindgtfgVEwyMwf/duBic/oh0LKwFDdCIYKPtyvOw+75bUunJevphoNsg1sP3lOOKYNjAU7MoGRcTm8QluvPJjvA5rQ1rMKy9wSdFGPif50selgl1bR2LbcxOFStSq/yHZMCJQwvxuFJiCGMNjOLsS2fAv5JRNw9byaYNJ/GYZawWC3pAqMO+9wX56hMNa3QSxmEPW4F1wPep1z0Din8AP0ChV28ksIJzV+kTB3D2BmbgMBMR1XBowHrxkDo1KwEwJoeQlEH/rkf8MskqOCnsVNn/ovdrV/cP7akDuvGf0jUrAfp6ENttFQag5MEiXK/jONG951lxpMXtE49Eo1dvKLyYn2jYCpsw/zS1sIintD2BJgrJqSPYRNGYPdsmpi6Wm8wmBs7IBQqEJYYvelA+MX2Y7JmTWY+0dsHw1PC2CQbeDl71Nw9bQ9uUeC4VI07gQ0orVbCMv8MnRRKeRhFZ8BdkUMumURt/0aLhyMq2cdiisFOOoy0TyIgXlwDBOCNfhGtH21ra+CseqPaX2QShgYa/jk9eYRDENlHRQSNeIz+i8MDC++C4tLWzC198JW+LFTUAqdQoWcwg92tWcXGC5F45ZvPaob5mFelUL/6Cl5tUckg51ZQMfbz/jXMYHhWYK56VOPqoY5sCIZ9ElZpF8hD2GZnEb/iBTuvGa7V5/dYKwanNCFxeUtmFq7ofEJJ4OjogqoFWpk5I04HUx06ltIxGoY6RYwnqGkL2XV2JQzSM0ZcmiMJwJzcC8bZevYznhGzlJgHNj3kxj6IAcV0nLmYO74N4LfuQLLkhC6mDTy7ItOhWV+Ga3dQtwJaHR4fCcGY9X7UQdOf/9ocl/nvsS2fBPPig8HhqcBk5w1iA0ZA8Or12SgRgXDWMOHTKJBbHrficd1ajBWzSsa3wsM834jb4L7UTD3DkIwuw7/qPYTg3EL5KNnUAzLp1loQxOJ3+ofPYX5swQ1TfO45Vt/6jGdCRguZUeEmZYLo0SJ0qpph8FkvRiDVqnGzotyErx3GEyt3VheUSHkoeMxldPBWDUtdxgque1vEo13GIxNnQ6DYYfHofkhlvj79k95MErXUVIlwLdeJ4vCjwSDCxR7wVyEXIM5QjjHOff/qtdgrsFcg7kGcw3mGszl0WswR4G5yCDqOOcuUq7BHCFn+hEZ8rAbSyuqvdc97zBioDsvyqFVqPc7txfMslAFY1Mn2aY7D7slVVCd8JXO6V/Xt3zrUdM0D7NIZvs9ODQRlk+z6B0Uwy2Q7zCYG951KKuehkmqhD4tl2yflwB2QoB3o1J4OPCu61QwselfySC482Aor8GGjEFy1uC+jaNgrHb+Ue0QzG3A3DsIzf0ockU+K4begUyAU8Ds55wWVqCLTiWc1MWkwbIkBL9zBXf8D7+7nhQMl6Lh6kkjv2QC2/JN7OS+JGw0/tEw949gcmYNfpHt5wsmJXsIm3LbWUrGMxTG2mZIxGpEp761aX8aMFalQlowMi4H+34S2sA4wnY74xkM0nX8VvnpyGzjmYGx5rUtU/+FNuQh4Yw+KQusSIaqhrkDCXLngLFqRt4I1Ao1dosqyBdDn3CYWruxuLQFXnyXc8Bk/zoGnUKFnYJScvn6RMDU1mO3A2cJhkvRuPugCZ19n8HOLEAbkUxO2KOnMH+Wobph/qsT5hAY34g2TAjWwA6NQfPARoL8yXMYZBsorhTYvWTPGoxVEzLfQSllYKisIy+CL6kViViNH9OOT60cCcbVsw6Fr6b2EuQ/F5zpIecsMFxqr7aOblkEuyKGLj6DvBS+JOOau8hL4VgwQXFvMLe4BVNnHzS+NhLk+cXQK9XIKxp3yOnzAGPV8KQeCIUqGBs7oPGyERiWVWNTxiAl23ZgeAjMTe96VNCzMIvk0KdkHxlIDZwykDoPMFyKxg3vOpTXzMAkUUKfmkOOJzgB7Mdp9A1LiIQ/h0vVqrgUjajHvRCJ1DDWt9lOkJdUQS1nkP7L8IkdPW8wVg2I6cDM3AbM3QPQ+EWSO+B5KXRyFbJ/HQOXouFC0WrOd371TY3ty2CXVqGL+4nck5GPYZlbQlvPKr4POJu63/MGw6X2AsOC0o/Ylm9hJ6eQPDMDYmAeeI8JgRI+4W1NnDUZ42KooG0myA3VDVBIGbsLgi4zGKt6hbZi9KMC7MgEtIE2sptPnmNXvMYlKsMZtyDoEjLBCiV4zV/AbV/7S8iuAhirZuaPQqNg9gq9D/S5XxnO4XA4cje3b5h7gbTGOwwm/hsIV9UnKjq8SmC4FI27P/DR1S8COz0PbXgSmHtBdYf+l8AqBpHydmm1oPmGF73hLGcuExguRcOFqt1IzOxvVspU3x1k8T8fqbOlQdM/jgAAAABJRU5ErkJggg=="
                                                     /> English Version</a>             
                                     </div>               
@@ -69,13 +120,13 @@ class Body extends React.Component {
     constructor() {
         super();
         this.state = {
-            cdl: Array(),
-            cdlm: Array(),
+            cdl: [],
+            cdlm: [],
         };
         fetch('http://localhost:8080/AdvancedWeb/rest/cdl/triennaleRandom')
         .then(res => res.json())
         .then((result) => {
-            var array = Array();
+            var array = [];
             for (var c in result) {
                 array.push(result[c]);
             }
@@ -86,7 +137,7 @@ class Body extends React.Component {
         fetch('http://localhost:8080/AdvancedWeb/rest/cdl/magistraleRandom')
         .then(res => res.json())
         .then((result) => {
-            var array = Array();
+            var array = [];
             for (var c in result) {
                 array.push(result[c]);
             }
@@ -119,8 +170,141 @@ class Body extends React.Component {
     }
 }
 
-class Footer extends React.Component {
+class Testimonials extends React.Component {
+    render() {
+        return (
+            <section id="testimonials">
+    <div className="container">
+        <div className="row">
+            <div className='col-md-offset-2 col-md-8 text-center'>
+                <h2>What they say</h2>
+            </div>
+        </div>
+        <div className='row'>
+            <div className='col-md-offset-2 col-md-8'>
+                <div className="carousel slide" data-ride="carousel" id="quote-carousel">
+                    
+                    <ol className="carousel-indicators">
+                        <li data-target="#quote-carousel" data-slide-to="0" className="active"></li>
+                        <li data-target="#quote-carousel" data-slide-to="1"></li>
+                        <li data-target="#quote-carousel" data-slide-to="2"></li>
+                    </ol>
+                    
+                    <div className="carousel-inner">
+                        
+                        <div className="item active">
+                            <blockquote>
+                                <div className="row">
+                                    <div className="col-sm-3 text-center">
+                                        <img className="img-circle" src="img/testimonial_1.jpg" alt=""/>
+                                    </div>
+                                    <div className="col-sm-9">
+                                        <p>
+                                            Incredibile!
+                                        </p>
+                                        <small>Qualcuno di Famoso</small>
+                                    </div>
+                                </div>
+                            </blockquote>
+                        </div>
+                        
+                        <div className="item">
+                            <blockquote>
+                                <div className="row">
+                                    <div className="col-sm-3 text-center">
+                                        <img className="img-circle" src="img/testimonial_2.jpg" alt=""/>
+                                    </div>
+                                    <div className="col-sm-9">
+                                        <p>
+                                            La migliore scelta!
+                                        </p>
+                                        <small>Carla</small>
+                                    </div>
+                                </div>
+                            </blockquote>
+                        </div>
+                        
+                        <div className="item">
+                            <blockquote>
+                                <div className="row">
+                                    <div className="col-sm-3 text-center">
+                                        <img className="img-circle" src="img/testimonial_1.jpg" alt=""/>
+                                    </div>
+                                    <div className="col-sm-9">
+                                        <p>
+                                            Che universit&#224; ragazzi!
+                                        </p>
+                                        <small>Roberta</small>
+                                    </div>
+                                </div>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   </section>
+        );
+    }
+}
 
+class Footer extends React.Component {
+    render() {
+        return (
+            <footer>
+
+<hr></hr>
+
+<div className="container" id="nav-footer">
+    <div className="row text-left">
+        <div className="col-md-4 col-sm-4">
+            <h4>Browse</h4>
+            <ul>
+                <li>
+                    <a href="#" /*onclick="bodychange('listcorsi')"*/>Corsi</a>
+                </li>
+                <li>
+                    <a href="#" /*onclick="bodychange('docenti')"*/>Insegnanti</a>
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div className="col-md-4 col-sm-4">
+            <h4>Next Courses</h4>
+            <ul>
+                <li>
+                    <a href="#" /*onclick="bodychange('listcorsi')"*/>Tutti i corsi</a>
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div className="col-md-4 col-sm-4">
+            <h4>About Learn</h4>
+            <ul>
+                <li>
+                    <a href="#">About Us</a>
+                </li>
+                <li>
+                    <a href="#">Apply</a>
+                </li>
+                <li>
+                    <a href="#">Terms and conditions</a>
+                </li>
+                <li>
+                    <a href="#">Register</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+</div>
+<div id="copy_right">Page compiled on </div>
+</footer>
+        );
+    }
 }
 
 function Section(props) {
@@ -137,7 +321,7 @@ function Section(props) {
 
     {props.rows}
     
-         <a /*onclick="bodychange('listcorsi')"*/ className="button_medium_outline pull-right">Vedi tutti i corsi</a>
+         <a href="#" /*onclick="bodychange('listcorsi')"*/ className="button_medium_outline pull-right">Vedi tutti i corsi</a>
 
         </div>  
     </section>
@@ -156,7 +340,7 @@ function Section(props) {
     {props.rows}
     
     
-         <a /*onclick="bodychange('liscorsi')"*/ className="button_medium_outline pull-right">Vedi Tutti I Corsi</a>
+         <a href="#" /*onclick="bodychange('liscorsi')"*/ className="button_medium_outline pull-right">Vedi Tutti I Corsi</a>
  
 
         </div> 
@@ -166,7 +350,7 @@ function Section(props) {
        <div className="container">
       <div className="row">
           <div className="col-md-3 col-sm-6">
-            <h4><a /*onclick="bodychange('docenti')"*/>Docenti</a></h4>
+            <h4><a href="#" /*onclick="bodychange('docenti')"*/>Docenti</a></h4>
             <p><img src="img/pic_1.jpg" alt="Pic" className="img-responsive"/></p>
             <p>Non c'&#232; molto altro da dire sui nostri docenti, se non che sono incredibili!</p> 
         </div>
@@ -186,9 +370,9 @@ function Section(props) {
         <div className="col-md-3 col-sm-6">
             <h4>Link rapidi</h4>
             <ul className="list_1">
-                  <li><a /*onclick="bodychange('home')"*/>Homepage</a></li>
-                  <li><a /*onclick="bodychange('listcorsi')"*/>Corsi</a></li>
-                  <li><a /*onclick="bodychange('docenti')"*/>Docenti</a></li>
+                  <li><a href="#" /*onclick="bodychange('home')"*/>Homepage</a></li>
+                  <li><a href="#" /*onclick="bodychange('listcorsi')"*/>Corsi</a></li>
+                  <li><a href="#" /*onclick="bodychange('docenti')"*/>Docenti</a></li>
              </ul>
         </div>
         
@@ -208,23 +392,23 @@ function Section(props) {
 
 function Cdl(cdl) {
     return(
-        <div  className="col-lg-3 col-md-6 col-sm-6">
+        <div  className="col-lg-3 col-md-6 col-sm-6" key = {cdl["idcdl"]}>
             <div className="col-item">
                 <div className="photo">
-                    <a /*onClick="bodychange('listcorsi', {{idcdl}});document.body.scrollTop = 0;document.documentElement.scrollTop = 0;"*/><img src={cdl['immagine']} alt="cdlimmagine"/></a>
+                    <a href="#" /*onClick="bodychange('listcorsi', {{idcdl}});document.body.scrollTop = 0;document.documentElement.scrollTop = 0;"*/><img src={cdl['immagine']} alt="cdlimmagine"/></a>
                     <div className="cat_row" >{cdl['nomeIt']}<span className="pull-right"><i className="fas fa-university"></i></span></div>
                 </div>
                 <div className="info">
                     <div className="row">
                         <div className="course_info col-md-12 col-sm-12">
-                            <h5></h5>
+                            
                             <p>{cdl['descrizioneIt']}</p>
 
                         <div className="price pull-right" id="cfuCdl">{cdl['cfu']} CFU</div>
                         </div>
                     </div>
                     <div className="separator clearfix">
-                        <p className="btn-add" id="cdlink"><a /*onClick="bodychange('listcorsi', {{idcdl}});document.body.scrollTop = 0;document.documentElement.scrollTop = 0;"*/><i className="icon-export-4"></i></a></p>
+                        <p className="btn-add" id="cdlink"><a href="#" /*onClick="bodychange('listcorsi', {{idcdl}});document.body.scrollTop = 0;document.documentElement.scrollTop = 0;"*/><i className="icon-export-4"></i></a></p>
                     </div>
                 </div>
             </div>
