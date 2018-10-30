@@ -1,4 +1,5 @@
 import React from 'react';
+import compareStrings from './js/compareStrings';
 
 class ListaCorsi extends React.Component {
     render() {
@@ -33,7 +34,75 @@ class Banner extends React.Component {
 }
 
 class Body extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            cdl: [],
+            cdlm: [],
+            corsi: [],
+        };
+        fetch('http://localhost:8080/AdvancedWeb/rest/cdl/triennale')
+        .then(res => res.json())
+        .then((result) => {
+            var array = [];
+            for (var c in result) {
+                array.push(result[c]);
+            }
+            array = array.sort(function(a,b){return compareStrings(a.nomeIt,b.nomeIt);});
+            this.setState({
+                cdl: array,
+            });
+        });
+        fetch('http://localhost:8080/AdvancedWeb/rest/cdl/magistrale')
+        .then(res => res.json())
+        .then((result) => {
+            var array = [];
+            for (var c in result) {
+                array.push(result[c]);
+            }
+            array = array.sort(function(a,b){return compareStrings(a.nomeIt,b.nomeIt);});
+            this.setState({
+                cdlm: array,
+            });
+        });
+        fetch('http://localhost:8080/AdvancedWeb/rest/courses/current')
+        .then(res => res.json())
+        .then((result) => {
+            var array = [];
+            for (var c in result) {
+                fetch(result[c])
+                .then(res => res.json())
+                .then((result) => {
+                    array.push(result);
+                    array = array.sort(function(a,b){return compareStrings(a.nomeIt,b.nomeIt);});
+                    this.setState({
+                        corsi: array,
+                    });
+                });
+            }
+        });
+    }
+
     render() {
+        var cdl = this.state.cdl.slice();
+        var cdlm = this.state.cdlm.slice();
+        var corsi = this.state.corsi.slice();
+        var CdlNames = [];
+        var CdlmNames = [];
+        var CorsiList = [];
+
+        for (var c in cdl) {
+            CdlNames.push(Cdl(cdl[c]));
+        }
+
+        for (var c in cdlm) {
+            CdlmNames.push(Cdl(cdlm[c]));
+        }
+
+        for (var c in corsi) {
+            CorsiList.push(CorsoRow(corsi[c]));
+        }
+
         return(
             <section id="main_content" >
     	<div className="container">
@@ -53,15 +122,9 @@ class Body extends React.Component {
                 <li><a /*onClick="bodychange('listcorsi')">Tutti i corsi*//></li>
                 <br></br>
                 <h4>Corsi di laurea Triennale</h4>
-
-
-                    <li><a className="uppercase" /*onClick="bodychange('listcorsi', {{idcdl}})"*/>/*nomeIt*/</a></li>
-                    
-
-                
+                    {CdlNames}
                 <h4>Corsi di laurea Magistrale</h4>  
-                    
-                    <li><a className="uppercase" /*onClick="bodychange('listcorsi', {{idcdl}})"*/>/*nome*/</a></li>
+                    {CdlmNames}
 
             </ul>
             
@@ -78,41 +141,25 @@ class Body extends React.Component {
                     <div className="panel-heading">
                         <h3 className="panel-title">Corsi</h3>
                         <div className="pull-right">
-                            <button className="btn-filter"><span class="icon-th-list"></span>Filtri</button>
+                            <button className="btn-filter"><span className="icon-th-list"></span>Filtri</button>
                         </div>
                     </div>
                     <table className="table table-responsive table-striped">
                         <thead>
                             <tr className="filters">
                                 
-                                <th><input type="text" class="form-control" placeholder="Nome" disabled/></th>
-                                <th><input type="text" class="form-control" placeholder="SSD" disabled /></th>
-                                <th><input type="text" class="form-control" placeholder="CFU" disabled /></th>
-                                <th><input type="text" class="form-control" placeholder="Lingua" disabled /></th>
-                                <th><input type="text" class="form-control" placeholder="Semestre" disabled /></th>
-                                <th><input type="text" class="form-control" placeholder="Tipologia" disabled /></th>
-                                <th><input type="text" class="form-control" placeholder="CDL" disabled /></th>
-                                <th><input type="text" class="form-control" placeholder="Docenti" disabled /></th>
+                                <th><input type="text" className="form-control" placeholder="Nome" disabled/></th>
+                                <th><input type="text" className="form-control" placeholder="SSD" disabled /></th>
+                                <th><input type="text" className="form-control" placeholder="CFU" disabled /></th>
+                                <th><input type="text" className="form-control" placeholder="Lingua" disabled /></th>
+                                <th><input type="text" className="form-control" placeholder="Semestre" disabled /></th>
+                                <th><input type="text" className="form-control" placeholder="Tipologia" disabled /></th>
+                                <th><input type="text" className="form-control" placeholder="CDL" disabled /></th>
+                                <th><input type="text" className="form-control" placeholder="Docenti" disabled /></th>
                             </tr>
                         </thead>
-                        <tbody id="courses">           
-                            <tr>
-                                
-                                <td><strong><a href="DetailsCorso?n=${corso.ID}&lin=it">/*nome*/</a></strong></td>
-                                <td>/*ssd*/</td>
-                                <td>/*cfu*/</td>
-                                <td>/*lingua*/</td>
-                                <td>/*semestre*/</td>
-                                <td>/*tipologia*/</td>
-                                <td>
-                                    /*abbrcdl*/
-                                </td>
-                                <td>
-                                    /*cognomedocente*/
-                                </td>
-                            </tr>
-                           
-                        
+                        <tbody>                      
+                            {CorsiList}
                         </tbody>
                 </table>
                 </div>
@@ -131,5 +178,29 @@ class Body extends React.Component {
     }
 }
 
+function Cdl(cdl) {
+    return (
+         <li key={cdl.idcdl}><a className="uppercase" /*onClick="bodychange('listcorsi', {{idcdl}})"*/>{cdl.nomeIt}</a></li>
+    );
+}
+
+function CorsoRow(corso) {
+    return (
+        <tr key = {corso.idCorso}>                          
+        <td><strong><a href="DetailsCorso?n=${corso.ID}&lin=it">{corso.nomeIt}</a></strong></td>
+        <td>{corso.ssd}</td>
+        <td>{corso.cfu}</td>
+        <td>{corso.lingua}</td>
+        <td>{corso.semestre}</td>
+        <td>{corso.tipologia}</td>
+        <td>
+            /*abbrcdl*/
+        </td>
+        <td>
+            /*cognomedocente*/
+        </td>
+    </tr>
+    );
+}
 
 export default ListaCorsi;
