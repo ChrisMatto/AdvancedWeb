@@ -100,7 +100,7 @@ class Body extends React.Component {
         }
 
         for (var c in corsi) {
-            CorsiList.push(CorsoRow(corsi[c]));
+            CorsiList.push(<CorsoRow corso={corsi[c]} key={corsi[c]['idCorso']}/>);
         }
 
         return(
@@ -184,23 +184,74 @@ function Cdl(cdl) {
     );
 }
 
-function CorsoRow(corso) {
-    return (
-        <tr key = {corso.idCorso}>                          
-        <td><strong><a href="DetailsCorso?n=${corso.ID}&lin=it">{corso.nomeIt}</a></strong></td>
-        <td>{corso.ssd}</td>
-        <td>{corso.cfu}</td>
-        <td>{corso.lingua}</td>
-        <td>{corso.semestre}</td>
-        <td>{corso.tipologia}</td>
-        <td>
-            /*abbrcdl*/
-        </td>
-        <td>
-            /*cognomedocente*/
-        </td>
-    </tr>
-    );
+class CorsoRow extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            corso: this.props.corso,
+            docenti: [],
+            cdl: [],
+        };
+        var docenti = [];
+        var docentiList = [];
+        fetch('http://localhost:8080/AdvancedWeb/rest/docenti/byCorso/' + this.state.corso.idCorso)
+            .then(res => res.json())
+            .then((result) => {
+                for (var c in result) {
+                    docenti.push(result[c]);
+                }
+                docenti = docenti.sort(function(a,b){return compareStrings(a.cognome,b.cognome);});
+                for (var i = 0; i < docenti.length; i++) {
+                    if(docenti[i + 1] != null) {
+                        docentiList.push(docenti[i].cognome + ",  ");
+                    } else {
+                        docentiList.push(docenti[i].cognome);
+                    }
+                }
+                this.setState({
+                    docenti: docentiList,
+                });
+            });
+        var cdl = [];
+        var cdlList = [];
+        fetch('http://localhost:8080/AdvancedWeb/rest/cdl/byCorso/' + this.state.corso.idCorso)
+        .then(res => res.json())
+        .then((result) => {
+            for (var c in result) {
+                cdl.push(result[c]);
+            }
+            cdl = cdl.sort(function(a,b){return compareStrings(a.abbrIt,b.abbrIt);});
+            for (var i = 0; i < cdl.length; i++) {
+                if (cdl[i + 1] != null) {
+                    cdlList.push(cdl[i].abbrIt + ',  ');
+                } else {
+                    cdlList.push(cdl[i].abbrIt);
+                }
+            }
+            this.setState({
+                cdl: cdlList,
+            });
+        });
+    }
+    render() {
+        return (
+            <tr>                          
+            <td><strong><a /*onClick={}*/>{this.state.corso.nomeIt}</a></strong></td>
+            <td>{this.state.corso.ssd}</td>
+            <td>{this.state.corso.cfu}</td>
+            <td>{this.state.corso.lingua}</td>
+            <td>{this.state.corso.semestre}</td>
+            <td>{this.state.corso.tipologia}</td>
+            <td>
+                {this.state.cdl}
+            </td>
+            <td>
+                {this.state.docenti}
+            </td>
+        </tr>
+        );
+    }
+    
 }
 
 export default ListaCorsi;

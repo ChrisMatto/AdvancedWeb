@@ -58,4 +58,11 @@ public class CDLAPI {
         }
         return Response.ok(DataAccess.getCdlById(id)).build();
     }
+
+    @Path("byCorso/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCdlByCorso(@PathParam("id") int id) {
+        return Response.ok(DataAccess.getCdlInCorso(id)).build();
+    }
 }

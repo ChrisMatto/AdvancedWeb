@@ -155,8 +155,8 @@ class Body extends React.Component {
         for (var c in cdl) {
             cdlRows.push(Cdl(cdl[c]));
         }
-        for (var c in cdlm) {
-            cdlmRows.push(Cdl(cdlm[c]));
+        for (var cm in cdlm) {
+            cdlmRows.push(Cdl(cdlm[cm]));
         }
 
         return (
