@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="org.jinq:jinq-jpa:1.8.24" type="repository">
+    <properties maven-id="org.jinq:jinq-jpa:1.8.24" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jinq-jpa-1.8.24.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jinq-asm-rebased-1.8.24.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/api-1.8.24.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/analysis-1.8.24.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
