@@ -12,6 +12,7 @@
           <element id="library" level="project" name="org.apache.commons:commons-lang3:3.8.1" />
           <element id="library" level="project" name="org.glassfish.jersey.bundles:jaxrs-ri:2.27" />
           <element id="library" level="project" name="org.glassfish.jersey.media:jersey-media-json-jackson:2.27" />
+          <element id="library" level="project" name="org.jinq:jinq-jpa:1.8.24" />
         </element>
       </element>
     </root>
