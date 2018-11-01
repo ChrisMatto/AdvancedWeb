@@ -2,32 +2,13 @@ package Controller;
 
 import API.AuthAPI;
 import API.CoursesAPI;
-import Classi.Cdl;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class Utils {
-
-    public static List<Cdl> randomizeCDL(List<Cdl> list) {
-        Random rand = new Random();
-        List<Cdl> rlist = new ArrayList();
-        int n=4;
-        int listSize = list.size();
-        for (int i = 0; i < n; i++){
-            if(!list.isEmpty() && i <= listSize){
-                int randomIndex=rand.nextInt(list.size());
-                rlist.add(list.get(randomIndex));
-                list.remove(randomIndex);
-            }
-        }
-        return rlist;
-    }
 
     public static int getCurrentYear() {
         LocalDate date = LocalDate.now();
@@ -59,22 +40,15 @@ public class Utils {
         return anno;
     }
 
-    public static Object getController(String controllerName) {
+    public static Controllers getController(String controllerName) {
         Controllers controller;
         try {
             controller = Controllers.valueOf(controllerName);
         } catch (IllegalArgumentException iae) {
             controller = Controllers.noController;
         }
-        switch (controller) {
-            case auth:
-                return new AuthAPI();
-            case courses:
-                return new CoursesAPI();
-            default:
-                Response.ResponseBuilder responseBuilder = Response.status(404);
-                throw  new WebApplicationException(responseBuilder.build());
-        }
+        return controller;
     }
+
 }
 

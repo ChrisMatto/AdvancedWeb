@@ -20,7 +20,7 @@ public class DataAccess {
     private static JinqJPAStreamProvider stream = new JinqJPAStreamProvider(em.getMetamodel());
     private static EntityTransaction entityTransaction = em.getTransaction();
 
-    public static List<Corso> getCorsiByFilter(int year, MultivaluedMap<String,String> queryParams) {
+    public static List<Integer> getCorsiByFilter(int year, MultivaluedMap<String,String> queryParams) {
         JinqStream<Corso> streamCorsi = stream.streamAll(em,Corso.class)
                 .where(corso -> corso.getAnnoInizio() == year);
         for (String key : queryParams.keySet()) {
@@ -70,7 +70,9 @@ public class DataAccess {
                     break;
             }
         }
-        return streamCorsi.toList();
+        return streamCorsi
+                .select(Corso::getIdCorso)
+                .toList();
     }
 
     public static Utente getUtente(String username, String password) {

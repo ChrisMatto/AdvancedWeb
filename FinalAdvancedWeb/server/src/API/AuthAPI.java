@@ -2,11 +2,14 @@ package API;
 
 import ClassiTemp.Login;
 import Classi.Utente;
+import Controller.Controllers;
 import Controller.Utils;
 import DataAccess.DataAccess;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 public class AuthAPI {
@@ -37,8 +40,19 @@ public class AuthAPI {
         return Response.ok().build();
     }
 
-    @Path("{token}/{controller}")
-    public Object getController(@PathParam("token") String token, @PathParam("controller") String controllerName) {
-        return Utils.getController(controllerName);
+    @Path("{SID}/{controller}")
+    public Object getController(@PathParam("SID") String token, @PathParam("controller") String controllerName, @Context Request request) {
+        Controllers controller = Utils.getController(controllerName);
+        if (!DataAccess.checkAccessToken(token, controllerName, request.getMethod())) {
+            Response.ResponseBuilder responseBuilder = Response.status(403);
+            throw new WebApplicationException(responseBuilder.build());
+        }
+        switch (controller) {
+            case courses:
+                return new CoursesAPI();
+            default:
+                Response.ResponseBuilder responseBuilder = Response.status(404);
+                throw new WebApplicationException(responseBuilder.build());
+        }
     }
 }

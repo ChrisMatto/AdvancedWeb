@@ -1,7 +1,5 @@
 package API;
 
-
-import Classi.Corso;
 import Controller.Utils;
 import Controller.YearError;
 import DataAccess.DataAccess;
@@ -28,11 +26,11 @@ public class CoursesAPI {
         } else {
             anno = (int)obj;
         }
-        List<Corso> corsi = DataAccess.getCorsiByFilter(anno,queryParams);
+        List<Integer> corsi = DataAccess.getCorsiByFilter(anno,queryParams);
         List<String> corsiUri = new ArrayList<>();
         String baseUri = "http://localhost:8080/AdvancedWeb/rest/courses/" + year + "/";
-        for (Corso corso: corsi) {
-            corsiUri.add(baseUri + corso.getIdCorso());
+        for (int id: corsi) {
+            corsiUri.add(baseUri + id);
         }
         return Response.ok(corsiUri).build();
     }
