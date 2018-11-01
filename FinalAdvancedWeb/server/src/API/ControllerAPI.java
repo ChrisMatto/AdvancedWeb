@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 public class ControllerAPI {
 
     @Path("{controller}")
-    public Object getController(@PathParam("controller") String controllerName, @Context Request request) {
+    public Resource getController(@PathParam("controller") String controllerName, @Context Request request) {
         Controllers controller = Utils.getController(controllerName);
         if (!DataAccess.checkAccessNoToken(controllerName, request.getMethod())) {
             Response.ResponseBuilder responseBuilder = Response.status(403);

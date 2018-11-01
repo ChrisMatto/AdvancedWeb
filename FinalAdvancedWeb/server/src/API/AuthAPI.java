@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
-public class AuthAPI {
+public class AuthAPI implements Resource {
 
     @Path("login")
     @POST

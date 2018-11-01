@@ -15,7 +15,6 @@ public class AdvancedWebApplication extends Application {
     public Set<Class<?>> getClasses() {
         HashSet h = new HashSet<Class<?>>();
         h.add(JacksonFeature.class);
-        //h.add(AuthorizationFilter.class);
         h.add(ResponseFilter.class);
         h.add(ControllerAPI.class);
         return h;

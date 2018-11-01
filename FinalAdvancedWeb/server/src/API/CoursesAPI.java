@@ -12,7 +12,7 @@ import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CoursesAPI {
+public class CoursesAPI implements Resource {
 
     @GET
     @Path("{year}")
