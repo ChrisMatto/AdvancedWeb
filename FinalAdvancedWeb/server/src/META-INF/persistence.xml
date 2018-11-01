@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+
+    <persistence-unit name="NewPersistenceUnit">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <class>Classi.Cdl</class>
+        <class>Classi.CollegCorsi</class>
+        <class>Classi.CorsiCdl</class>
+        <class>Classi.Corso</class>
+        <class>Classi.DescrizioneEn</class>
+        <class>Classi.DescrizioneIt</class>
+        <class>Classi.Docente</class>
+        <class>Classi.DocentiCorso</class>
+        <class>Classi.DublinoEn</class>
+        <class>Classi.DublinoIt</class>
+        <class>Classi.GroupServices</class>
+        <class>Classi.Gruppo</class>
+        <class>Classi.LibriCorso</class>
+        <class>Classi.Libro</class>
+        <class>Classi.Log</class>
+        <class>Classi.Materiale</class>
+        <class>Classi.Servizio</class>
+        <class>Classi.Sessione</class>
+        <class>Classi.Utente</class>
+        <properties>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/advancedweb"/>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+            <property name="javax.persistence.jdbc.user" value="website"/>
+            <property name="javax.persistence.jdbc.password" value="webpass"/>
+            <property name="eclipselink.jdbc.url" value="jdbc:mysql://localhost:3306/advancedweb"/>
+            <property name="eclipselink.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+        </properties>
+    </persistence-unit>
+</persistence>
