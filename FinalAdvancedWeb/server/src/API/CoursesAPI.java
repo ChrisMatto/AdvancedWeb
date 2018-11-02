@@ -14,6 +14,16 @@ import java.util.List;
 
 public class CoursesAPI implements Resource {
 
+    private String token;
+
+    public CoursesAPI() {
+        token = null;
+    }
+
+    public CoursesAPI(String token) {
+        this.token = token;
+    }
+
     @GET
     @Path("{year}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -28,7 +38,12 @@ public class CoursesAPI implements Resource {
         }
         List<Integer> corsi = DataAccess.getCorsiByFilter(anno,queryParams);
         List<String> corsiUri = new ArrayList<>();
-        String baseUri = "http://localhost:8080/AdvancedWeb/rest/courses/" + year + "/";
+        String baseUri;
+        if (token != null) {
+            baseUri = uriInfo.getBaseUri() + "/auth/" + token + "/courses/" + year + "/";
+        } else {
+            baseUri = uriInfo.getBaseUri() + "/courses/" + year + "/";
+        }
         for (int id: corsi) {
             corsiUri.add(baseUri + id);
         }

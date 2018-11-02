@@ -49,7 +49,9 @@ public class AuthAPI implements Resource {
         }
         switch (controller) {
             case courses:
-                return new CoursesAPI();
+                return new CoursesAPI(token);
+            case users:
+                return new UsersAPI(token);
             default:
                 Response.ResponseBuilder responseBuilder = Response.status(404);
                 throw new WebApplicationException(responseBuilder.build());

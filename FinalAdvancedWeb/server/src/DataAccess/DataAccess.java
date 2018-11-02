@@ -75,6 +75,12 @@ public class DataAccess {
                 .toList();
     }
 
+    public static List<Integer> getUtenti() {
+        return stream.streamAll(em, Utente.class)
+                .select(Utente::getIdUtente)
+                .toList();
+    }
+
     public static Utente getUtente(String username, String password) {
         Optional<Utente> u = stream.streamAll(em, Utente.class)
                 .where(utente -> utente.getUsername().equals(username) && utente.getPassword().equals(password))

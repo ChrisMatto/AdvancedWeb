@@ -3,6 +3,7 @@ package Controller;
 public enum Controllers {
     auth("auth"),
     courses("courses"),
+    users("users"),
     noController("");
 
     private String controller;
