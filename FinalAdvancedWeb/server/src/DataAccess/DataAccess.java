@@ -1,6 +1,7 @@
 package DataAccess;
 
 import Classi.*;
+import ClassiTemp.HistoryCorso;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jinq.jpa.JinqJPAStreamProvider;
@@ -14,8 +15,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class DataAccess {
     private static EntityManager em = Persistence.createEntityManagerFactory("NewPersistenceUnit").createEntityManager();
@@ -74,6 +74,93 @@ public class DataAccess {
         }
         return streamCorsi
                 .select(Corso::getIdCorso)
+                .toList();
+    }
+
+    public static Corso getCorso(int id, int year) {
+        return stream.streamAll(em, Corso.class)
+                .where(corso -> corso.getIdCorso() == id && corso.getAnnoInizio() == year)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static void insertCorso(Corso corso) {
+        entityTransaction.begin();
+        em.persist(corso);
+        entityTransaction.commit();
+    }
+
+    public static List<HistoryCorso> getHistoryCorso(int id, String baseUri) {
+        List<HistoryCorso> history = new ArrayList<>();
+        Corso corso = stream.streamAll(em, Corso.class)
+                .where(corso1 -> corso1.getIdCorso() == id)
+                .findFirst()
+                .orElse(null);
+        if (corso == null) {
+            return history;
+        }
+        history.add(new HistoryCorso(corso.getAnnoInizio(), baseUri + corso.getAnnoInizio() + "/" + corso.getIdCorso()));
+        while (corso.getOldId() != null) {
+            int oldId = corso.getOldId();
+            corso = stream.streamAll(em, Corso.class)
+                    .where(corso1 -> corso1.getIdCorso() == oldId)
+                    .findFirst()
+                    .orElse(null);
+            if (corso != null) {
+                history.add(new HistoryCorso(corso.getAnnoInizio(), baseUri + corso.getAnnoInizio() + "/" + corso.getIdCorso()));
+            }
+        }
+        return history;
+    }
+
+    public static List<Docente> getDocentiInCorso(int idCorso) {
+        return stream.streamAll(em, Docente.class)
+                .join((docente, source) -> source.stream(DocentiCorso.class))
+                .where(docenteDocentiCorsoPair -> docenteDocentiCorsoPair.getTwo().getCorso() == idCorso && docenteDocentiCorsoPair.getOne().getIdDocente() == docenteDocentiCorsoPair.getTwo().getDocente())
+                .select(Pair::getOne).toList();
+    }
+
+    public static List<Cdl> getCdlInCorso(int idCorso) {
+        return stream.streamAll(em, Cdl.class)
+                .join((cdl, source) -> source.stream(CorsiCdl.class))
+                .where(cdlCorsiCdlPair -> cdlCorsiCdlPair.getTwo().getCorso() == idCorso && cdlCorsiCdlPair.getOne().getIdcdl() == cdlCorsiCdlPair.getTwo().getCdl())
+                .select(Pair::getOne).toList();
+    }
+
+    public static DescrizioneIt getDescrizioneIt(int idCorso) {
+        return stream.streamAll(em, DescrizioneIt.class)
+                .where(descrizioneIt -> descrizioneIt.getCorso() == idCorso)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static DescrizioneEn getDescrizioneEn(int idCorso) {
+        return stream.streamAll(em, DescrizioneEn.class)
+                .where(descrizioneEn -> descrizioneEn.getCorso() == idCorso)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static DublinoIt getDublinoIt(int idCorso) {
+        return stream.streamAll(em, DublinoIt.class)
+                .where(dublinoIt -> dublinoIt.getCorso() == idCorso)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static DublinoEn getDublinoEn(int idCorso) {
+        return stream.streamAll(em, DublinoEn.class)
+                .where(dublinoEn -> dublinoEn.getCorso() == idCorso)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static List<Libro> getLibriInCorso(int idCorso) {
+        return stream.streamAll(em, LibriCorso.class)
+                .where(libriCorso -> libriCorso.getCorso() == idCorso)
+                .join((c, source) -> source.stream(Libro.class))
+                .where(libriCorsoLibroPair -> libriCorsoLibroPair.getOne().getLibro() == libriCorsoLibroPair.getTwo().getIdLibro())
+                .select(Pair::getTwo)
                 .toList();
     }
 

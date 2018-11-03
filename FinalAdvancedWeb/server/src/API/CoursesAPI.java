@@ -1,13 +1,13 @@
 package API;
 
+import Classi.Corso;
+import ClassiTemp.CorsoCompleto;
+import ClassiTemp.HistoryCorso;
 import Controller.Utils;
 import Controller.YearError;
 import DataAccess.DataAccess;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,5 +48,51 @@ public class CoursesAPI implements Resource {
             corsiUri.add(baseUri + id);
         }
         return Response.ok(corsiUri).build();
+    }
+
+    @POST
+    @Path("{year}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response insertCorso(@PathParam("year") String year, @Context UriInfo uriInfo, Corso corso) {
+        MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
+        if (!queryParams.isEmpty()) {
+            return Response.status(400).build();
+        }
+        int anno;
+        Object obj = Utils.getYear(year);
+        if (obj instanceof YearError) {
+            return Response.status(((YearError) obj).getError()).build();
+        } else {
+            anno = (int)obj;
+        }
+        corso.setAnnoInizio(anno);
+        corso.setAnnoFine(anno + 1);
+        DataAccess.insertCorso(corso);
+        return Response.ok().build();
+    }
+
+    @Path("history/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getHistory(@PathParam("id") int id, @Context UriInfo uriInfo) {
+        if (id < 0) {
+            return Response.status(404).build();
+        }
+        List<HistoryCorso> history = DataAccess.getHistoryCorso(id, uriInfo.getBaseUri() + "courses/");
+        return Response.ok(history).build();
+    }
+
+    @Path("{year}/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCorso(@PathParam("id") int id, @PathParam("year") String year) {
+        int anno;
+        Object obj = Utils.getYear(year);
+        if (obj instanceof YearError) {
+            return Response.status(((YearError) obj).getError()).build();
+        } else {
+            anno = (int)obj;
+        }
+        return Response.ok(new CorsoCompleto(DataAccess.getCorso(id, anno))).build();
     }
 }
