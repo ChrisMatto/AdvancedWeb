@@ -2,6 +2,7 @@ package ClassiTemp;
 
 import Classi.*;
 import DataAccess.DataAccess;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +10,19 @@ import java.util.List;
 public class CorsoCompleto extends Corso {
     private List<DocentePerCorso> docenti;
     private List<CdlPerCorso> cdl;
+
+    @JsonView(CorsoView.Ita.class)
     private DescrizioneIt descrizioneIt;
+
+    @JsonView(CorsoView.En.class)
     private DescrizioneEn descrizioneEn;
+
+    @JsonView(CorsoView.Ita.class)
     private DublinoIt dublinoIt;
+
+    @JsonView(CorsoView.En.class)
     private DublinoEn dublinoEn;
+
     private List<Libro> libri;
 
     public CorsoCompleto(Corso corso) {

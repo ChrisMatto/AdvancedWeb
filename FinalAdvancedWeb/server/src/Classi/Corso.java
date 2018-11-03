@@ -1,13 +1,21 @@
 package Classi;
 
+import ClassiTemp.CorsoView;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 public class Corso {
     private Integer idCorso;
+
+    @JsonView(CorsoView.Ita.class)
     private String nomeIt;
+
+    @JsonView(CorsoView.En.class)
     private String nomeEn;
+
     private String ssd;
     private String lingua;
     private Integer semestre;

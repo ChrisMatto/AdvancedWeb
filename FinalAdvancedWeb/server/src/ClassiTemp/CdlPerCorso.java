@@ -1,13 +1,22 @@
 package ClassiTemp;
 
 import Classi.Cdl;
+import com.fasterxml.jackson.annotation.JsonView;
 
 public class CdlPerCorso {
 
     private Integer idCdl;
+
+    @JsonView(CorsoView.Ita.class)
     private String abbrIt;
+
+    @JsonView(CorsoView.En.class)
     private String abbrEn;
+
+    @JsonView(CorsoView.Ita.class)
     private String nomeIt;
+
+    @JsonView(CorsoView.En.class)
     private String nomeEn;
 
     public CdlPerCorso () {

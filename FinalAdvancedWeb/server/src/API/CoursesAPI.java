@@ -2,10 +2,13 @@ package API;
 
 import Classi.Corso;
 import ClassiTemp.CorsoCompleto;
+import ClassiTemp.CorsoView;
 import ClassiTemp.HistoryCorso;
 import Controller.Utils;
 import Controller.YearError;
 import DataAccess.DataAccess;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -93,6 +96,36 @@ public class CoursesAPI implements Resource {
         } else {
             anno = (int)obj;
         }
-        return Response.ok(new CorsoCompleto(DataAccess.getCorso(id, anno))).build();
+        Corso corso = DataAccess.getCorso(id, anno);
+        if (corso != null) {
+            return Response.ok(new CorsoCompleto(corso)).build();
+        }
+        return Response.noContent().build();
+    }
+
+    @Path("{year}/{id}/{lingua:it|en}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCorsoIta(@PathParam("id") int id, @PathParam("year") String year, @PathParam("lingua") String lingua) throws JsonProcessingException {
+        int anno;
+        Object obj = Utils.getYear(year);
+        if (obj instanceof YearError) {
+            return Response.status(((YearError) obj).getError()).build();
+        } else {
+            anno = (int)obj;
+        }
+        Corso corso = DataAccess.getCorso(id, anno);
+        if (corso != null) {
+            CorsoCompleto corsoCompleto = new CorsoCompleto(corso);
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonCorso;
+            if (lingua.equals("it")) {
+                jsonCorso = mapper.writerWithView(CorsoView.Ita.class).writeValueAsString(corsoCompleto);
+            } else {
+                jsonCorso = mapper.writerWithView(CorsoView.En.class).writeValueAsString(corsoCompleto);
+            }
+            return Response.ok(jsonCorso).build();
+        }
+        return Response.noContent().build();
     }
 }
