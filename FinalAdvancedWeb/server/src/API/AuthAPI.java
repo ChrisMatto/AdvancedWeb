@@ -41,7 +41,7 @@ public class AuthAPI implements Resource {
     }
 
     @Path("{SID}/{controller}")
-    public Object getController(@PathParam("SID") String token, @PathParam("controller") String controllerName, @Context Request request) {
+    public Resource getController(@PathParam("SID") String token, @PathParam("controller") String controllerName, @Context Request request) {
         Controllers controller = Utils.getController(controllerName);
         if (!DataAccess.checkAccessToken(token, controllerName, request.getMethod())) {
             Response.ResponseBuilder responseBuilder = Response.status(403);

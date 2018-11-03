@@ -10,7 +10,9 @@ import org.jinq.tuples.Pair;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -86,6 +88,103 @@ public class DataAccess {
                 .where(utente -> utente.getUsername().equals(username) && utente.getPassword().equals(password))
                 .findFirst();
         return u.orElse(null);
+    }
+
+    public static Utente getUtenteNoPassword(int id) {
+        return stream.streamAll(em, Utente.class)
+                .where(utente -> utente.getIdUtente() == id)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static void insertUtente(Utente utente) {
+        entityTransaction.begin();
+        em.persist(utente);
+        entityTransaction.commit();
+    }
+
+    public static void updateUtente(Utente utente) {
+        int idUtente = utente.getIdUtente();
+        Utente u = stream.streamAll(em, Utente.class)
+                .where(utente1 -> utente1.getIdUtente() == idUtente)
+                .findFirst()
+                .orElse(null);
+        if (u != null) {
+            if (utente.getUsername() != null) {
+                if (!utente.getUsername().equals(u.getUsername()) && existUsernameUtente(utente.getUsername())) {
+                    Response.ResponseBuilder responseBuilder = Response.status(409);
+                    throw new WebApplicationException(responseBuilder.build());
+                }
+                u.setUsername(utente.getUsername());
+            }
+            if (utente.getPassword() != null) {
+                u.setPassword(utente.getPassword());
+            }
+            if (utente.getGruppo() != null) {
+                if (!existGruppo(utente.getGruppo())) {
+                    Response.ResponseBuilder responseBuilder = Response.status(409);
+                    throw new WebApplicationException(responseBuilder.build());
+                }
+                u.setGruppo(utente.getGruppo());
+            }
+            if (utente.getDocente() != null) {
+                if (!utente.getDocente().equals(u.getDocente()) && existDocente(utente.getDocente()) && existDocente(utente.getDocente())) {
+                    Response.ResponseBuilder responseBuilder = Response.status(409);
+                    throw new WebApplicationException(responseBuilder.build());
+                }
+                u.setDocente(utente.getDocente());
+            }
+            entityTransaction.begin();
+            em.persist(u);
+            entityTransaction.commit();
+        } else {
+            Response.ResponseBuilder responseBuilder = Response.status(404);
+            throw new WebApplicationException(responseBuilder.build());
+        }
+    }
+
+    public static void deleteUtente(int id) {
+        Utente utente = stream.streamAll(em, Utente.class)
+                .where(u -> u.getIdUtente() == id)
+                .findFirst()
+                .orElse(null);
+        entityTransaction.begin();
+        em.remove(utente);
+        entityTransaction.commit();
+    }
+
+    public static Boolean existDocente(int id) {
+        return stream.streamAll(em, Docente.class)
+                .where(docente -> docente.getIdDocente() == id)
+                .findFirst()
+                .isPresent();
+    }
+
+    public static Boolean existUsernameUtente(String username) {
+        return stream.streamAll(em, Utente.class)
+                .where(u -> u.getUsername().equals(username))
+                .findFirst().isPresent();
+    }
+
+    public static Boolean existDocenteInUtente(int idDocente) {
+        return stream.streamAll(em, Utente.class)
+                .where(u -> u.getDocente() == idDocente)
+                .findFirst()
+                .isPresent();
+    }
+
+    public static Boolean existGruppo(int id) {
+        return stream.streamAll(em, Gruppo.class)
+                .where(gruppo -> gruppo.getIdGruppo() == id)
+                .findFirst()
+                .isPresent();
+    }
+
+    public static Boolean existSessioneUtente(int idUtente) {
+        return stream.streamAll(em, Sessione.class)
+                .where(sessione -> sessione.getUtente() == idUtente)
+                .findFirst()
+                .isPresent();
     }
 
     public static String makeSessione(Utente utente) {

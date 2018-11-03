@@ -40,9 +40,9 @@ public class CoursesAPI implements Resource {
         List<String> corsiUri = new ArrayList<>();
         String baseUri;
         if (token != null) {
-            baseUri = uriInfo.getBaseUri() + "/auth/" + token + "/courses/" + year + "/";
+            baseUri = uriInfo.getBaseUri() + "auth/" + token + "/courses/" + year + "/";
         } else {
-            baseUri = uriInfo.getBaseUri() + "/courses/" + year + "/";
+            baseUri = uriInfo.getBaseUri() + "courses/" + year + "/";
         }
         for (int id: corsi) {
             corsiUri.add(baseUri + id);

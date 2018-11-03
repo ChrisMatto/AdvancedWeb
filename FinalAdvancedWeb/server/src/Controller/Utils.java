@@ -1,11 +1,7 @@
 package Controller;
 
-import API.AuthAPI;
-import API.CoursesAPI;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 
 public class Utils {
