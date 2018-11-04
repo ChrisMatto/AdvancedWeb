@@ -142,7 +142,9 @@ public class CoursesAPI implements Resource {
         } else {
             anno = (int)obj;
         }
-        DataAccess.updateCorso(id, anno, corsoCompleto);
+        if (corsoCompleto != null) {
+            DataAccess.updateCorso(id, anno, corsoCompleto);
+        }
         return Response.ok().build();
     }
 }

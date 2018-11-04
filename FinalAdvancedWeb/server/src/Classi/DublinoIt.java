@@ -8,7 +8,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "dublino_it", schema = "newadvancedweb", catalog = "")
 @IdClass(DublinoItPK.class)
-public class DublinoIt {
+public class DublinoIt implements Dublino {
 
     @JsonIgnore
     private int corso;

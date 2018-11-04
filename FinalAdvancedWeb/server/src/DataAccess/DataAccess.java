@@ -204,7 +204,6 @@ public class DataAccess {
         }
     }
 
-    //DA FINIRE UPDATE
     public static void updateCorso(int idCorso, int year, CorsoCompleto corsoCompleto) {
         Corso corso = stream.streamAll(em, Corso.class)
                 .where(c -> c.getIdCorso() == idCorso && c.getAnno() == year)
@@ -214,7 +213,141 @@ public class DataAccess {
             Response.ResponseBuilder responseBuilder = Response.status(400);
             throw new WebApplicationException(responseBuilder.build());
         }
+        if (corsoCompleto.getNomeIt() != null) {
+            corso.setNomeIt(corsoCompleto.getNomeIt());
+        }
+        if (corsoCompleto.getNomeEn() != null) {
+            corso.setNomeEn(corsoCompleto.getNomeEn());
+        }
+        if (corsoCompleto.getSsd() != null) {
+            corso.setSsd(corsoCompleto.getSsd());
+        }
+        if (corsoCompleto.getLingua() != null) {
+            corso.setLingua(corsoCompleto.getLingua());
+        }
+        if (corsoCompleto.getSemestre() != null) {
+            corso.setSemestre(corsoCompleto.getSemestre());
+        }
+        if (corsoCompleto.getCfu() != null) {
+            corso.setCfu(corsoCompleto.getCfu());
+        }
+        if (corsoCompleto.getTipologia() != null) {
+            corso.setTipologia(corsoCompleto.getTipologia());
+        }
+        entityTransaction.begin();
+        em.persist(corso);
+        entityTransaction.commit();
 
+        if (corsoCompleto.getDescrizioneIt() != null) {
+            updateDescrizione(idCorso, year, corsoCompleto.getDescrizioneIt());
+        }
+        if (corsoCompleto.getDescrizioneEn() != null) {
+            updateDescrizione(idCorso, year, corsoCompleto.getDescrizioneEn());
+        }
+        if (corsoCompleto.getDublinoIt() != null) {
+            updateDublino(idCorso, year, corsoCompleto.getDublinoIt());
+        }
+        if (corsoCompleto.getDublinoEn() != null) {
+            updateDublino(idCorso, year, corsoCompleto.getDublinoEn());
+        }
+        if (corsoCompleto.getIdDocenti() != null) {
+            //da completare e vedere get e post di docenti
+        }
+    }
+
+    private static void updateDescrizione(int idCorso, int year, Descrizione descrizione) {
+        Descrizione oldDescrizione;
+        if (descrizione instanceof DescrizioneIt) {
+            oldDescrizione = stream.streamAll(em, DescrizioneIt.class)
+                    .where(descr -> descr.getCorso() == idCorso && descr.getAnnoCorso() == year)
+                    .findFirst()
+                    .orElse(null);
+        } else {
+            oldDescrizione = stream.streamAll(em, DescrizioneEn.class)
+                    .where(descr -> descr.getCorso() == idCorso && descr.getAnnoCorso() == year)
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        if (oldDescrizione != null) {
+            if (descrizione.getPrerequisiti() != null) {
+                oldDescrizione.setPrerequisiti(descrizione.getPrerequisiti());
+            }
+            if (descrizione.getObiettivi() != null) {
+                oldDescrizione.setObiettivi(descrizione.getObiettivi());
+            }
+            if (descrizione.getModEsame() != null) {
+                oldDescrizione.setModEsame(descrizione.getModEsame());
+            }
+            if (descrizione.getModInsegnamento() != null) {
+                oldDescrizione.setModInsegnamento(descrizione.getModInsegnamento());
+            }
+            if (descrizione.getSillabo() != null) {
+                oldDescrizione.setSillabo(descrizione.getSillabo());
+            }
+            if (descrizione.getNote() != null) {
+                oldDescrizione.setNote(descrizione.getNote());
+            }
+            if (descrizione.getHomepage() != null) {
+                oldDescrizione.setHomepage(descrizione.getHomepage());
+            }
+            if (descrizione.getForum() != null) {
+                oldDescrizione.setForum(descrizione.getForum());
+            }
+            if (descrizione.getRisorseExt() != null) {
+                oldDescrizione.setRisorseExt(descrizione.getRisorseExt());
+            }
+            entityTransaction.begin();
+            em.persist(descrizione);
+            entityTransaction.commit();
+        } else {
+            descrizione.setCorso(idCorso);
+            descrizione.setAnnoCorso(year);
+            entityTransaction.begin();
+            em.persist(descrizione);
+            entityTransaction.commit();
+        }
+    }
+
+    private static void updateDublino(int idCorso, int year, Dublino dublino) {
+        Dublino oldDublino;
+        if (dublino instanceof DublinoIt) {
+            oldDublino = stream.streamAll(em, DublinoIt.class)
+                    .where(dublinoIt -> dublinoIt.getCorso() == idCorso && dublinoIt.getAnnoCorso() == year)
+                    .findFirst()
+                    .orElse(null);
+        } else {
+            oldDublino = stream.streamAll(em, DublinoEn.class)
+                    .where(dublinoIt -> dublinoIt.getCorso() == idCorso && dublinoIt.getAnnoCorso() == year)
+                    .findFirst()
+                    .orElse(null);
+        }
+        if (oldDublino != null) {
+            if (dublino.getKnowledge() != null) {
+                oldDublino.setKnowledge(dublino.getKnowledge());
+            }
+            if (dublino.getApplication() != null) {
+                oldDublino.setApplication(dublino.getApplication());
+            }
+            if (dublino.getEvaluation() != null) {
+                oldDublino.setEvaluation(dublino.getEvaluation());
+            }
+            if (dublino.getCommunication() != null) {
+                oldDublino.setCommunication(dublino.getCommunication());
+            }
+            if (dublino.getLifelong() != null) {
+                oldDublino.setLifelong(dublino.getLifelong());
+            }
+            entityTransaction.begin();
+            em.persist(oldDublino);
+            entityTransaction.commit();
+        } else {
+            dublino.setCorso(idCorso);
+            dublino.setAnnoCorso(year);
+            entityTransaction.begin();
+            em.persist(dublino);
+            entityTransaction.commit();
+        }
     }
 
     public static List<HistoryCorso> getHistoryCorso(int id, String baseUri) {
