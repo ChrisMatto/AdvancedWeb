@@ -1,12 +1,21 @@
 package Classi;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "dublino_en", schema = "advancedweb", catalog = "")
+@Table(name = "dublino_en", schema = "newadvancedweb", catalog = "")
+@IdClass(DublinoEnPK.class)
 public class DublinoEn {
+
+    @JsonIgnore
     private int corso;
+
+    @JsonIgnore
+    private int annoCorso;
+
     private String knowledge;
     private String application;
     private String evaluation;
@@ -21,6 +30,16 @@ public class DublinoEn {
 
     public void setCorso(int corso) {
         this.corso = corso;
+    }
+
+    @Id
+    @Column(name = "AnnoCorso")
+    public int getAnnoCorso() {
+        return annoCorso;
+    }
+
+    public void setAnnoCorso(int annoCorso) {
+        this.annoCorso = annoCorso;
     }
 
     @Basic
@@ -79,6 +98,7 @@ public class DublinoEn {
         if (o == null || getClass() != o.getClass()) return false;
         DublinoEn dublinoEn = (DublinoEn) o;
         return corso == dublinoEn.corso &&
+                annoCorso == dublinoEn.annoCorso &&
                 Objects.equals(knowledge, dublinoEn.knowledge) &&
                 Objects.equals(application, dublinoEn.application) &&
                 Objects.equals(evaluation, dublinoEn.evaluation) &&
@@ -88,6 +108,6 @@ public class DublinoEn {
 
     @Override
     public int hashCode() {
-        return Objects.hash(corso, knowledge, application, evaluation, communication, lifelong);
+        return Objects.hash(corso, annoCorso, knowledge, application, evaluation, communication, lifelong);
     }
 }

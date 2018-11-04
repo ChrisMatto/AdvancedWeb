@@ -1,32 +1,30 @@
 package Classi;
 
-import ClassiTemp.CorsoView;
+import ClassiTemp.Views;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+@IdClass(CorsoPK.class)
 public class Corso {
-    private Integer idCorso;
+    private int idCorso;
+    private int anno;
 
-    @JsonView(CorsoView.Ita.class)
+    @JsonView(Views.CorsoIta.class)
     private String nomeIt;
 
-    @JsonView(CorsoView.En.class)
+    @JsonView(Views.CorsoEn.class)
     private String nomeEn;
 
     private String ssd;
     private String lingua;
     private Integer semestre;
     private Integer cfu;
-    private Integer annoInizio;
-    private Integer annoFine;
     private String tipologia;
-    private Integer oldId;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IDCorso")
     public int getIdCorso() {
         return idCorso;
@@ -34,6 +32,16 @@ public class Corso {
 
     public void setIdCorso(int idCorso) {
         this.idCorso = idCorso;
+    }
+
+    @Id
+    @Column(name = "Anno")
+    public int getAnno() {
+        return anno;
+    }
+
+    public void setAnno(int anno) {
+        this.anno = anno;
     }
 
     @Basic
@@ -97,26 +105,6 @@ public class Corso {
     }
 
     @Basic
-    @Column(name = "AnnoInizio")
-    public int getAnnoInizio() {
-        return annoInizio;
-    }
-
-    public void setAnnoInizio(int annoInizio) {
-        this.annoInizio = annoInizio;
-    }
-
-    @Basic
-    @Column(name = "AnnoFine")
-    public int getAnnoFine() {
-        return annoFine;
-    }
-
-    public void setAnnoFine(int annoFine) {
-        this.annoFine = annoFine;
-    }
-
-    @Basic
     @Column(name = "Tipologia")
     public String getTipologia() {
         return tipologia;
@@ -126,37 +114,25 @@ public class Corso {
         this.tipologia = tipologia;
     }
 
-    @Basic
-    @Column(name = "OldID")
-    public Integer getOldId() {
-        return oldId;
-    }
-
-    public void setOldId(Integer oldId) {
-        this.oldId = oldId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Corso corso = (Corso) o;
         return idCorso == corso.idCorso &&
-                annoInizio == corso.annoInizio &&
-                annoFine == corso.annoFine &&
+                anno == corso.anno &&
                 Objects.equals(nomeIt, corso.nomeIt) &&
                 Objects.equals(nomeEn, corso.nomeEn) &&
                 Objects.equals(ssd, corso.ssd) &&
                 Objects.equals(lingua, corso.lingua) &&
                 Objects.equals(semestre, corso.semestre) &&
                 Objects.equals(cfu, corso.cfu) &&
-                Objects.equals(tipologia, corso.tipologia) &&
-                Objects.equals(oldId, corso.oldId);
+                Objects.equals(tipologia, corso.tipologia);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idCorso, nomeIt, nomeEn, ssd, lingua, semestre, cfu, annoInizio, annoFine, tipologia, oldId);
+        return Objects.hash(idCorso, anno, nomeIt, nomeEn, ssd, lingua, semestre, cfu, tipologia);
     }
 
     public void copyFrom(Corso corso) {
@@ -167,9 +143,7 @@ public class Corso {
         this.lingua = corso.lingua;
         this.semestre = corso.semestre;
         this.cfu = corso.cfu;
-        this.annoInizio = corso.annoInizio;
-        this.annoFine = corso.annoFine;
+        this.anno = corso.anno;
         this.tipologia = corso.tipologia;
-        this.oldId = corso.oldId;
     }
 }

@@ -71,7 +71,7 @@ public class UsersAPI implements Resource {
         if (id < 0) {
             return Response.status(404).build();
         }
-        DataAccess.updateUtente(utente);
+        DataAccess.updateUtente(id,utente);
         return Response.ok().build();
     }
 

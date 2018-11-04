@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "group_services", schema = "advancedweb", catalog = "")
+@Table(name = "group_services", schema = "newadvancedweb", catalog = "")
 @IdClass(GroupServicesPK.class)
 public class GroupServices {
     private int gruppo;

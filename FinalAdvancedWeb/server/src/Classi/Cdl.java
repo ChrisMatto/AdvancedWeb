@@ -11,8 +11,7 @@ public class Cdl {
     private int idcdl;
     private String nomeIt;
     private String nomeEn;
-    private int annoInizio;
-    private int annoFine;
+    private int anno;
     private int cfu;
     private byte magistrale;
     private String immagine;
@@ -52,23 +51,13 @@ public class Cdl {
     }
 
     @Basic
-    @Column(name = "AnnoInizio")
-    public int getAnnoInizio() {
-        return annoInizio;
+    @Column(name = "Anno")
+    public int getAnno() {
+        return anno;
     }
 
-    public void setAnnoInizio(int annoInizio) {
-        this.annoInizio = annoInizio;
-    }
-
-    @Basic
-    @Column(name = "AnnoFine")
-    public int getAnnoFine() {
-        return annoFine;
-    }
-
-    public void setAnnoFine(int annoFine) {
-        this.annoFine = annoFine;
+    public void setAnno(int anno) {
+        this.anno = anno;
     }
 
     @Basic
@@ -147,8 +136,7 @@ public class Cdl {
         if (o == null || getClass() != o.getClass()) return false;
         Cdl cdl = (Cdl) o;
         return idcdl == cdl.idcdl &&
-                annoInizio == cdl.annoInizio &&
-                annoFine == cdl.annoFine &&
+                anno == cdl.anno &&
                 cfu == cdl.cfu &&
                 magistrale == cdl.magistrale &&
                 Objects.equals(nomeIt, cdl.nomeIt) &&
@@ -162,6 +150,6 @@ public class Cdl {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idcdl, nomeIt, nomeEn, annoInizio, annoFine, cfu, magistrale, immagine, descrizioneIt, descrizioneEn, abbrIt, abbrEn);
+        return Objects.hash(idcdl, nomeIt, nomeEn, anno, cfu, magistrale, immagine, descrizioneIt, descrizioneEn, abbrIt, abbrEn);
     }
 }

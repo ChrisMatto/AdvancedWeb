@@ -1,12 +1,21 @@
 package Classi;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "descrizione_it", schema = "advancedweb", catalog = "")
+@Table(name = "descrizione_it", schema = "newadvancedweb", catalog = "")
+@IdClass(DescrizioneItPK.class)
 public class DescrizioneIt {
+
+    @JsonIgnore
     private int corso;
+
+    @JsonIgnore
+    private int annoCorso;
+
     private String prerequisiti;
     private String obiettivi;
     private String modEsame;
@@ -25,6 +34,16 @@ public class DescrizioneIt {
 
     public void setCorso(int corso) {
         this.corso = corso;
+    }
+
+    @Id
+    @Column(name = "AnnoCorso")
+    public int getAnnoCorso() {
+        return annoCorso;
+    }
+
+    public void setAnnoCorso(int annoCorso) {
+        this.annoCorso = annoCorso;
     }
 
     @Basic
@@ -123,6 +142,7 @@ public class DescrizioneIt {
         if (o == null || getClass() != o.getClass()) return false;
         DescrizioneIt that = (DescrizioneIt) o;
         return corso == that.corso &&
+                annoCorso == that.annoCorso &&
                 Objects.equals(prerequisiti, that.prerequisiti) &&
                 Objects.equals(obiettivi, that.obiettivi) &&
                 Objects.equals(modEsame, that.modEsame) &&
@@ -136,6 +156,6 @@ public class DescrizioneIt {
 
     @Override
     public int hashCode() {
-        return Objects.hash(corso, prerequisiti, obiettivi, modEsame, modInsegnamento, sillabo, note, homepage, forum, risorseExt);
+        return Objects.hash(corso, annoCorso, prerequisiti, obiettivi, modEsame, modInsegnamento, sillabo, note, homepage, forum, risorseExt);
     }
 }

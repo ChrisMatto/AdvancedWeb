@@ -1,6 +1,8 @@
 package ClassiTemp;
 
 import Classi.Docente;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DocentePerCorso {
 
@@ -34,18 +36,22 @@ public class DocentePerCorso {
         this.idDocente = idDocente;
     }
 
+    @JsonProperty
     public String getNome() {
         return this.nome;
     }
 
+    @JsonIgnore
     public void setNome(String nome) {
         this.nome = nome;
     }
 
+    @JsonProperty
     public String getCognome() {
         return this.cognome;
     }
 
+    @JsonIgnore
     public void setCognome(String cognome) {
         this.cognome = cognome;
     }

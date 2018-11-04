@@ -7,6 +7,7 @@ import java.util.Objects;
 
 public class DocentiCorsoPK implements Serializable {
     private int corso;
+    private int annoCorso;
     private int docente;
 
     @Column(name = "Corso")
@@ -17,6 +18,16 @@ public class DocentiCorsoPK implements Serializable {
 
     public void setCorso(int corso) {
         this.corso = corso;
+    }
+
+    @Column(name = "AnnoCorso")
+    @Id
+    public int getAnnoCorso() {
+        return annoCorso;
+    }
+
+    public void setAnnoCorso(int annoCorso) {
+        this.annoCorso = annoCorso;
     }
 
     @Column(name = "Docente")
@@ -35,11 +46,12 @@ public class DocentiCorsoPK implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         DocentiCorsoPK that = (DocentiCorsoPK) o;
         return corso == that.corso &&
+                annoCorso == that.annoCorso &&
                 docente == that.docente;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(corso, docente);
+        return Objects.hash(corso, annoCorso, docente);
     }
 }

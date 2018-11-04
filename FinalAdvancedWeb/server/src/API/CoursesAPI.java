@@ -2,7 +2,7 @@ package API;
 
 import Classi.Corso;
 import ClassiTemp.CorsoCompleto;
-import ClassiTemp.CorsoView;
+import ClassiTemp.Views;
 import ClassiTemp.HistoryCorso;
 import Controller.Utils;
 import Controller.YearError;
@@ -56,7 +56,7 @@ public class CoursesAPI implements Resource {
     @POST
     @Path("{year}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertCorso(@PathParam("year") String year, @Context UriInfo uriInfo, Corso corso) {
+    public Response insertCorso(@PathParam("year") String year, @Context UriInfo uriInfo, CorsoCompleto corso) {
         MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
         if (!queryParams.isEmpty()) {
             return Response.status(400).build();
@@ -68,8 +68,10 @@ public class CoursesAPI implements Resource {
         } else {
             anno = (int)obj;
         }
-        corso.setAnnoInizio(anno);
-        corso.setAnnoFine(anno + 1);
+        if (corso == null) {
+            corso = new CorsoCompleto();
+        }
+        corso.setAnno(anno);
         DataAccess.insertCorso(corso);
         return Response.ok().build();
     }
@@ -120,12 +122,27 @@ public class CoursesAPI implements Resource {
             ObjectMapper mapper = new ObjectMapper();
             String jsonCorso;
             if (lingua.equals("it")) {
-                jsonCorso = mapper.writerWithView(CorsoView.Ita.class).writeValueAsString(corsoCompleto);
+                jsonCorso = mapper.writerWithView(Views.CorsoIta.class).writeValueAsString(corsoCompleto);
             } else {
-                jsonCorso = mapper.writerWithView(CorsoView.En.class).writeValueAsString(corsoCompleto);
+                jsonCorso = mapper.writerWithView(Views.CorsoEn.class).writeValueAsString(corsoCompleto);
             }
             return Response.ok(jsonCorso).build();
         }
         return Response.noContent().build();
+    }
+
+    @Path("{year}/{id}")
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateCorso(@PathParam("year") String year, @PathParam("id") int id, CorsoCompleto corsoCompleto) {
+        int anno;
+        Object obj = Utils.getYear(year);
+        if (obj instanceof YearError) {
+            return Response.status(((YearError) obj).getError()).build();
+        } else {
+            anno = (int)obj;
+        }
+        DataAccess.updateCorso(id, anno, corsoCompleto);
+        return Response.ok().build();
     }
 }

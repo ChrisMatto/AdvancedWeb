@@ -1,6 +1,7 @@
 package DataAccess;
 
 import Classi.*;
+import ClassiTemp.CorsoCompleto;
 import ClassiTemp.HistoryCorso;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -24,7 +25,7 @@ public class DataAccess {
 
     public static List<Integer> getCorsiByFilter(int year, MultivaluedMap<String,String> queryParams) {
         JinqStream<Corso> streamCorsi = stream.streamAll(em,Corso.class)
-                .where(corso -> corso.getAnnoInizio() == year);
+                .where(corso -> corso.getAnno() == year);
         for (String key : queryParams.keySet()) {
             String param = queryParams.get(key).get(0);
             switch (key) {
@@ -79,88 +80,208 @@ public class DataAccess {
 
     public static Corso getCorso(int id, int year) {
         return stream.streamAll(em, Corso.class)
-                .where(corso -> corso.getIdCorso() == id && corso.getAnnoInizio() == year)
+                .where(corso -> corso.getIdCorso() == id && corso.getAnno() == year)
                 .findFirst()
                 .orElse(null);
     }
 
-    public static void insertCorso(Corso corso) {
+    public static void insertCorso(CorsoCompleto corsoCompleto) {
+        int newId = stream.streamAll(em,Corso.class)
+                .max(Corso::getIdCorso) +1;
+        corsoCompleto.setIdCorso(newId);
+        Corso corso = new Corso();
+        corso.copyFrom(corsoCompleto);
         entityTransaction.begin();
         em.persist(corso);
         entityTransaction.commit();
+        if (corsoCompleto.getDescrizioneIt() != null) {
+            corsoCompleto.getDescrizioneIt().setCorso(corsoCompleto.getIdCorso());
+            corsoCompleto.getDescrizioneIt().setAnnoCorso(corsoCompleto.getAnno());
+            insertDescrizioneIt(corsoCompleto.getDescrizioneIt());
+        }
+        if (corsoCompleto.getDescrizioneEn() != null) {
+            corsoCompleto.getDescrizioneEn().setCorso(corsoCompleto.getIdCorso());
+            corsoCompleto.getDescrizioneEn().setAnnoCorso(corsoCompleto.getAnno());
+            insertDescrizioneEn(corsoCompleto.getDescrizioneEn());
+        }
+        if (corsoCompleto.getDublinoIt() != null) {
+            corsoCompleto.getDublinoIt().setCorso(corsoCompleto.getIdCorso());
+            corsoCompleto.getDublinoIt().setAnnoCorso(corsoCompleto.getAnno());
+            insertDublinoIt(corsoCompleto.getDublinoIt());
+        }
+        if (corsoCompleto.getDublinoEn() != null) {
+            corsoCompleto.getDublinoEn().setCorso(corsoCompleto.getIdCorso());
+            corsoCompleto.getDublinoEn().setAnnoCorso(corsoCompleto.getAnno());
+            insertDublinoEn(corsoCompleto.getDublinoEn());
+        }
+        if (corsoCompleto.getIdDocenti() != null && !corsoCompleto.getIdDocenti().isEmpty()) {
+            insertDocentiCorso(corsoCompleto.getIdCorso(), corsoCompleto.getAnno(), corsoCompleto.getIdDocenti());
+        }
+        if (corsoCompleto.getIdCdl() != null && !corsoCompleto.getIdCdl().isEmpty()) {
+            insertCdlCorso(corsoCompleto.getIdCorso(), corsoCompleto.getAnno(), corsoCompleto.getIdCdl());
+        }
+        if (corsoCompleto.getIdLibri() != null && !corsoCompleto.getIdLibri().isEmpty()) {
+            insertLibriCorso(corsoCompleto.getIdCorso(), corsoCompleto.getAnno(), corsoCompleto.getIdLibri());
+        }
+        if (corsoCompleto.getIdMateriale() != null && !corsoCompleto.getIdMateriale().isEmpty()) {
+            insertMaterialeCorso(corsoCompleto.getIdCorso(), corsoCompleto.getAnno(), corsoCompleto.getIdMateriale());
+        }
+    }
+
+    private static void insertDescrizioneIt(DescrizioneIt descrizioneIt) {
+        entityTransaction.begin();
+        em.persist(descrizioneIt);
+        entityTransaction.commit();
+    }
+
+    private static void insertDescrizioneEn(DescrizioneEn descrizioneEn) {
+        entityTransaction.begin();
+        em.persist(descrizioneEn);
+        entityTransaction.commit();
+    }
+
+    private static void insertDublinoIt(DublinoIt dublinoIt) {
+        entityTransaction.begin();
+        em.persist(dublinoIt);
+        entityTransaction.commit();
+    }
+
+    private static void insertDublinoEn(DublinoEn dublinoEn) {
+        entityTransaction.begin();
+        em.persist(dublinoEn);
+        entityTransaction.commit();
+    }
+
+    private static void insertDocentiCorso(int idCorso, int annoCorso, List<Integer> docenti) {
+        for (int idDocente : docenti) {
+            DocentiCorso docentiCorso = new DocentiCorso();
+            docentiCorso.setCorso(idCorso);
+            docentiCorso.setAnnoCorso(annoCorso);
+            docentiCorso.setDocente(idDocente);
+            entityTransaction.begin();
+            em.persist(docentiCorso);
+            entityTransaction.commit();
+        }
+    }
+
+    private static void insertCdlCorso(int idCorso, int annoCorso, List<Integer> cdl) {
+        for (int idCdl : cdl) {
+            CorsiCdl corsiCdl = new CorsiCdl();
+            corsiCdl.setCorso(idCorso);
+            corsiCdl.setAnnoCorso(annoCorso);
+            corsiCdl.setCdl(idCdl);
+            entityTransaction.begin();
+            em.persist(corsiCdl);
+            entityTransaction.commit();
+        }
+    }
+
+    private static void insertLibriCorso(int idCorso, int annoCorso, List<Integer> libri) {
+        for (int idLibro : libri) {
+            LibriCorso libriCorso = new LibriCorso();
+            libriCorso.setCorso(idCorso);
+            libriCorso.setAnnoCorso(annoCorso);
+            libriCorso.setLibro(idLibro);
+            entityTransaction.begin();
+            em.persist(libriCorso);
+            entityTransaction.commit();
+        }
+    }
+
+    private static void insertMaterialeCorso(int idCorso, int annoCorso, List<Integer> materiale) {
+        for (int idMateriale : materiale) {
+            Materiale mat = stream.streamAll(em,Materiale.class)
+                    .where(m -> m.getIdMateriale() == idMateriale)
+                    .findFirst()
+                    .orElse(null);
+            if (mat != null) {
+                mat.setCorso(idCorso);
+                mat.setAnnoCorso(annoCorso);
+                entityTransaction.begin();
+                em.persist(mat);
+                entityTransaction.commit();
+            }
+        }
+    }
+
+    //DA FINIRE UPDATE
+    public static void updateCorso(int idCorso, int year, CorsoCompleto corsoCompleto) {
+        Corso corso = stream.streamAll(em, Corso.class)
+                .where(c -> c.getIdCorso() == idCorso && c.getAnno() == year)
+                .findFirst()
+                .orElse(null);
+        if (corso == null) {
+            Response.ResponseBuilder responseBuilder = Response.status(400);
+            throw new WebApplicationException(responseBuilder.build());
+        }
+
     }
 
     public static List<HistoryCorso> getHistoryCorso(int id, String baseUri) {
         List<HistoryCorso> history = new ArrayList<>();
-        Corso corso = stream.streamAll(em, Corso.class)
-                .where(corso1 -> corso1.getIdCorso() == id)
-                .findFirst()
-                .orElse(null);
-        if (corso == null) {
-            return history;
-        }
-        history.add(new HistoryCorso(corso.getAnnoInizio(), baseUri + corso.getAnnoInizio() + "/" + corso.getIdCorso()));
-        while (corso.getOldId() != null) {
-            int oldId = corso.getOldId();
-            corso = stream.streamAll(em, Corso.class)
-                    .where(corso1 -> corso1.getIdCorso() == oldId)
-                    .findFirst()
-                    .orElse(null);
-            if (corso != null) {
-                history.add(new HistoryCorso(corso.getAnnoInizio(), baseUri + corso.getAnnoInizio() + "/" + corso.getIdCorso()));
-            }
+        List<Corso> corsi = stream.streamAll(em, Corso.class)
+                .where(corso -> corso.getIdCorso() == id)
+                .toList();
+        for (Corso corso : corsi) {
+            history.add(new HistoryCorso(corso.getAnno(), baseUri + corso.getAnno() + "/" + corso.getIdCorso()));
         }
         return history;
     }
 
-    public static List<Docente> getDocentiInCorso(int idCorso) {
+    public static List<Docente> getDocentiInCorso(int idCorso, int year) {
         return stream.streamAll(em, Docente.class)
                 .join((docente, source) -> source.stream(DocentiCorso.class))
-                .where(docenteDocentiCorsoPair -> docenteDocentiCorsoPair.getTwo().getCorso() == idCorso && docenteDocentiCorsoPair.getOne().getIdDocente() == docenteDocentiCorsoPair.getTwo().getDocente())
+                .where(docenteDocentiCorsoPair -> docenteDocentiCorsoPair.getTwo().getCorso() == idCorso && docenteDocentiCorsoPair.getTwo().getAnnoCorso() == year && docenteDocentiCorsoPair.getOne().getIdDocente() == docenteDocentiCorsoPair.getTwo().getDocente())
                 .select(Pair::getOne).toList();
     }
 
-    public static List<Cdl> getCdlInCorso(int idCorso) {
+    public static List<Cdl> getCdlInCorso(int idCorso, int year) {
         return stream.streamAll(em, Cdl.class)
                 .join((cdl, source) -> source.stream(CorsiCdl.class))
-                .where(cdlCorsiCdlPair -> cdlCorsiCdlPair.getTwo().getCorso() == idCorso && cdlCorsiCdlPair.getOne().getIdcdl() == cdlCorsiCdlPair.getTwo().getCdl())
+                .where(cdlCorsiCdlPair -> cdlCorsiCdlPair.getTwo().getCorso() == idCorso && cdlCorsiCdlPair.getTwo().getAnnoCorso() == year && cdlCorsiCdlPair.getOne().getIdcdl() == cdlCorsiCdlPair.getTwo().getCdl())
                 .select(Pair::getOne).toList();
     }
 
-    public static DescrizioneIt getDescrizioneIt(int idCorso) {
+    public static DescrizioneIt getDescrizioneIt(int idCorso, int year) {
         return stream.streamAll(em, DescrizioneIt.class)
-                .where(descrizioneIt -> descrizioneIt.getCorso() == idCorso)
+                .where(descrizioneIt -> descrizioneIt.getCorso() == idCorso && descrizioneIt.getAnnoCorso() == year)
                 .findFirst()
                 .orElse(null);
     }
 
-    public static DescrizioneEn getDescrizioneEn(int idCorso) {
+    public static DescrizioneEn getDescrizioneEn(int idCorso, int year) {
         return stream.streamAll(em, DescrizioneEn.class)
-                .where(descrizioneEn -> descrizioneEn.getCorso() == idCorso)
+                .where(descrizioneEn -> descrizioneEn.getCorso() == idCorso && descrizioneEn.getAnnoCorso() == year)
                 .findFirst()
                 .orElse(null);
     }
 
-    public static DublinoIt getDublinoIt(int idCorso) {
+    public static DublinoIt getDublinoIt(int idCorso, int year) {
         return stream.streamAll(em, DublinoIt.class)
-                .where(dublinoIt -> dublinoIt.getCorso() == idCorso)
+                .where(dublinoIt -> dublinoIt.getCorso() == idCorso && dublinoIt.getAnnoCorso() == year)
                 .findFirst()
                 .orElse(null);
     }
 
-    public static DublinoEn getDublinoEn(int idCorso) {
+    public static DublinoEn getDublinoEn(int idCorso, int year) {
         return stream.streamAll(em, DublinoEn.class)
-                .where(dublinoEn -> dublinoEn.getCorso() == idCorso)
+                .where(dublinoEn -> dublinoEn.getCorso() == idCorso && dublinoEn.getAnnoCorso() == year)
                 .findFirst()
                 .orElse(null);
     }
 
-    public static List<Libro> getLibriInCorso(int idCorso) {
+    public static List<Libro> getLibriInCorso(int idCorso, int year) {
         return stream.streamAll(em, LibriCorso.class)
-                .where(libriCorso -> libriCorso.getCorso() == idCorso)
+                .where(libriCorso -> libriCorso.getCorso() == idCorso && libriCorso.getAnnoCorso() == year)
                 .join((c, source) -> source.stream(Libro.class))
                 .where(libriCorsoLibroPair -> libriCorsoLibroPair.getOne().getLibro() == libriCorsoLibroPair.getTwo().getIdLibro())
                 .select(Pair::getTwo)
+                .toList();
+    }
+
+    public static List<Materiale> getMaterialeCorso(int idCorso, int year) {
+        return stream.streamAll(em, Materiale.class)
+                .where(materiale -> materiale.getCorso() == idCorso && materiale.getAnnoCorso() == year)
                 .toList();
     }
 
@@ -190,8 +311,7 @@ public class DataAccess {
         entityTransaction.commit();
     }
 
-    public static void updateUtente(Utente utente) {
-        int idUtente = utente.getIdUtente();
+    public static void updateUtente(int idUtente, Utente utente) {
         Utente u = stream.streamAll(em, Utente.class)
                 .where(utente1 -> utente1.getIdUtente() == idUtente)
                 .findFirst()
@@ -225,7 +345,7 @@ public class DataAccess {
             em.persist(u);
             entityTransaction.commit();
         } else {
-            Response.ResponseBuilder responseBuilder = Response.status(404);
+            Response.ResponseBuilder responseBuilder = Response.status(400);
             throw new WebApplicationException(responseBuilder.build());
         }
     }

@@ -5,10 +5,9 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class LibriCorsoPK implements Serializable {
+public class DescrizioneEnPK implements Serializable {
     private int corso;
     private int annoCorso;
-    private int libro;
 
     @Column(name = "Corso")
     @Id
@@ -30,28 +29,17 @@ public class LibriCorsoPK implements Serializable {
         this.annoCorso = annoCorso;
     }
 
-    @Column(name = "Libro")
-    @Id
-    public int getLibro() {
-        return libro;
-    }
-
-    public void setLibro(int libro) {
-        this.libro = libro;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LibriCorsoPK that = (LibriCorsoPK) o;
+        DescrizioneEnPK that = (DescrizioneEnPK) o;
         return corso == that.corso &&
-                annoCorso == that.annoCorso &&
-                libro == that.libro;
+                annoCorso == that.annoCorso;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(corso, annoCorso, libro);
+        return Objects.hash(corso, annoCorso);
     }
 }

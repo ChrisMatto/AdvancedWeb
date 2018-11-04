@@ -36,8 +36,8 @@ public class Utente {
     }
 
     @Basic
-    @Column(name = "Password")
     @JsonIgnore
+    @Column(name = "Password")
     public String getPassword() {
         return password;
     }

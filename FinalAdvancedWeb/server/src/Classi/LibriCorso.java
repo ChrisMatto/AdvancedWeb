@@ -4,10 +4,11 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "libri_corso", schema = "advancedweb", catalog = "")
+@Table(name = "libri_corso", schema = "newadvancedweb", catalog = "")
 @IdClass(LibriCorsoPK.class)
 public class LibriCorso {
     private int corso;
+    private int annoCorso;
     private int libro;
 
     @Id
@@ -18,6 +19,16 @@ public class LibriCorso {
 
     public void setCorso(int corso) {
         this.corso = corso;
+    }
+
+    @Id
+    @Column(name = "AnnoCorso")
+    public int getAnnoCorso() {
+        return annoCorso;
+    }
+
+    public void setAnnoCorso(int annoCorso) {
+        this.annoCorso = annoCorso;
     }
 
     @Id
@@ -36,11 +47,12 @@ public class LibriCorso {
         if (o == null || getClass() != o.getClass()) return false;
         LibriCorso that = (LibriCorso) o;
         return corso == that.corso &&
+                annoCorso == that.annoCorso &&
                 libro == that.libro;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(corso, libro);
+        return Objects.hash(corso, annoCorso, libro);
     }
 }
