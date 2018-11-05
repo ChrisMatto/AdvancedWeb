@@ -9,8 +9,6 @@ import java.util.Objects;
 @Entity
 public class Materiale {
     private int idMateriale;
-    private Integer corso;
-    private Integer annoCorso;
     private String nome;
     private String link;
     private String descrizioneIt;
@@ -24,26 +22,6 @@ public class Materiale {
 
     public void setIdMateriale(int idMateriale) {
         this.idMateriale = idMateriale;
-    }
-
-    @Basic
-    @Column(name = "Corso")
-    public Integer getCorso() {
-        return corso;
-    }
-
-    public void setCorso(Integer corso) {
-        this.corso = corso;
-    }
-
-    @Basic
-    @Column(name = "AnnoCorso")
-    public Integer getAnnoCorso() {
-        return annoCorso;
-    }
-
-    public void setAnnoCorso(Integer annoCorso) {
-        this.annoCorso = annoCorso;
     }
 
     @Basic
@@ -92,8 +70,6 @@ public class Materiale {
         if (o == null || getClass() != o.getClass()) return false;
         Materiale materiale = (Materiale) o;
         return idMateriale == materiale.idMateriale &&
-                Objects.equals(corso, materiale.corso) &&
-                Objects.equals(annoCorso, materiale.annoCorso) &&
                 Objects.equals(nome, materiale.nome) &&
                 Objects.equals(link, materiale.link) &&
                 Objects.equals(descrizioneIt, materiale.descrizioneIt) &&
@@ -102,6 +78,6 @@ public class Materiale {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idMateriale, corso, annoCorso, nome, link, descrizioneIt, descrizioneEn);
+        return Objects.hash(idMateriale, nome, link, descrizioneIt, descrizioneEn);
     }
 }

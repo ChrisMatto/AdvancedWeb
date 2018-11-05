@@ -18,10 +18,11 @@
         <class>Classi.LibriCorso</class>
         <class>Classi.Libro</class>
         <class>Classi.Log</class>
-        <class>Classi.Materiale</class>
         <class>Classi.Servizio</class>
         <class>Classi.Sessione</class>
         <class>Classi.Utente</class>
+        <class>Classi.Materiale</class>
+        <class>Classi.MaterialeCorso</class>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/newadvancedweb"/>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
