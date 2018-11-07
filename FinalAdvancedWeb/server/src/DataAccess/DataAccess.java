@@ -213,7 +213,7 @@ public class DataAccess {
                 collegCorsi.setThisCorso(idCorso);
                 collegCorsi.setAnnoThisCorso(annoCorso);
                 collegCorsi.setTipo(tipo);
-                int startIndex = uri.indexOf("courses/") + 9;
+                int startIndex = uri.indexOf("courses/") + 8;
                 int endIndexYear = uri.indexOf("/", startIndex);
                 String year = uri.substring(startIndex, endIndexYear);
                 int anno;
@@ -353,7 +353,7 @@ public class DataAccess {
                 oldDescrizione.setRisorseExt(descrizione.getRisorseExt());
             }
             entityTransaction.begin();
-            em.persist(descrizione);
+            em.persist(oldDescrizione);
             entityTransaction.commit();
         } else {
             descrizione.setCorso(idCorso);
@@ -540,7 +540,7 @@ public class DataAccess {
             collegCorsi.setThisCorso(idCorso);
             collegCorsi.setAnnoThisCorso(annoCorso);
             collegCorsi.setTipo(tipo);
-            int startIndex = uri.indexOf("courses/") + 9;
+            int startIndex = uri.indexOf("courses/") + 8;
             int endIndexYear = uri.indexOf("/", startIndex);
             String year = uri.substring(startIndex, endIndexYear);
             int anno;
@@ -847,6 +847,30 @@ public class DataAccess {
                 .where(s -> s.getNome().equals(service) && s.getMetodo().equals(method))
                 .findFirst();
         return !optionalServizio.isPresent();
+    }
+
+    public static void deleteCorso(int idCorso, int year) {
+        Corso corso = stream.streamAll(em, Corso.class)
+                .where(c -> c.getIdCorso() == idCorso && c.getAnno() == year)
+                .findFirst()
+                .orElse(null);
+        if (corso == null) {
+            return;
+        }
+        deleteDescrizione(idCorso, year, DescrizioneIt.class);
+        deleteDescrizione(idCorso, year, DescrizioneEn.class);
+        deleteDublino(idCorso, year, DublinoIt.class);
+        deleteDublino(idCorso, year, DublinoEn.class);
+        deleteDocentiCorso(idCorso, year);
+        deleteCdlCorso(idCorso, year);
+        deleteLibriCorso(idCorso, year);
+        deleteMaterialeCorso(idCorso, year);
+        deleteRelazioniCorso(idCorso, year, "propedeutico");
+        deleteRelazioniCorso(idCorso, year, "modulo");
+        deleteRelazioniCorso(idCorso, year, "mutuato");
+        entityTransaction.begin();
+        em.remove(corso);
+        entityTransaction.commit();
     }
 
     private static void deleteDescrizione(int idCorso, int year, Class classe) {

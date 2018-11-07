@@ -68,8 +68,8 @@ public class CoursesAPI implements Resource {
         } else {
             anno = (int)obj;
         }
-        if (corso == null) {
-            corso = new CorsoCompleto();
+        if (corso == null || (corso.getNomeIt() == null && corso.getNomeEn() == null)) {
+            return Response.status(400).build();
         }
         corso.setAnno(anno);
         DataAccess.insertCorso(corso);
@@ -108,7 +108,7 @@ public class CoursesAPI implements Resource {
     @Path("{year}/{id}/{lingua:it|en}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCorsoIta(@PathParam("id") int id, @PathParam("year") String year, @PathParam("lingua") String lingua) throws JsonProcessingException {
+    public Response getCorsoLingua(@PathParam("id") int id, @PathParam("year") String year, @PathParam("lingua") String lingua) throws JsonProcessingException {
         int anno;
         Object obj = Utils.getYear(year);
         if (obj instanceof YearError) {
@@ -145,6 +145,21 @@ public class CoursesAPI implements Resource {
         if (corsoCompleto != null) {
             DataAccess.updateCorso(id, anno, corsoCompleto);
         }
+        return Response.ok().build();
+    }
+
+    @Path("{year}/{id}")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteCorso(@PathParam("year") String year, @PathParam("id") int id) {
+        int anno;
+        Object obj = Utils.getYear(year);
+        if (obj instanceof YearError) {
+            return Response.status(((YearError) obj).getError()).build();
+        } else {
+            anno = (int)obj;
+        }
+        DataAccess.deleteCorso(id, anno);
         return Response.ok().build();
     }
 }
