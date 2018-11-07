@@ -3,7 +3,6 @@ package DataAccess;
 import Classi.*;
 import ClassiTemp.*;
 import Controller.Utils;
-import Controller.YearError;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jinq.jpa.JinqJPAStreamProvider;
@@ -216,13 +215,7 @@ public class DataAccess {
                 int startIndex = uri.indexOf("courses/") + 8;
                 int endIndexYear = uri.indexOf("/", startIndex);
                 String year = uri.substring(startIndex, endIndexYear);
-                int anno;
-                Object obj = Utils.getYear(year);
-                if (obj instanceof YearError) {
-                    continue;
-                } else {
-                    anno = (int)obj;
-                }
+                int anno = Utils.getYear(year);
                 collegCorsi.setAnnoOtherCorso(anno);
                 String idString = uri.substring(endIndexYear + 1);
                 int id;
@@ -543,13 +536,7 @@ public class DataAccess {
             int startIndex = uri.indexOf("courses/") + 8;
             int endIndexYear = uri.indexOf("/", startIndex);
             String year = uri.substring(startIndex, endIndexYear);
-            int anno;
-            Object obj = Utils.getYear(year);
-            if (obj instanceof YearError) {
-                continue;
-            } else {
-                anno = (int)obj;
-            }
+            int anno = Utils.getYear(year);
             collegCorsi.setAnnoOtherCorso(anno);
             String idString = uri.substring(endIndexYear + 1);
             int id;
@@ -558,6 +545,18 @@ public class DataAccess {
                 collegCorsi.setOtherCorso(id);
             } else {
                 continue;
+            }
+            int otherCorso = collegCorsi.getOtherCorso();
+            int annoOtherCorso = collegCorsi.getAnnoOtherCorso();
+            CollegCorsi errorColleg = stream.streamAll(em, CollegCorsi.class)
+                    .where(cc -> cc.getThisCorso() == idCorso && cc.getAnnoThisCorso() == annoCorso && cc.getOtherCorso() == otherCorso && cc.getAnnoOtherCorso() == annoOtherCorso)
+                    .findFirst()
+                    .orElse(null);
+            if (errorColleg != null) {
+                oldCollegCorsi.remove(collegCorsi);
+                entityTransaction.begin();
+                em.remove(errorColleg);
+                entityTransaction.commit();
             }
             if (oldCollegCorsi.isEmpty()) {
                 entityTransaction.begin();

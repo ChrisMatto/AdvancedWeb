@@ -2,6 +2,8 @@ package Controller;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 
 public class Utils {
@@ -15,8 +17,9 @@ public class Utils {
         return year;
     }
 
-    public static Object getYear(String year) {
+    public static int getYear(String year) {
         int anno;
+        Response.ResponseBuilder responseBuilder;
         if (year.equals("current")) {
             anno = Utils.getCurrentYear();
         } else {
@@ -24,13 +27,16 @@ public class Utils {
                 anno = Integer.parseInt(year);
                 if (anno > 0) {
                     if (year.length() != 4) {
-                        return YearError.error400;
+                        responseBuilder = Response.status(400);
+                        throw new WebApplicationException(responseBuilder.build());
                     }
                 } else {
-                    return YearError.error404;
+                    responseBuilder = Response.status(404);
+                    throw new WebApplicationException(responseBuilder.build());
                 }
             } else {
-                return YearError.error404;
+                responseBuilder = Response.status(404);
+                throw new WebApplicationException(responseBuilder.build());
             }
         }
         return anno;
