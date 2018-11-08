@@ -2,6 +2,7 @@ package API;
 
 import Classi.Corso;
 import Classi.Docente;
+import Classi.Links;
 import ClassiTemp.*;
 import Controller.Utils;
 import DataAccess.DataAccess;
@@ -69,7 +70,13 @@ public class CoursesAPI implements Resource {
         if (id < 0) {
             return Response.status(404).build();
         }
-        List<HistoryCorso> history = DataAccess.getHistoryCorso(id, uriInfo.getBaseUri() + "courses/");
+        String baseUri;
+        if (token != null) {
+            baseUri = uriInfo.getBaseUri() + "auth/" + token +"/courses/";
+        } else {
+            baseUri = uriInfo.getBaseUri() + "courses/";
+        }
+        List<HistoryCorso> history = DataAccess.getHistoryCorso(id, baseUri);
         return Response.ok(history).build();
     }
 
@@ -168,16 +175,26 @@ public class CoursesAPI implements Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateDocentiCorso(@PathParam("year") String year, @PathParam("id") int id, List<DocentePerCorso> docenti) {
         int anno = Utils.getYear(year);
-        DataAccess.updateDocentiCorso(id, anno, docenti);
+        if (docenti != null) {
+            DataAccess.updateDocentiCorso(id, anno, docenti);
+        } else {
+            DataAccess.deleteDocentiCorso(id, anno);
+        }
         return Response.ok().build();
     }
 
     @Path("{year}/{id}/relations")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRelazioniCorso(@PathParam("year") String year, @PathParam("id") int id) {
+    public Response getRelazioniCorso(@PathParam("year") String year, @PathParam("id") int id, @Context UriInfo uriInfo) {
         int anno = Utils.getYear(year);
-        RelazioniCorso relazioni = DataAccess.getRelazioniCorso(id, anno);
+        String baseUri;
+        if (token != null) {
+            baseUri = uriInfo.getBaseUri() + "auth/" + token +"/courses/";
+        } else {
+            baseUri = uriInfo.getBaseUri() + "courses/";
+        }
+        RelazioniCorso relazioni = DataAccess.getRelazioniCorso(id, anno, baseUri);
         return Response.ok(relazioni).build();
     }
 
@@ -194,6 +211,27 @@ public class CoursesAPI implements Resource {
             DataAccess.updateRelazioniCorso(id, anno, relazioni.getPropedeudici(), "propedeutico");
             DataAccess.updateRelazioniCorso(id, anno, relazioni.getModulo(), "modulo");
             DataAccess.updateRelazioniCorso(id, anno, relazioni.getMutuati(), "mutuato");
+        }
+        return Response.ok().build();
+    }
+
+    @Path("{year}/{id}/links")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLinksCorso(@PathParam("year") String year, @PathParam("id") int id) {
+        int anno = Utils.getYear(year);
+        return Response.ok(DataAccess.getLinks(id, anno)).build();
+    }
+
+    @Path("{year}/{id}/links")
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateLinksCorso(@PathParam("year") String year, @PathParam("id") int id, Links links) {
+        int anno = Utils.getYear(year);
+        if (links != null) {
+            DataAccess.updateLinks(id, anno, links);
+        } else {
+            DataAccess.deleteLinks(id, anno);
         }
         return Response.ok().build();
     }

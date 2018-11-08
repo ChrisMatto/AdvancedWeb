@@ -12,7 +12,6 @@ public class DescrizioneEn implements Descrizione {
 
     @JsonIgnore
     private int corso;
-
     @JsonIgnore
     private int annoCorso;
 
@@ -22,9 +21,6 @@ public class DescrizioneEn implements Descrizione {
     private String modInsegnamento;
     private String sillabo;
     private String note;
-    private String homepage;
-    private String forum;
-    private String risorseExt;
 
     @Id
     @Column(name = "Corso")
@@ -106,36 +102,6 @@ public class DescrizioneEn implements Descrizione {
         this.note = note;
     }
 
-    @Basic
-    @Column(name = "Homepage")
-    public String getHomepage() {
-        return homepage;
-    }
-
-    public void setHomepage(String homepage) {
-        this.homepage = homepage;
-    }
-
-    @Basic
-    @Column(name = "Forum")
-    public String getForum() {
-        return forum;
-    }
-
-    public void setForum(String forum) {
-        this.forum = forum;
-    }
-
-    @Basic
-    @Column(name = "Risorse_ext")
-    public String getRisorseExt() {
-        return risorseExt;
-    }
-
-    public void setRisorseExt(String risorseExt) {
-        this.risorseExt = risorseExt;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -148,14 +114,11 @@ public class DescrizioneEn implements Descrizione {
                 Objects.equals(modEsame, that.modEsame) &&
                 Objects.equals(modInsegnamento, that.modInsegnamento) &&
                 Objects.equals(sillabo, that.sillabo) &&
-                Objects.equals(note, that.note) &&
-                Objects.equals(homepage, that.homepage) &&
-                Objects.equals(forum, that.forum) &&
-                Objects.equals(risorseExt, that.risorseExt);
+                Objects.equals(note, that.note);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(corso, annoCorso, prerequisiti, obiettivi, modEsame, modInsegnamento, sillabo, note, homepage, forum, risorseExt);
+        return Objects.hash(corso, annoCorso, prerequisiti, obiettivi, modEsame, modInsegnamento, sillabo, note);
     }
 }

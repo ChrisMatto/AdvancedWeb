@@ -104,6 +104,11 @@ public class DataAccess {
             corsoCompleto.getDescrizioneEn().setAnnoCorso(corsoCompleto.getAnno());
             insertDescrizioneEn(corsoCompleto.getDescrizioneEn());
         }
+        if (corsoCompleto.getLinks() != null) {
+            corsoCompleto.getLinks().setCorso(corsoCompleto.getIdCorso());
+            corsoCompleto.getLinks().setAnnoCorso(corsoCompleto.getAnno());
+            insertLinks(corsoCompleto.getLinks());
+        }
         if (corsoCompleto.getDublinoIt() != null) {
             corsoCompleto.getDublinoIt().setCorso(corsoCompleto.getIdCorso());
             corsoCompleto.getDublinoIt().setAnnoCorso(corsoCompleto.getAnno());
@@ -142,6 +147,12 @@ public class DataAccess {
     private static void insertDescrizioneEn(DescrizioneEn descrizioneEn) {
         entityTransaction.begin();
         em.persist(descrizioneEn);
+        entityTransaction.commit();
+    }
+
+    private static void insertLinks(Links links) {
+        entityTransaction.begin();
+        em.persist(links);
         entityTransaction.commit();
     }
 
@@ -262,6 +273,11 @@ public class DataAccess {
         } else {
             deleteDescrizione(idCorso, year, DescrizioneEn.class);
         }
+        if (corsoCompleto.getLinks() != null) {
+            updateLinks(idCorso, year, corsoCompleto.getLinks());
+        } else {
+            deleteLinks(idCorso, year);
+        }
         if (corsoCompleto.getDublinoIt() != null) {
             updateDublino(idCorso, year, corsoCompleto.getDublinoIt());
         } else {
@@ -336,15 +352,6 @@ public class DataAccess {
             if (descrizione.getNote() != null) {
                 oldDescrizione.setNote(descrizione.getNote());
             }
-            if (descrizione.getHomepage() != null) {
-                oldDescrizione.setHomepage(descrizione.getHomepage());
-            }
-            if (descrizione.getForum() != null) {
-                oldDescrizione.setForum(descrizione.getForum());
-            }
-            if (descrizione.getRisorseExt() != null) {
-                oldDescrizione.setRisorseExt(descrizione.getRisorseExt());
-            }
             entityTransaction.begin();
             em.persist(oldDescrizione);
             entityTransaction.commit();
@@ -353,6 +360,36 @@ public class DataAccess {
             descrizione.setAnnoCorso(year);
             entityTransaction.begin();
             em.persist(descrizione);
+            entityTransaction.commit();
+        }
+    }
+
+    public static void updateLinks(int idCorso, int year, Links links) {
+        Links oldLinks = stream.streamAll(em, Links.class)
+                .where(l -> l.getCorso() == idCorso && l.getAnnoCorso() == year)
+                .findFirst()
+                .orElse(null);
+        if (oldLinks != null) {
+            if (links.getHomepage() != null) {
+                oldLinks.setHomepage(links.getHomepage());
+            }
+            if (links.getElearning() != null) {
+                oldLinks.setElearning(links.getElearning());
+            }
+            if (links.getForum() != null) {
+                oldLinks.setForum(links.getForum());
+            }
+            if (links.getRisorseExt() != null) {
+                oldLinks.setElearning(links.getElearning());
+            }
+            entityTransaction.begin();
+            em.persist(oldLinks);
+            entityTransaction.commit();
+        } else {
+            links.setCorso(idCorso);
+            links.setAnnoCorso(year);
+            entityTransaction.begin();
+            em.persist(links);
             entityTransaction.commit();
         }
     }
@@ -430,7 +467,7 @@ public class DataAccess {
         }
     }
 
-    public static void updateCdlCorso(int idCorso, int year, List<CdlPerCorso> cdlPerCorso) {
+    private static void updateCdlCorso(int idCorso, int year, List<CdlPerCorso> cdlPerCorso) {
         List<CorsiCdl> oldCorsiCdl = stream.streamAll(em, CorsiCdl.class)
                 .where(corsiCdl -> corsiCdl.getCorso() == idCorso && corsiCdl.getAnnoCorso() == year)
                 .toList();
@@ -460,7 +497,7 @@ public class DataAccess {
         }
     }
 
-    public static void updateLibriCorso(int idCorso, int year, List<Libro> libri) {
+    private static void updateLibriCorso(int idCorso, int year, List<Libro> libri) {
         List<LibriCorso> oldLibriCorso = stream.streamAll(em, LibriCorso.class)
                 .where(libriCorso -> libriCorso.getCorso() == idCorso && libriCorso.getAnnoCorso() == year)
                 .toList();
@@ -490,7 +527,7 @@ public class DataAccess {
         }
     }
 
-    public static void updateMaterialeCorso(int idCorso, int year, List<Materiale> materialeCorso) {
+    private static void updateMaterialeCorso(int idCorso, int year, List<Materiale> materialeCorso) {
         List<MaterialeCorso> oldMaterialeCorso = stream.streamAll(em, MaterialeCorso.class)
                 .where(mc -> mc.getCorso() == idCorso && mc.getAnnoCorso() == year)
                 .toList();
@@ -650,8 +687,7 @@ public class DataAccess {
                 .toList();
     }
 
-    public static RelazioniCorso getRelazioniCorso(int idCorso, int year) {
-        String baseUri = "http://localhost:8080/AdvancedWeb/rest/courses/";
+    public static RelazioniCorso getRelazioniCorso(int idCorso, int year, String baseUri) {
         List<CollegCorsi> collegCorsi = stream.streamAll(em, CollegCorsi.class)
                 .where(cc -> cc.getThisCorso() == idCorso && cc.getAnnoThisCorso() == year && cc.getTipo().equals("propedeudico"))
                 .toList();
@@ -674,6 +710,13 @@ public class DataAccess {
             moduli.add(baseUri + modulo.getAnnoOtherCorso() + "/" + modulo.getOtherCorso());
         }
         return new RelazioniCorso(propedeudici, mutuati, moduli);
+    }
+
+    public static Links getLinks(int idCorso, int year) {
+        return stream.streamAll(em, Links.class)
+                .where(links -> links.getCorso() == idCorso && links.getAnnoCorso() == year)
+                .findFirst()
+                .orElse(null);
     }
 
     public static List<Integer> getUtenti() {
@@ -858,6 +901,7 @@ public class DataAccess {
         }
         deleteDescrizione(idCorso, year, DescrizioneIt.class);
         deleteDescrizione(idCorso, year, DescrizioneEn.class);
+        deleteLinks(idCorso, year);
         deleteDublino(idCorso, year, DublinoIt.class);
         deleteDublino(idCorso, year, DublinoEn.class);
         deleteDocentiCorso(idCorso, year);
@@ -892,6 +936,18 @@ public class DataAccess {
         }
     }
 
+    public static void deleteLinks(int idCorso, int year) {
+        Links links = stream.streamAll(em, Links.class)
+                .where(l -> l.getCorso() == idCorso && l.getAnnoCorso() == year)
+                .findFirst()
+                .orElse(null);
+        if (links != null) {
+            entityTransaction.begin();
+            em.remove(links);
+            entityTransaction.commit();
+        }
+    }
+
     private static void deleteDublino(int idCorso, int year, Class classe) {
         Dublino dublino;
         if (classe.equals(DublinoIt.class)) {
@@ -912,7 +968,7 @@ public class DataAccess {
         }
     }
 
-    private static void deleteDocentiCorso(int idCorso, int year) {
+    public static void deleteDocentiCorso(int idCorso, int year) {
         List<DocentiCorso> docentiCorso = stream.streamAll(em, DocentiCorso.class)
                 .where(dc -> dc.getCorso() == idCorso && dc.getAnnoCorso() == year)
                 .toList();

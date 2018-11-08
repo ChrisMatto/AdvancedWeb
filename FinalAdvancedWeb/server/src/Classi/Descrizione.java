@@ -34,15 +34,4 @@ public interface Descrizione {
 
     void setNote(String note);
 
-    String getHomepage();
-
-    void setHomepage(String homepage);
-
-    String getForum();
-
-    void setForum(String forum);
-
-    String getRisorseExt();
-
-    void setRisorseExt(String risorseExt);
 }

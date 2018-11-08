@@ -19,6 +19,8 @@ public class CorsoCompleto extends Corso {
     @JsonView(Views.CorsoEn.class)
     private DescrizioneEn descrizioneEn;
 
+    private Links links;
+
     @JsonView(Views.CorsoIta.class)
     private DublinoIt dublinoIt;
 
@@ -40,6 +42,7 @@ public class CorsoCompleto extends Corso {
         libri = null;
         materiale = null;
         relazioni = null;
+        links = null;
     }
 
     public CorsoCompleto(Corso corso) {
@@ -65,6 +68,7 @@ public class CorsoCompleto extends Corso {
         libri = DataAccess.getLibriInCorso(super.getIdCorso(), super.getAnno());
         materiale = DataAccess.getMaterialeCorso(super.getIdCorso(), super.getAnno());
         relazioni = DataAccess.getRelazioniCorso(super.getIdCorso(), super.getAnno());
+        links = DataAccess.getLinks(super.getIdCorso(), super.getAnno());
     }
 
     public List<DocentePerCorso> getDocenti() {
@@ -97,6 +101,14 @@ public class CorsoCompleto extends Corso {
 
     public void setDescrizioneEn(DescrizioneEn descrizioneEn) {
         this.descrizioneEn = descrizioneEn;
+    }
+
+    public Links getLinks() {
+        return links;
+    }
+
+    public void setLinks(Links links) {
+        this.links = links;
     }
 
     public DublinoIt getDublinoIt() {

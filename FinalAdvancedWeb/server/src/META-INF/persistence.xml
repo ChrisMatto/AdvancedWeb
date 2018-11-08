@@ -7,8 +7,6 @@
         <class>Classi.CollegCorsi</class>
         <class>Classi.CorsiCdl</class>
         <class>Classi.Corso</class>
-        <class>Classi.DescrizioneEn</class>
-        <class>Classi.DescrizioneIt</class>
         <class>Classi.Docente</class>
         <class>Classi.DocentiCorso</class>
         <class>Classi.DublinoEn</class>
@@ -23,6 +21,9 @@
         <class>Classi.Utente</class>
         <class>Classi.Materiale</class>
         <class>Classi.MaterialeCorso</class>
+        <class>Classi.DescrizioneEn</class>
+        <class>Classi.DescrizioneIt</class>
+        <class>Classi.Links</class>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/newadvancedweb"/>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>

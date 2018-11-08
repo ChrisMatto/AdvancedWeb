@@ -26,6 +26,8 @@ public class ControllerAPI {
                 return new AuthAPI();
             case courses:
                 return new CoursesAPI();
+            case cdl:
+                return new CdlAPI();
             default:
                 Response.ResponseBuilder responseBuilder = Response.status(404);
                 throw new WebApplicationException(responseBuilder.build());

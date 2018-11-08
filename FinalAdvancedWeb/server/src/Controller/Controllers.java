@@ -4,6 +4,7 @@ public enum Controllers {
     auth("auth"),
     courses("courses"),
     users("users"),
+    cdl("cdl"),
     noController("");
 
     private String controller;

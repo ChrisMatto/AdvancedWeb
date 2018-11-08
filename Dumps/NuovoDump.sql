@@ -77,7 +77,7 @@ CREATE TABLE `colleg_corsi` (
 
 LOCK TABLES `colleg_corsi` WRITE;
 /*!40000 ALTER TABLE `colleg_corsi` DISABLE KEYS */;
-INSERT INTO `colleg_corsi` VALUES (4,1,2017,2017,'mutuato');
+INSERT INTO `colleg_corsi` VALUES (1,4,2017,2017,'mutuato');
 /*!40000 ALTER TABLE `colleg_corsi` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -156,9 +156,6 @@ CREATE TABLE `descrizione_en` (
   `Mod_Insegnamento` text NOT NULL,
   `Sillabo` text NOT NULL,
   `Note` text,
-  `Homepage` text,
-  `Forum` text,
-  `Risorse_ext` text,
   PRIMARY KEY (`Corso`,`AnnoCorso`),
   CONSTRAINT `descrizione_en_ibfk_1` FOREIGN KEY (`Corso`, `AnnoCorso`) REFERENCES `corso` (`IDCorso`, `Anno`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -170,7 +167,7 @@ CREATE TABLE `descrizione_en` (
 
 LOCK TABLES `descrizione_en` WRITE;
 /*!40000 ALTER TABLE `descrizione_en` DISABLE KEYS */;
-INSERT INTO `descrizione_en` VALUES (1,2017,'','','','','','','','',''),(1,2018,'','','','','','','','',''),(2,2018,'','','','','','','','',''),(3,2018,'<p>Things</p>','<p>Things</p>','','','<p>Syllabus</p>','<p>Notes</p>','homepage','forum','resources'),(4,2017,'','','','','','','','','');
+INSERT INTO `descrizione_en` VALUES (1,2017,'','','','','',''),(1,2018,'','','','','',''),(2,2018,'','','','','',''),(3,2018,'<p>Things</p>','<p>Things</p>','','','<p>Syllabus</p>','<p>Notes</p>'),(4,2017,'','','','','','');
 /*!40000 ALTER TABLE `descrizione_en` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -190,9 +187,6 @@ CREATE TABLE `descrizione_it` (
   `Mod_Insegnamento` text NOT NULL,
   `Sillabo` text NOT NULL,
   `Note` text,
-  `Homepage` text,
-  `Forum` text,
-  `Risorse_ext` text,
   PRIMARY KEY (`Corso`,`AnnoCorso`),
   CONSTRAINT `descrizione_it_ibfk_1` FOREIGN KEY (`Corso`, `AnnoCorso`) REFERENCES `corso` (`IDCorso`, `Anno`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -204,7 +198,7 @@ CREATE TABLE `descrizione_it` (
 
 LOCK TABLES `descrizione_it` WRITE;
 /*!40000 ALTER TABLE `descrizione_it` DISABLE KEYS */;
-INSERT INTO `descrizione_it` VALUES (1,2017,'<p>aaaaaaaaa</p>','<p>aaaaaaaaaaaaaa</p>','<p>aaaaaaaaaaaaaaaa</p>','<p>aaaaaaaaaaaaa</p>','','','','',''),(1,2018,'<p>aaaaaaaaa</p>','<p>aaaaaaaaaaaaaa</p>','<p>aaaaaaaaaaaaaaaa</p>','<p>aaaaaaaaaaaaa</p>','','','','',''),(2,2018,'<p>Algebra</p>','<p>Imparare le basi di dati</p>','<p>scritto</p>','<p>lezioni frontali</p>','<ul>\r\n<li>1</li>\r\n<li>2</li>\r\n<li>3</li>\r\n</ul>','<p>nessuna</p>','','',''),(3,2018,'<ul>\r\n<li>Prerequisiti vari</li>\r\n<li>Prerequisiti vari</li>\r\n</ul>','<ul>\r\n<li>Obiettivi vari</li>\r\n<li>Obiettivi vari</li>\r\n</ul>','<p>Modalit&agrave; d\'esame</p>','<p>Modalit&agrave; Insegnamento</p>','<ul>\r\n<li>Sillabo</li>\r\n<li>Sillabo</li>\r\n</ul>','<p>Note varie</p>','homepage','forum','risorse'),(4,2017,'<p>sdgjfhdsdh&agrave;kjdfh&agrave;d</p>','','','','','','','','');
+INSERT INTO `descrizione_it` VALUES (1,2017,'<p>aaaaaaaaa</p>','<p>aaaaaaaaaaaaaa</p>','<p>aaaaaaaaaaaaaaaa</p>','<p>aaaaaaaaaaaaa</p>','',''),(1,2018,'<p>aaaaaaaaa</p>','<p>aaaaaaaaaaaaaa</p>','<p>aaaaaaaaaaaaaaaa</p>','<p>aaaaaaaaaaaaa</p>','',''),(2,2018,'<p>Algebra</p>','<p>Imparare le basi di dati</p>','<p>scritto</p>','<p>lezioni frontali</p>','<ul>\r\n<li>1</li>\r\n<li>2</li>\r\n<li>3</li>\r\n</ul>','<p>nessuna</p>'),(3,2018,'<ul>\r\n<li>Prerequisiti vari</li>\r\n<li>Prerequisiti vari</li>\r\n</ul>','<ul>\r\n<li>Obiettivi vari</li>\r\n<li>Obiettivi vari</li>\r\n</ul>','<p>Modalit&agrave; d\'esame</p>','<p>Modalit&agrave; Insegnamento</p>','<ul>\r\n<li>Sillabo</li>\r\n<li>Sillabo</li>\r\n</ul>','<p>Note varie</p>'),(4,2017,'<p>sdgjfhdsdh&agrave;kjdfh&agrave;d</p>','','','','','');
 /*!40000 ALTER TABLE `descrizione_it` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -353,7 +347,7 @@ CREATE TABLE `group_services` (
 
 LOCK TABLES `group_services` WRITE;
 /*!40000 ALTER TABLE `group_services` DISABLE KEYS */;
-INSERT INTO `group_services` VALUES (1,1),(2,2),(1,3),(1,4),(1,5),(1,6),(2,7),(1,8),(2,9),(1,10),(2,11),(1,12),(1,13),(2,14),(1,15),(2,16),(1,17),(1,18),(1,19),(1,20),(2,21),(1,22),(1,23),(1,24),(1,25),(1,26);
+INSERT INTO `group_services` VALUES (1,1),(2,2),(1,3),(1,4),(1,5),(1,6),(2,7),(1,8),(2,9),(1,10),(2,11),(1,12),(1,13),(2,14),(1,15),(2,16),(1,17),(1,18),(1,19),(1,20),(2,21),(1,22),(1,23),(1,24),(1,25),(1,26),(1,27),(2,27),(1,28),(1,29);
 /*!40000 ALTER TABLE `group_services` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -434,6 +428,34 @@ CREATE TABLE `libro` (
 LOCK TABLES `libro` WRITE;
 /*!40000 ALTER TABLE `libro` DISABLE KEYS */;
 /*!40000 ALTER TABLE `libro` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `links`
+--
+
+DROP TABLE IF EXISTS `links`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `links` (
+  `Corso` int(11) NOT NULL,
+  `AnnoCorso` int(11) NOT NULL,
+  `Homepage` text,
+  `Forum` text,
+  `Elearning` text,
+  `Risorse_ext` text,
+  PRIMARY KEY (`Corso`,`AnnoCorso`),
+  CONSTRAINT `links_ibfk_1` FOREIGN KEY (`Corso`, `AnnoCorso`) REFERENCES `corso` (`IDCorso`, `Anno`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `links`
+--
+
+LOCK TABLES `links` WRITE;
+/*!40000 ALTER TABLE `links` DISABLE KEYS */;
+/*!40000 ALTER TABLE `links` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -531,7 +553,7 @@ CREATE TABLE `servizio` (
   `Nome` varchar(50) NOT NULL,
   `Metodo` varchar(6) NOT NULL,
   PRIMARY KEY (`IDServizio`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -540,7 +562,7 @@ CREATE TABLE `servizio` (
 
 LOCK TABLES `servizio` WRITE;
 /*!40000 ALTER TABLE `servizio` DISABLE KEYS */;
-INSERT INTO `servizio` VALUES (1,'Backoffice',''),(2,'BackofficeD',''),(3,'Corsianno',''),(4,'CreateAdmin',''),(5,'CreateCDL',''),(6,'CreateCorso',''),(7,'CreateCorsoD',''),(8,'LibroNew',''),(9,'LibroNewD',''),(10,'LibroUp',''),(11,'LibroUpD',''),(12,'Log',''),(13,'MaterialeNew',''),(14,'MaterialeNewD',''),(15,'MaterialeUp',''),(16,'MaterialeUpD',''),(17,'ModificaCDL',''),(18,'ModificaCorso',''),(19,'ModificaDocente',''),(20,'Profile',''),(21,'ProfileD',''),(22,'RegisterDocente',''),(23,'users','GET'),(24,'users','POST'),(25,'users','PUT'),(26,'users','DELETE');
+INSERT INTO `servizio` VALUES (1,'Backoffice',''),(2,'BackofficeD',''),(3,'Corsianno',''),(4,'CreateAdmin',''),(5,'CreateCDL',''),(6,'CreateCorso',''),(7,'CreateCorsoD',''),(8,'LibroNew',''),(9,'LibroNewD',''),(10,'LibroUp',''),(11,'LibroUpD',''),(12,'Log',''),(13,'MaterialeNew',''),(14,'MaterialeNewD',''),(15,'MaterialeUp',''),(16,'MaterialeUpD',''),(17,'ModificaCDL',''),(18,'ModificaCorso',''),(19,'ModificaDocente',''),(20,'Profile',''),(21,'ProfileD',''),(22,'RegisterDocente',''),(23,'users','GET'),(24,'users','POST'),(25,'users','PUT'),(26,'users','DELETE'),(27,'courses','PUT'),(28,'courses','POST'),(29,'courses','DELETE');
 /*!40000 ALTER TABLE `servizio` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -591,7 +613,7 @@ CREATE TABLE `utente` (
   KEY `Gruppo` (`Gruppo`),
   CONSTRAINT `utente_ibfk_1` FOREIGN KEY (`Gruppo`) REFERENCES `gruppo` (`IDGruppo`),
   CONSTRAINT `utente_ibfk_2` FOREIGN KEY (`Docente`) REFERENCES `docente` (`IDDocente`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -621,4 +643,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-11-05 12:20:00
+-- Dump completed on 2018-11-08 12:25:03
