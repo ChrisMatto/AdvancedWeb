@@ -45,7 +45,7 @@ public class CorsoCompleto extends Corso {
         links = null;
     }
 
-    public CorsoCompleto(Corso corso) {
+    public CorsoCompleto(Corso corso, String baseUri) {
         super();
         if (corso == null) {
             return;
@@ -67,7 +67,7 @@ public class CorsoCompleto extends Corso {
         dublinoEn = DataAccess.getDublinoEn(super.getIdCorso(), super.getAnno());
         libri = DataAccess.getLibriInCorso(super.getIdCorso(), super.getAnno());
         materiale = DataAccess.getMaterialeCorso(super.getIdCorso(), super.getAnno());
-        relazioni = DataAccess.getRelazioniCorso(super.getIdCorso(), super.getAnno());
+        relazioni = DataAccess.getRelazioniCorso(super.getIdCorso(), super.getAnno(), baseUri);
         links = DataAccess.getLinks(super.getIdCorso(), super.getAnno());
     }
 

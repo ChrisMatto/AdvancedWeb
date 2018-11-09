@@ -83,11 +83,17 @@ public class CoursesAPI implements Resource {
     @Path("{year}/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCorso(@PathParam("id") int id, @PathParam("year") String year) {
+    public Response getCorso(@PathParam("id") int id, @PathParam("year") String year, @Context UriInfo uriInfo) {
         int anno = Utils.getYear(year);
         Corso corso = DataAccess.getCorso(id, anno);
+        String baseUri;
+        if (token != null) {
+            baseUri = uriInfo.getBaseUri() + "auth/" + token +"/courses/";
+        } else {
+            baseUri = uriInfo.getBaseUri() + "courses/";
+        }
         if (corso != null) {
-            return Response.ok(new CorsoCompleto(corso)).build();
+            return Response.ok(new CorsoCompleto(corso, baseUri)).build();
         }
         return Response.noContent().build();
     }
@@ -95,11 +101,17 @@ public class CoursesAPI implements Resource {
     @Path("{year}/{id}/{lingua:it|en}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCorsoLingua(@PathParam("id") int id, @PathParam("year") String year, @PathParam("lingua") String lingua) throws JsonProcessingException {
+    public Response getCorsoLingua(@PathParam("id") int id, @PathParam("year") String year, @PathParam("lingua") String lingua, @Context UriInfo uriInfo) throws JsonProcessingException {
         int anno = Utils.getYear(year);
         Corso corso = DataAccess.getCorso(id, anno);
+        String baseUri;
+        if (token != null) {
+            baseUri = uriInfo.getBaseUri() + "auth/" + token +"/courses/";
+        } else {
+            baseUri = uriInfo.getBaseUri() + "courses/";
+        }
         if (corso != null) {
-            CorsoCompleto corsoCompleto = new CorsoCompleto(corso);
+            CorsoCompleto corsoCompleto = new CorsoCompleto(corso, baseUri);
             ObjectMapper mapper = new ObjectMapper();
             String jsonCorso;
             if (lingua.equals("it")) {

@@ -719,6 +719,43 @@ public class DataAccess {
                 .orElse(null);
     }
 
+    public static List<Cdl> getAllCdl() {
+        return stream.streamAll(em, Cdl.class)
+                .toList();
+    }
+
+    public static List<Cdl> getCdlTriennali() {
+        return stream.streamAll(em, Cdl.class)
+                .where(cdl -> cdl.getMagistrale() == 0)
+                .toList();
+    }
+
+    public static List<Cdl> getCdlMagistrali() {
+        return stream.streamAll(em, Cdl.class)
+                .where(cdl -> cdl.getMagistrale() == 1)
+                .toList();
+    }
+
+    public static Cdl getCdl(int id) {
+        return stream.streamAll(em, Cdl.class)
+                .where(cdl -> cdl.getIdcdl() == id)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static List<Corso> getCorsiInCdl(int idCdl) {
+        return stream.streamAll(em, CorsiCdl.class)
+                .where(corsiCdl -> corsiCdl.getCdl() == idCdl)
+                .join((c, source) -> source.stream(Corso.class))
+                .where(corsiCdlCorsoPair -> corsiCdlCorsoPair.getOne().getCorso() == corsiCdlCorsoPair.getTwo().getIdCorso() && corsiCdlCorsoPair.getOne().getAnnoCorso() == corsiCdlCorsoPair.getTwo().getAnno())
+                .select(Pair::getTwo)
+                .toList();
+    }
+
+    public static void insertCdl() {
+
+    }
+
     public static List<Integer> getUtenti() {
         return stream.streamAll(em, Utente.class)
                 .select(Utente::getIdUtente)

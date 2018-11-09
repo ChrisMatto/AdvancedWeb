@@ -20,6 +20,34 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Advanced Web</title>
+
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+
+
+    <!-- Favicons-->
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon"/>
+    <link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png"/>
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png" />
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="img/apple-touch-icon-114x114-precomposed.png" />
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="img/apple-touch-icon-144x144-precomposed.png" />
+
+    <!-- REVOLUTION BANNER CSS SETTINGS -->
+    <link href="rs-plugin/css/settings.css" media="screen" rel="stylesheet">
+
+    <!-- CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/superfish.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="fontello/css/fontello.css" rel="stylesheet">
+
+    <link href="css/multiple-select.css" rel="stylesheet">
+    <link href="css/my.css" rel="stylesheet">
+
+    <!-- Toggle Switch -->
+    <link rel="stylesheet" href="css/jquery.switch.css">
+    <link href="check_radio/skins/square/aero.css" rel="stylesheet">
+
   </head>
   <body>
     <noscript>
@@ -36,5 +64,145 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+
+    <!-- JQUERY -->
+    <script src="js/jquery-1.10.2.min.js"></script>
+        
+    <script src="js/jquery-2.2.4.min.js"></script>
+    <!-- jQuery REVOLUTION Slider  -->
+    <script type="text/javascript" src="rs-plugin/js/jquery.themepunch.plugins.min.js"></script>
+    <script type="text/javascript" src="rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
+
+    <script type="text/javascript">
+        var revapi;
+
+        jQuery(document).ready(function () {
+
+            revapi = jQuery('.tp-banner').revolution({
+                delay: 9000,
+                startwidth: 1700,
+                startheight: 600,
+                hideThumbs: true,
+                navigationType: "none",
+                fullWidth: "on",
+                forceFullWidth: "on"
+            });
+
+        }); //ready
+    </script>
+
+
+
+
+
+    <!-- Wizard-->
+    <script src="js/jquery-ui-1.8.12.min.js"></script>
+    <script src="js/jquery.wizard.js"></script>
+    <script src="js/jquery.validate.js"></script>
+    <script src="check_radio/jquery.icheck.js"></script>
+
+
+    <!-- OTHER JS -->
+    <script src="js/superfish.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/retina.min.js"></script>
+    <script src="assets/validate.js"></script>
+    <script src="js/jquery.placeholder.js"></script>
+    <script src="js/classie.js"></script>
+    <script src="js/uisearch.js"></script>
+    <script src="js/multiple-select.js"></script>
+    <script src="js/wizard_func.js"></script>
+    <script src="js/addInput.js"></script>
+    <script src="js/visiblepwd.js"></script>
+    <script src="js/checkpassword.js"></script>
+    <script defer src="js/fontawesome-all.min.js"></script>
+    <script>
+        new UISearch(document.getElementById('sb-search'));
+    </script>
+    <script src="js/my.js"></script>
+    <script src="js/validate.js"></script>
+    <script src="js/addInput.js"></script>
+
+
+
+
+    <!--Tinymce plugin-->
+    <script src="path/to/tinymce/js/tinymce.min.js"></script>
+    <script src="path/to/tinymce/js/jquery.tinymce.min.js"></script>
+
+
+
+    <script type="text/javascript">
+        tinymce.init({
+            selector: '.tinymce1',
+            theme: 'modern',
+            width: 700,
+            content_css: 'css/style.css',
+            plugins: "lists",
+
+        });
+    </script>
+
+    <script type="text/javascript">
+        tinymce.init({
+            selector: '.tinymce2',
+            theme: 'modern',
+            width: 900,
+            content_css: 'css/style.css',
+            plugins: "lists",
+        });
+    </script>
+
+    <script type="text/javascript">
+        tinyMCE.init({
+            selector: '.tinymce', // change this value according to your HTML
+            menu: false,
+            branding: false,
+            statusbar: false,
+            toolbar: "numlist bullist",
+        });
+    </script>
+
+
+    <script>
+        $("#special1").multipleSelect({
+            placeholder: "Seleziona i docenti",
+            width: 250,
+            filter: true,
+
+        });
+    </script>
+    <script>
+        $("#special-cazzafà").multipleSelect({
+            placeholder: "Seleziona i corsi",
+            width: 200,
+            filter: true,
+        });
+    </script>
+    <script>
+        $("#special-cazzafò").multipleSelect({
+            placeholder: "Seleziona il cdl",
+            width: 200,
+            filter: true,
+        });
+    </script>
+    <script>
+        $("#special2").multipleSelect({
+            placeholder: "Seleziona i cdl",
+            width: 250,
+            filter: true,
+        });
+    </script>
+
+    <script src="https://unpkg.com/jquery-grouprequired@2.0.6/dist/jquery.grouprequired.min.js"></script>
+
+    <script src="js/checkSelect.js"></script>
+    <script src="js/chosen.jquery.js"></script>
+    <script src="js/homeMaker.js"></script>
+    <script src="js/Mustache.js"></script>
+    <script src="js/bodychange.js"></script>
+    <script src="js/compareStrings.js"></script>
+    <script src="js/table_filter.js"></script>
+
   </body>
 </html>

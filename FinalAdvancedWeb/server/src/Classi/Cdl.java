@@ -152,4 +152,18 @@ public class Cdl {
     public int hashCode() {
         return Objects.hash(idcdl, nomeIt, nomeEn, anno, cfu, magistrale, immagine, descrizioneIt, descrizioneEn, abbrIt, abbrEn);
     }
+
+    public void copyFrom(Cdl cdl) {
+        this.idcdl = cdl.idcdl;
+        this.anno = cdl.anno;
+        this.nomeIt = cdl.nomeIt;
+        this.nomeEn = cdl.nomeEn;
+        this.cfu = cdl.cfu;
+        this.magistrale = cdl.magistrale;
+        this.immagine = cdl.immagine;
+        this.descrizioneIt = cdl.descrizioneIt;
+        this.descrizioneEn = cdl.descrizioneEn;
+        this.abbrIt = cdl.abbrIt;
+        this.abbrEn = cdl.abbrEn;
+    }
 }

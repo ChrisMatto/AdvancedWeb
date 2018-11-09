@@ -27,7 +27,7 @@ class Banner extends React.Component {
             </div>
         </div>
     </div>
-    <div className="divider_top"></div>
+    <div className="divider_top"/>
     </section>
         );
     }
