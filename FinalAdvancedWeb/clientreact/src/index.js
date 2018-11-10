@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Header, Nav} from './pages/header_nav_footer';
+import {Header, Nav, Footer} from './pages/header_nav_footer';
 
 class Page extends React.Component {
 
@@ -56,6 +56,7 @@ class Page extends React.Component {
             <div>
                 <Header onClick = {this.changePage}/>
                 <Nav lingua = {this.state.lingua} onPageChange = {this.changePage} onLinguaChange = {this.changeLingua}/>
+                <Footer lingua = {this.state.lingua} onPageChange = {this.changePage}/>
             </div>
         );
     }

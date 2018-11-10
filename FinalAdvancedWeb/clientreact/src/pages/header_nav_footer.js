@@ -89,4 +89,130 @@ class Nav extends React.Component {
     }
 }
 
-export {Header, Nav};
+class Footer extends React.Component {
+
+    getFooterLink(page) {
+        var text;
+        switch (page) {
+            case "home":
+                text = "Home";
+                break;
+            case "listacorsi":
+                if (this.props.lingua === "it") {
+                    text = "Corsi";
+                } else {
+                    text = "Courses";
+                }
+                break;
+            case "insegnanti":
+                if (this.props.lingua === "it") {
+                    text = "Insegnanti";
+                } else {
+                    text = "Teachers";
+                }
+                break;
+        }
+        return (
+            <a onClick ={() => this.props.onPageChange(page)}>{text}</a>
+        );
+    }
+
+    getAboutLink(link) {
+        var text;
+        switch (link) {
+            case "about":
+                if (this.props.lingua === "it") {
+                    text = "Su di Noi";
+                } else {
+                    text = "About Us";
+                }
+                break;
+            case "apply":
+                if (this.props.lingua === "it") {
+                    text = "Segnati";
+                } else {
+                    text = "Apply";
+                }
+                break;
+            case "terms_conditions":
+                if (this.props.lingua === "it") {
+                    text = "Termini e Condizioni";
+                } else {
+                    text = "Terms and Conditions";
+                }
+                break;
+            case "register":
+                if (this.props.lingua === "it") {
+                    text = "Registrati";
+                } else {
+                    text = "Register";
+                }
+                break;
+        }
+        return (
+            <a>{text}</a>
+        );
+    }
+
+    render() {
+        var browse;
+        var courses;
+        var about;
+        if (this.props.lingua == "it") {
+            browse = "Naviga";
+            courses = "Tutti i Corsi";
+            about = "Su Learn";
+        } else {
+            browse = "Browse";
+            courses = "All Courses";
+            about = "About Learn";
+        }
+        return (
+            <footer>
+                <hr/>
+                <div className = "container" id = "nav-footer">
+                    <div className = "row text-left">
+                        <div className = "col-md-4 col-sm-4">
+                            <h4>{browse}</h4>
+                            <ul>
+                                <li>
+                                    {this.getFooterLink("home")}
+                                </li>
+                                <li>
+                                    {this.getFooterLink("insegnanti")}
+                                </li>
+                            </ul>
+                        </div>
+                        <div className = "col-md-4 col-sm-4">
+                            <h4>{courses}</h4>
+                            <ul>
+                                <li>
+                                    {this.getFooterLink("listacorsi")}
+                                </li>
+                            </ul>
+                        </div>
+                        <div className = "col-md-4 col-sm-4">
+                            <h4>{about}</h4>
+                            <ul>
+                                <li>
+                                    {this.getAboutLink("about")}
+                                </li>
+                                <li>
+                                    {this.getAboutLink("apply")}
+                                </li>
+                                <li>
+                                    {this.getAboutLink("terms_conditions")}
+                                </li>
+                                <li>
+                                    {this.getAboutLink("register")}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        );
+    }
+}
+
+export {Header, Nav, Footer};
