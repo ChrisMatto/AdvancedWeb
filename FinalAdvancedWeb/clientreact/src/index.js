@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Header, Nav, Footer} from './pages/header_nav_footer';
+import Home from './pages/home';
 
 class Page extends React.Component {
 
     constructor() {
         super();
+        localStorage.clear();
         this.state = {
             page: "home",
             lingua: "it",
@@ -56,6 +58,7 @@ class Page extends React.Component {
             <div>
                 <Header onClick = {this.changePage}/>
                 <Nav lingua = {this.state.lingua} onPageChange = {this.changePage} onLinguaChange = {this.changeLingua}/>
+                <Home/>
                 <Footer lingua = {this.state.lingua} onPageChange = {this.changePage}/>
             </div>
         );
