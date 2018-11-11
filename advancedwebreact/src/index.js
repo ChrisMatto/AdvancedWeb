@@ -123,7 +123,7 @@ class Body extends React.Component {
             cdl: [],
             cdlm: [],
         };
-        fetch('http://localhost:8080/AdvancedWeb/rest/cdl/triennaleRandom')
+        /*fetch('http://localhost:8080/AdvancedWeb/rest/cdl/triennaleRandom')
         .then(res => res.json())
         .then((result) => {
             var array = [];
@@ -144,7 +144,7 @@ class Body extends React.Component {
             this.setState({
                 cdlm: array,
             });
-        });
+        });*/
     }
     render() {
         var cdl = this.state.cdl.slice();

@@ -158,7 +158,7 @@ class Footer extends React.Component {
         var browse;
         var courses;
         var about;
-        if (this.props.lingua == "it") {
+        if (this.props.lingua === "it") {
             browse = "Naviga";
             courses = "Tutti i Corsi";
             about = "Su Learn";
