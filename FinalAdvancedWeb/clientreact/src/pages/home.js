@@ -58,13 +58,9 @@ class Home extends React.Component {
     }
 
     render() {
-        var cdl = this.state.cdl.slice(1, 4).sort(() => Math.random - 0.5);
-        var cdlm = this.state.cdlm.slice(1, 4).sort(() => Math.random - 0.5);
-        var cdlRows = [];
+        var cdl = this.state.cdl.slice().sort(() => Math.random - 0.5).slice(0,4);
+        var cdlm = this.state.cdlm.slice().sort(() => Math.random - 0.5).slice(0,4);
         var cdlmRows = [];
-        for (var c in cdl) {
-            cdlRows.push(<Cdl lingua = {this.props.lingua} onPageChange = {this.props.onPageChange} cdl = {cdl[c]}/>)
-        }
         for (var cm in cdlm) {
             cdlmRows.push(<Cdl lingua = {this.props.lingua} onPageChange = {this.props.onPageChange} cdl = {cdlm[cm]}/>)
         }
@@ -72,7 +68,47 @@ class Home extends React.Component {
             <React.Fragment>
                 <Slider lingua = {this.props.lingua}/>
                 <UnderSlider lingua = {this.props.lingua}/>
+                <CdlSection lingua = {this.props.lingua} onPageChange = {this.props.onPageChange} cdlList = {cdl}/>
             </React.Fragment>
+        );
+    }
+}
+
+function CdlSection(props) {
+    var cdlList = props.cdlList
+    var cdlRows = [];
+    for (var c in cdlList) {
+        cdlRows.push(<Cdl lingua = {props.lingua} onPageChange = {props.onPageChange} cdl = {cdlList[c]}/>)
+    }
+    if (props.lingua === "it") {
+        return (
+            <section id="main_content_gray">
+                <div className = "container">
+                    <div className = "row">
+                        <div className = "col-md-12 text-center">
+                            <h2>I Nostri Corsi di Laurea</h2>
+                            <p className = "lead"> Esplora La Nostra Offerta Formativa </p>
+                        </div>
+                    </div>
+                    {cdlRows}
+                    <a onClick = {() => props.onPageChange("listacorsi")} className = "button_medium_outline pull-right">Vedi Tutti i Corsi</a>
+                </div>
+            </section>
+        );
+    } else {
+        return (
+            <section id="main_content_gray">
+                <div className = "container">
+                    <div className = "row">
+                        <div className = "col-md-12 text-center">
+                            <h2>Our Courses</h2>
+                            <p className = "lead"> Explore Our Training Offer </p>
+                        </div>
+                    </div>
+                    {cdlRows}
+                    <a onClick = {() => props.onPageChange("listacorsi")} className = "button_medium_outline pull-right">See All Courses</a>
+                </div>
+            </section>
         );
     }
 }
@@ -108,7 +144,7 @@ function Cdl(props) {
         <div  className="col-lg-3 col-md-6 col-sm-6" key = {cdl["idcdl"]}>
             <div className="col-item">
                 <div className="photo">
-                    <a onClick = {props.onPageChange("listacorsi")}><img src={cdl['immagine']} alt="cdlimmagine"/></a>
+                    <a onClick = {() => props.onPageChange("listacorsi")}><img src={cdl['immagine']} alt="cdlimmagine"/></a>
                     <div className="cat_row" >{nome}<span className="pull-right"><i className="fas fa-university"></i></span></div>
                 </div>
                 <div className="info">
@@ -121,7 +157,7 @@ function Cdl(props) {
                         </div>
                     </div>
                     <div className="separator clearfix">
-                        <p className="btn-add" id="cdlink"><a onClick = {props.onPageChange("listacorsi")}><i className="icon-export-4"></i></a></p>
+                        <p className="btn-add" id="cdlink"><a onClick = {() => props.onPageChange("listacorsi")}><i className="icon-export-4"></i></a></p>
                     </div>
                 </div>
             </div>
