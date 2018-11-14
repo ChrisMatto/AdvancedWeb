@@ -2,29 +2,26 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Header, Nav, Footer} from './pages/header_nav_footer';
 import Home from './pages/home';
+import ListaCorsi from './pages/listacorsi';
 
 class Page extends React.Component {
 
     constructor() {
         super();
+        var lingua;
+        if (localStorage.getItem('lingua') != null) {
+            lingua = localStorage.getItem('lingua');
+        } else {
+            lingua = "it";
+            localStorage.setItem('lingua', lingua);
+        }
         this.state = {
             page: "home",
-            lingua: "it",
+            lingua: lingua,
         };
-        let data = new Date();
-        var oldData = localStorage.getItem('data');
-        if (oldData != null) {
-            oldData = new Date(oldData);
-            if (oldData.getFullYear() !== data.getFullYear() || oldData.getMonth() !== data.getMonth() || oldData.getDate() !== data.getDate()) {
-                localStorage.clear();
-                localStorage.setItem('data', data);
-            }
-        } else {
-            localStorage.clear();
-            localStorage.setItem('data', data);
-        }
         this.changePage = this.changePage.bind(this);
         this.changeLingua = this.changeLingua.bind(this);
+        this.getBody = this.getBody.bind(this);
     }
 
     changePage(page) {
@@ -57,21 +54,34 @@ class Page extends React.Component {
             this.setState({
                 lingua: "it",
             });
+            localStorage.setItem('lingua', "it");
         } else {
             this.setState({
                 lingua: "en",
             });
+            localStorage.setItem('lingua', "en");
+        }
+    }
+
+    getBody() {
+        switch (this.state.page) {
+            case "home":
+                return <Home lingua = {this.state.lingua} onPageChange = {this.changePage}/>;
+            case "listacorsi":
+                return <ListaCorsi/>;
+            case "reload":
+                window.location.reload();
         }
     }
 
     render() {
         return (
-            <div>
+            <React.Fragment>
                 <Header onClick = {this.changePage}/>
                 <Nav lingua = {this.state.lingua} onPageChange = {this.changePage} onLinguaChange = {this.changeLingua}/>
-                <Home lingua = {this.state.lingua} onPageChange = {this.changePage}/>
+                <this.getBody/>
                 <Footer lingua = {this.state.lingua} onPageChange = {this.changePage}/>
-            </div>
+            </React.Fragment>
         );
     }
 }

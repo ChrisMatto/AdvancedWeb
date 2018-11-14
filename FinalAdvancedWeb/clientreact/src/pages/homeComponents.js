@@ -666,4 +666,244 @@ function UnderSlider(props) {
     }
 }
 
-export {Slider, UnderSlider};
+function VariousThings(props) {
+    if (props.lingua === "it") {
+        return (
+            <div className="container">
+                <div className="row">
+                    <div className="col-md-3 col-sm-6">
+                        <h4><a onClick = {() => props.onPageChange("insegnanti")}>Docenti</a></h4>
+                        <p><img src="img/pic_1.jpg" alt="Pic" className="img-responsive"/></p>
+                        <p>Non c'&#232; molto altro da dire sui nostri docenti, se non che sono incredibili!</p> 
+                    </div>
+                    
+                    <div className="col-md-3 col-sm-6">
+                        <h4>Classi</h4>
+                        <p><img src="img/pic_2.jpg" alt="Pic" className="img-responsive"/></p>
+                        <p>Le nostre aule sono le pi&#249; tecnologiche!</p> 
+                    </div>
+                    
+                    <div className="col-md-3 col-sm-6">
+                        <h4>Aule studio</h4>
+                        <p><img src="img/pic_3.jpg" alt="Pic" className="img-responsive"/></p>
+                        <p>E si, abbiamo anche delle aule dove si pu&#242; studiare in pace.</p> 
+                    </div>
+                    
+                    <div className="col-md-3 col-sm-6">
+                        <h4>Link Rapidi</h4>
+                        <ul className="list_1">
+                            <li><a onClick = {() => props.onPageChange("reload")}>Homepage</a></li>
+                            <li><a onClick = {() => props.onPageChange("listacorsi")}>Corsi</a></li>
+                            <li><a onClick = {() => props.onPageChange("insegnanti")}>Docenti</a></li>
+                        </ul>
+                    </div>
+                    
+                </div>
+                
+                <hr className="add_bottom_30"/>
+                <div className="row">
+                    <div className="col-md-12">
+                        <p><img src="img/sponsors.jpg" alt="Pic" className="img-responsive"/></p>
+                    </div>
+                </div>
+            </div>
+        );
+    } else {
+        return (
+            <div className="container">
+                <div className="row">
+                    <div className="col-md-3 col-sm-6">
+                        <h4><a onClick = {() => props.onPageChange("insegnanti")}>Teachers</a></h4>
+                        <p><img src="img/pic_1.jpg" alt="Pic" className="img-responsive"/></p>
+                        <p>We can't say other things on our teachers; they are incredibile!</p>
+                    </div>
+                    
+                    <div className="col-md-3 col-sm-6">
+                        <h4>Classrooms</h4>
+                        <p><img src="img/pic_2.jpg" alt="Pic" className="img-responsive"/></p>
+                        <p>We got the most advanced classrooms!</p>
+                    </div>
+                    
+                    <div className="col-md-3 col-sm-6">
+                        <h4>Study Rooms</h4>
+                        <p><img src="img/pic_3.jpg" alt="Pic" className="img-responsive"/></p>
+                        <p>And yeah, we also got some classrooms where you can study in peace</p>
+                    </div>
+                    
+                    <div className="col-md-3 col-sm-6">
+                        <h4>Quick Links</h4>
+                        <ul className="list_1">
+                            <li><a onClick = {() => props.onPageChange("reload")}>Homepage</a></li>
+                            <li><a onClick = {() => props.onPageChange("listacorsi")}>Courses</a></li>
+                            <li><a onClick = {() => props.onPageChange("insegnanti")}>Reachers</a></li>
+                        </ul>
+                    </div>
+                    
+                </div>
+                
+                <hr className="add_bottom_30"/>
+                <div className="row">
+                    <div className="col-md-12">
+                        <p><img src="img/sponsors.jpg" alt="Pic" className="img-responsive"/></p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+function Testimonials(props) {
+    if (props.lingua === "it") {
+        return (
+            <section id="testimonials">
+                <div className="container">
+                    <div className="row">
+                        <div className='col-md-offset-2 col-md-8 text-center'>
+                            <h2>Coda dicono di noi</h2>
+                        </div>
+                    </div>
+                    <div className='row'>
+                        <div className='col-md-offset-2 col-md-8'>
+                            <div className="carousel slide" data-ride="carousel" id="quote-carousel">
+                                
+                                <ol className="carousel-indicators">
+                                    <li data-target="#quote-carousel" data-slide-to="0" className="active"></li>
+                                    <li data-target="#quote-carousel" data-slide-to="1"></li>
+                                    <li data-target="#quote-carousel" data-slide-to="2"></li>
+                                </ol>
+                                
+                                <div className="carousel-inner">
+                                    
+                                    <div className="item active">
+                                        <blockquote>
+                                            <div className="row">
+                                                <div className="col-sm-3 text-center">
+                                                    <img className="img-circle" src="img/testimonial_1.jpg" alt=""/>
+                                                </div>
+                                                <div className="col-sm-9">
+                                                    <p>
+                                                        Incredibile!
+                                                    </p>
+                                                    <small>Qualcuno di Famoso</small>
+                                                </div>
+                                            </div>
+                                        </blockquote>
+                                    </div>
+                                    
+                                    <div className="item">
+                                        <blockquote>
+                                            <div className="row">
+                                                <div className="col-sm-3 text-center">
+                                                    <img className="img-circle" src="img/testimonial_2.jpg" alt=""/>
+                                                </div>
+                                                <div className="col-sm-9">
+                                                    <p>
+                                                        La migliore scelta!
+                                                    </p>
+                                                    <small>Carla</small>
+                                                </div>
+                                            </div>
+                                        </blockquote>
+                                    </div>
+                                    
+                                    <div className="item">
+                                        <blockquote>
+                                            <div className="row">
+                                                <div className="col-sm-3 text-center">
+                                                    <img className="img-circle" src="img/testimonial_1.jpg" alt=""/>
+                                                </div>
+                                                <div className="col-sm-9">
+                                                    <p>
+                                                        Che universit&#224; ragazzi!
+                                                    </p>
+                                                    <small>Roberta</small>
+                                                </div>
+                                            </div>
+                                        </blockquote>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+    } else {
+        return (
+            <section id="testimonials">
+                <div className="container">
+                    <div className="row">
+                        <div className='col-md-offset-2 col-md-8 text-center'>
+                            <h2>What they say</h2>
+                        </div>
+                    </div>
+                    <div className='row'>
+                        <div className='col-md-offset-2 col-md-8'>
+                            <div className="carousel slide" data-ride="carousel" id="quote-carousel">
+                                
+                                <ol className="carousel-indicators">
+                                    <li data-target="#quote-carousel" data-slide-to="0" className="active"></li>
+                                    <li data-target="#quote-carousel" data-slide-to="1"></li>
+                                    <li data-target="#quote-carousel" data-slide-to="2"></li>
+                                </ol>
+                                
+                                <div className="carousel-inner">
+                                    
+                                    <div className="item active">
+                                        <blockquote>
+                                            <div className="row">
+                                                <div className="col-sm-3 text-center">
+                                                    <img className="img-circle" src="img/testimonial_1.jpg" alt=""/>
+                                                </div>
+                                                <div className="col-sm-9">
+                                                    <p>
+                                                        Incredible!
+                                                    </p>
+                                                    <small>Someone Famous</small>
+                                                </div>
+                                            </div>
+                                        </blockquote>
+                                    </div>
+                                    
+                                    <div className="item">
+                                        <blockquote>
+                                            <div className="row">
+                                                <div className="col-sm-3 text-center">
+                                                    <img className="img-circle" src="img/testimonial_2.jpg" alt=""/>
+                                                </div>
+                                                <div className="col-sm-9">
+                                                    <p>
+                                                        The Best Choice!
+                                                    </p>
+                                                    <small>Carla</small>
+                                                </div>
+                                            </div>
+                                        </blockquote>
+                                    </div>
+                                    
+                                    <div className="item">
+                                        <blockquote>
+                                            <div className="row">
+                                                <div className="col-sm-3 text-center">
+                                                    <img className="img-circle" src="img/testimonial_1.jpg" alt=""/>
+                                                </div>
+                                                <div className="col-sm-9">
+                                                    <p>
+                                                        What a University Boys!
+                                                    </p>
+                                                    <small>Roberta</small>
+                                                </div>
+                                            </div>
+                                        </blockquote>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+}
+
+export {Slider, UnderSlider, VariousThings, Testimonials};

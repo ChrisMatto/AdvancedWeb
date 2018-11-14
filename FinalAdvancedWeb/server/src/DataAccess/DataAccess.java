@@ -136,6 +136,7 @@ public class DataAccess {
             insertRelazioniCorso(corsoCompleto.getIdCorso(), corsoCompleto.getAnno(), corsoCompleto.getRelazioni().getMutuati(), "mutuato");
             insertRelazioniCorso(corsoCompleto.getIdCorso(), corsoCompleto.getAnno(), corsoCompleto.getRelazioni().getModulo(), "modulo");
         }
+        updateVersione("corso");
     }
 
     private static void insertDescrizioneIt(DescrizioneIt descrizioneIt) {
@@ -317,6 +318,7 @@ public class DataAccess {
             deleteRelazioniCorso(idCorso, year, "mutuato");
             deleteRelazioniCorso(idCorso, year, "modulo");
         }
+        updateVersione("corso");
     }
 
     private static void updateDescrizione(int idCorso, int year, Descrizione descrizione) {
@@ -951,6 +953,7 @@ public class DataAccess {
         entityTransaction.begin();
         em.remove(corso);
         entityTransaction.commit();
+        updateVersione("corso");
     }
 
     private static void deleteDescrizione(int idCorso, int year, Class classe) {
@@ -1056,6 +1059,36 @@ public class DataAccess {
         for (CollegCorsi colCorso : collegCorsi) {
             entityTransaction.begin();
             em.remove(colCorso);
+            entityTransaction.commit();
+        }
+    }
+
+    public static List<Versioni> getVersioni() {
+        return stream.streamAll(em, Versioni.class)
+                .toList();
+    }
+
+    public static Versioni getVersione(String tabella) {
+        return stream.streamAll(em, Versioni.class)
+                .where(versioni -> versioni.getTabella().equals(tabella))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static void updateVersione(String tabella) {
+        Random random = new Random();
+        int version = random.nextInt();
+        Versioni versione = stream.streamAll(em, Versioni.class)
+                .where(versioni -> versioni.getTabella().equals(tabella))
+                .findFirst()
+                .orElse(null);
+        if (versione != null) {
+            while (versione.getVersione() == version) {
+                version = random.nextInt();
+            }
+            versione.setVersione(version);
+            entityTransaction.begin();
+            em.persist(versione);
             entityTransaction.commit();
         }
     }

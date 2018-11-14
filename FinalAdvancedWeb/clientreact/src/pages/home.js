@@ -1,5 +1,5 @@
 import React from 'react';
-import {Slider, UnderSlider} from './homeComponents';
+import {Slider, UnderSlider, VariousThings, Testimonials} from './homeComponents';
 
 class Home extends React.Component {
     constructor() {
@@ -10,66 +10,69 @@ class Home extends React.Component {
         };
     }
 
-    componentDidMount() {
-        if (localStorage.getItem('cdlList') != null) {
-            this.setState({
-                cdl: JSON.parse(localStorage.getItem('cdlList')),
-            });
-        } else {
-            fetch('http://localhost:8080/AdvancedWeb/rest/cdl/triennale')
-                .then(res => res.json())
+    componentWillMount() {
+        var versione;
+        var localVersione = localStorage.getItem('versioneCdl');
+        fetch('http://localhost:8080/AdvancedWeb/rest/cdl/triennale')
+                .then(res =>  {versione = res.headers.get('versione'); return res.json()})
                 .then((result) => {
-                    var cdlList = [];
-                    for (var c in result) {
-                        fetch(result[c])
-                            .then(res => res.json())
-                            .then((result) => {
-                                cdlList.push(result);
-                                localStorage.setItem('cdlList', JSON.stringify(cdlList));
-                                this.setState({
-                                    cdl: cdlList,
+                    if (localVersione != null && versione === localVersione && localStorage.getItem('cdlList') != null) {
+                        this.setState({
+                            cdl: JSON.parse(localStorage.getItem('cdlList')),
+                        });
+                    } else {
+                        var cdlList = [];
+                        localStorage.setItem('versioneCdl', versione);
+                        for (var c in result) {
+                            fetch(result[c])
+                                .then(res => res.json())
+                                .then((result) => {
+                                    cdlList.push(result);
+                                    localStorage.setItem('cdlList', JSON.stringify(cdlList));
+                                    this.setState({
+                                        cdl: cdlList,
+                                    });
                                 });
-                            });
+                        }
                     }
                 });
-        }
-        if (localStorage.getItem('cdlmList') != null) {
-            this.setState({
-                cdlm: JSON.parse(localStorage.getItem('cdlmList')),
-            });
-        } else {
-            fetch('http://localhost:8080/AdvancedWeb/rest/cdl/magistrale')
-                .then(res => res.json())
-                .then((result) => {
-                    var cdlmList = [];
-                    for (var c in result) {
-                        fetch(result[c])
-                            .then(res => res.json())
-                            .then((result) => {
-                                cdlmList.push(result);
-                                localStorage.setItem('cdlmList', JSON.stringify(cdlmList));
-                                this.setState({
-                                    cdlm: cdlmList,
-                                });
-                            });
-                    }
+        fetch('http://localhost:8080/AdvancedWeb/rest/cdl/magistrale')
+        .then(res =>  {versione = res.headers.get('versione'); return res.json()})
+        .then((result) => {
+            if (localVersione != null && versione === localVersione && localStorage.getItem('cdlmList') != null) {
+                this.setState({
+                    cdlm: JSON.parse(localStorage.getItem('cdlmList')),
                 });
-        }
+            } else {
+                var cdlmList = [];
+                localStorage.setItem('versioneCdl', versione);
+                for (var c in result) {
+                    fetch(result[c])
+                        .then(res => res.json())
+                        .then((result) => {
+                            cdlmList.push(result);
+                            localStorage.setItem('cdlmList', JSON.stringify(cdlmList));
+                            this.setState({
+                                cdlm: cdlmList,
+                            });
+                        });
+                }
+            }
+        });
     }
 
     render() {
-        var cdl = this.state.cdl.slice().sort(() => Math.random - 0.5).slice(0,4);
-        var cdlm = this.state.cdlm.slice().sort(() => Math.random - 0.5).slice(0,4);
-        var cdlmRows = [];
-        for (var cm in cdlm) {
-            cdlmRows.push(<Cdl lingua = {this.props.lingua} onPageChange = {this.props.onPageChange} cdl = {cdlm[cm]}/>)
-        }
+        var cdl = this.state.cdl.slice().sort(() => Math.random() - 0.5).slice(0,4);
+        var cdlm = this.state.cdlm.slice().sort(() => Math.random() - 0.5).slice(0,4);
         return (
-            <React.Fragment>
+            <div>
                 <Slider lingua = {this.props.lingua}/>
                 <UnderSlider lingua = {this.props.lingua}/>
-                <CdlSection lingua = {this.props.lingua} onPageChange = {this.props.onPageChange} cdlList = {cdl}/>
-            </React.Fragment>
+                <CdlSection lingua = {this.props.lingua} onPageChange = {this.props.onPageChange} cdlList = {cdl} isCdlm = {false}/>
+                <CdlSection lingua = {this.props.lingua} onPageChange = {this.props.onPageChange} cdlList = {cdlm} isCdlm = {true}/>
+                <VariousThings lingua = {this.props.lingua} onPageChange = {this.props.onPageChange}/>
+                <Testimonials lingua = {this.props.lingua}/>
+            </div>
         );
     }
 }
@@ -78,39 +81,43 @@ function CdlSection(props) {
     var cdlList = props.cdlList
     var cdlRows = [];
     for (var c in cdlList) {
-        cdlRows.push(<Cdl lingua = {props.lingua} onPageChange = {props.onPageChange} cdl = {cdlList[c]}/>)
+        cdlRows.push(<Cdl lingua = {props.lingua} onPageChange = {props.onPageChange} cdl = {cdlList[c]} key = {cdlList[c]["idcdl"]}/>)
     }
+    var title;
+    var secondTitle = null;
+    var allCourses;
     if (props.lingua === "it") {
-        return (
-            <section id="main_content_gray">
-                <div className = "container">
-                    <div className = "row">
-                        <div className = "col-md-12 text-center">
-                            <h2>I Nostri Corsi di Laurea</h2>
-                            <p className = "lead"> Esplora La Nostra Offerta Formativa </p>
-                        </div>
-                    </div>
-                    {cdlRows}
-                    <a onClick = {() => props.onPageChange("listacorsi")} className = "button_medium_outline pull-right">Vedi Tutti i Corsi</a>
-                </div>
-            </section>
-        );
+        if (props.isCdlm) {
+            title = "I Nostri Corsi di Laurea Magistrali";
+        } else {
+            title = "I Nostri Corsi di Laurea";
+            secondTitle = <p className = "lead"> Esplora La Nostra Offerta Formativa </p>;
+        }
+        allCourses = "Vedi Tutti i Corsi";
     } else {
-        return (
-            <section id="main_content_gray">
-                <div className = "container">
-                    <div className = "row">
-                        <div className = "col-md-12 text-center">
-                            <h2>Our Courses</h2>
-                            <p className = "lead"> Explore Our Training Offer </p>
-                        </div>
-                    </div>
-                    {cdlRows}
-                    <a onClick = {() => props.onPageChange("listacorsi")} className = "button_medium_outline pull-right">See All Courses</a>
-                </div>
-            </section>
-        );
+        if (props.isCdlm) {
+            title = "Our Master's Degree Courses"
+        } else {
+            title = "Our Courses";
+            secondTitle = <p className = "lead"> Explore Our Training Offer </p>;
+        }
+        allCourses = "See All Courses";
     }
+
+    return (
+        <section id="main_content_gray">
+            <div className = "container">
+                <div className = "row">
+                    <div className = "col-md-12 text-center">
+                        <h2>{title}</h2>
+                        {secondTitle}
+                    </div>
+                </div>
+                {cdlRows}
+                <a onClick = {() => props.onPageChange("listacorsi")} className = "button_medium_outline pull-right">{allCourses}</a>
+            </div>
+        </section>
+    );
 }
 
 function Cdl(props) {
@@ -141,7 +148,7 @@ function Cdl(props) {
         }
     }
     return(
-        <div  className="col-lg-3 col-md-6 col-sm-6" key = {cdl["idcdl"]}>
+        <div  className="col-lg-3 col-md-6 col-sm-6">
             <div className="col-item">
                 <div className="photo">
                     <a onClick = {() => props.onPageChange("listacorsi")}><img src={cdl['immagine']} alt="cdlimmagine"/></a>

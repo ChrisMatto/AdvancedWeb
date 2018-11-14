@@ -24,6 +24,7 @@
         <class>Classi.DescrizioneEn</class>
         <class>Classi.DescrizioneIt</class>
         <class>Classi.Links</class>
+        <class>Classi.Versioni</class>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/newadvancedweb"/>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>

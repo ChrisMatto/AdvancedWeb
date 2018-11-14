@@ -10,5 +10,6 @@ public class ResponseFilter implements ContainerResponseFilter {
     public void filter(ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext){
         containerResponseContext.getHeaders().putSingle("Access-Control-Allow-Origin",
                 "*");
+        containerResponseContext.getHeaders().putSingle("Access-Control-Expose-Headers", "*");
     }
 }

@@ -1,6 +1,7 @@
 package API;
 
 import Classi.Cdl;
+import Classi.Versioni;
 import ClassiTemp.CdlCompleto;
 import Controller.Utils;
 import DataAccess.DataAccess;
@@ -67,6 +68,10 @@ public class CdlAPI implements Resource {
         for(Cdl c : cdl) {
             cdlUri.add(baseUri + c.getIdcdl());
         }
+        Versioni versione = DataAccess.getVersione("cdl");
+        if (versione != null) {
+            return Response.ok(cdlUri).header("versione", versione.getVersione()).build();
+        }
         return Response.ok(cdlUri).build();
     }
 
@@ -84,6 +89,10 @@ public class CdlAPI implements Resource {
         }
         for(Cdl c : cdl) {
             cdlUri.add(baseUri + c.getIdcdl());
+        }
+        Versioni versione = DataAccess.getVersione("cdl");
+        if (versione != null) {
+            return Response.ok(cdlUri).header("versione", versione.getVersione()).build();
         }
         return Response.ok(cdlUri).build();
     }

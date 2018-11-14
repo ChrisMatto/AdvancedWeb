@@ -3,6 +3,7 @@ package API;
 import Classi.Corso;
 import Classi.Docente;
 import Classi.Links;
+import Classi.Versioni;
 import ClassiTemp.*;
 import Controller.Utils;
 import DataAccess.DataAccess;
@@ -42,6 +43,10 @@ public class CoursesAPI implements Resource {
         }
         for (int id: corsi) {
             corsiUri.add(baseUri + id);
+        }
+        Versioni versione = DataAccess.getVersione("corso");
+        if (versione != null) {
+            return Response.ok(corsiUri).header("versione", versione.getVersione()).build();
         }
         return Response.ok(corsiUri).build();
     }
@@ -192,6 +197,7 @@ public class CoursesAPI implements Resource {
         } else {
             DataAccess.deleteDocentiCorso(id, anno);
         }
+        DataAccess.updateVersione("corso");
         return Response.ok().build();
     }
 
@@ -224,6 +230,7 @@ public class CoursesAPI implements Resource {
             DataAccess.updateRelazioniCorso(id, anno, relazioni.getModulo(), "modulo");
             DataAccess.updateRelazioniCorso(id, anno, relazioni.getMutuati(), "mutuato");
         }
+        DataAccess.updateVersione("corso");
         return Response.ok().build();
     }
 
@@ -245,6 +252,7 @@ public class CoursesAPI implements Resource {
         } else {
             DataAccess.deleteLinks(id, anno);
         }
+        DataAccess.updateVersione("corso");
         return Response.ok().build();
     }
 }

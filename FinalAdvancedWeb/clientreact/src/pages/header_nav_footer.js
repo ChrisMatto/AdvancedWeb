@@ -56,8 +56,14 @@ class Nav extends React.Component {
                 }
                 break;
         }
+        var change;
+        if (page === "home") {
+            change = "reload";
+        } else {
+            change = page;
+        }
         return (
-            <a onClick ={() => this.props.onPageChange(page)}>{text}</a>
+            <a onClick ={() => this.props.onPageChange(change)}>{text}</a>
         );
     }
 
@@ -112,8 +118,14 @@ class Footer extends React.Component {
                 }
                 break;
         }
+        var change;
+        if (page === "home") {
+            change = "reload";
+        } else {
+            change = page;
+        }
         return (
-            <a onClick ={() => this.props.onPageChange(page)}>{text}</a>
+            <a onClick ={() => this.props.onPageChange(change)}>{text}</a>
         );
     }
 
