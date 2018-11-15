@@ -128,7 +128,10 @@ class ListaCorsi extends React.Component {
 
     render() {
         return (
-            <Banner/>
+            <React.Fragment>
+            <Banner lingua = {this.props.lingua}/>
+            <BodySection lingua = {this.props.lingua} onPageChange = {this.props.onPageChange} cdl = {this.state.cdl} cdlm = {this.state.cdlm} anniCorsi = {this.state.anniCorsi} corsi = {this.state.corsi}/>
+            </React.Fragment>
         );
     }
 }
@@ -162,6 +165,80 @@ function Banner(props) {
                     </div>
                 </div>
                 <div className = "divider_top"/>
+            </section>
+        );
+    }
+}
+
+function BodySection(props) {
+    var cdlNames = [];
+    var cdlmNames = [];
+    var anniList = [];
+    var corsiRows = [];
+
+    if (props.lingua === "it") {
+        return (
+            <section id="main_content" >
+                <div className="container">
+                    <ol className="breadcrumb">
+                        <li><a onClick = {() => props.onPageChange("reload")}>Home</a></li>
+                        <li className="active">Lista corsi</li>
+                    </ol>
+                    <div className="row">
+                
+                        <aside className="col-lg-3 col-md-4 col-sm-4">
+                            <div className="box_style_1">
+                                
+                            
+                                <ul className="submenu-col">
+                                    <li><a onClick = {() => props.onPageChange("listacorsi")}>Tutti i corsi</a></li>
+                                    <br></br>
+                                    <h4>Anni Accademici</h4>
+                                        {anniList}
+                                    <h4>Corsi di laurea Triennale</h4>
+                                        {cdlNames}
+                                    <h4>Corsi di laurea Magistrale</h4>  
+                                        {cdlmNames}
+                                </ul>                 
+                                <hr/>
+                            </div>
+                        </aside>
+                
+                        <div className="col-lg-9 col-md-8 col-sm-8">
+                    
+                            <h3 align="center">Tutti i corsi</h3>
+                            <p></p>
+
+                            <div className="panel panel-info filterable add_bottom_45">
+                                <div className="panel-heading">
+                                    <h3 className="panel-title">Corsi</h3>
+                                    <div className="pull-right">
+                                        <button className="btn-filter"><span className="icon-th-list"></span>Filtri</button>
+                                    </div>
+                                </div>
+                                <table className="table table-responsive table-striped">
+                                    <thead>
+                                        <tr className="filters">
+                                            
+                                            <th><input type="text" className="form-control" placeholder="Nome" disabled/></th>
+                                            <th><input type="text" className="form-control" placeholder="SSD" disabled /></th>
+                                            <th><input type="text" className="form-control" placeholder="CFU" disabled /></th>
+                                            <th><input type="text" className="form-control" placeholder="Lingua" disabled /></th>
+                                            <th><input type="text" className="form-control" placeholder="Semestre" disabled /></th>
+                                            <th><input type="text" className="form-control" placeholder="Tipologia" disabled /></th>
+                                            <th><input type="text" className="form-control" placeholder="CDL" disabled /></th>
+                                            <th><input type="text" className="form-control" placeholder="Docenti" disabled /></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>                      
+                                        {corsiRows}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>                       
+                    </div>
+                    <hr/>     
+                </div>
             </section>
         );
     }

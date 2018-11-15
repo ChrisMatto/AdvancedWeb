@@ -68,18 +68,19 @@ class Page extends React.Component {
             case "home":
                 return <Home lingua = {this.state.lingua} onPageChange = {this.changePage}/>;
             case "listacorsi":
-                return <ListaCorsi/>;
+                return <ListaCorsi lingua = {this.state.lingua} onPageChange = {this.changePage}/>;
             default:
                 window.location.reload();
         }
     }
 
     render() {
+        var body = this.getBody();
         return (
             <React.Fragment>
                 <Header onClick = {this.changePage}/>
                 <Nav lingua = {this.state.lingua} onPageChange = {this.changePage} onLinguaChange = {this.changeLingua}/>
-                <this.getBody/>
+                {body}
                 <Footer lingua = {this.state.lingua} onPageChange = {this.changePage}/>
             </React.Fragment>
         );
