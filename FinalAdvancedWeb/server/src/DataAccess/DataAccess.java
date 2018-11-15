@@ -78,6 +78,13 @@ public class DataAccess {
                 .toList();
     }
 
+    public static List<Integer> getAnniCorsi() {
+        return stream.streamAll(em, Corso.class)
+                .select(Corso::getAnno)
+                .distinct()
+                .toList();
+    }
+
     public static Corso getCorso(int id, int year) {
         return stream.streamAll(em, Corso.class)
                 .where(corso -> corso.getIdCorso() == id && corso.getAnno() == year)

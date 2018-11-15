@@ -255,4 +255,11 @@ public class CoursesAPI implements Resource {
         DataAccess.updateVersione("corso");
         return Response.ok().build();
     }
+
+    @Path("years")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAnniCorsi() {
+        return Response.ok(DataAccess.getAnniCorsi()).build();
+    }
 }
