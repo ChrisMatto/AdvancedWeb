@@ -55,6 +55,9 @@ class Nav extends React.Component {
                     text = "Teachers";
                 }
                 break;
+            default:
+                text = "";
+                break;
         }
         var change;
         if (page === "home") {

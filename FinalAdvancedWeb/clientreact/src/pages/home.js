@@ -23,17 +23,25 @@ class Home extends React.Component {
                     } else {
                         var cdlList = [];
                         localStorage.setItem('versioneCdl', versione);
+                        var promises = [];
                         for (var c in result) {
-                            fetch(result[c])
-                                .then(res => res.json())
-                                .then((result) => {
-                                    cdlList.push(result);
-                                    localStorage.setItem('cdlList', JSON.stringify(cdlList));
-                                    this.setState({
-                                        cdl: cdlList,
-                                    });
-                                });
+                            promises.push(fetch(result[c]));
                         }
+                        Promise.all(promises).then(responses => {
+                            var jsonPromises = [];
+                            for (var res in responses) {
+                                jsonPromises.push(responses[res].json());
+                            }
+                            return Promise.all(jsonPromises);
+                        }).then((results) => {
+                            for (var result in results) {
+                                cdlList.push(results[result]);
+                            }
+                            localStorage.setItem('cdlList', JSON.stringify(cdlList));
+                            this.setState({
+                                cdl: cdlList,
+                            });
+                        });
                     }
                 });
         fetch('http://localhost:8080/AdvancedWeb/rest/cdl/magistrale')
@@ -46,17 +54,25 @@ class Home extends React.Component {
             } else {
                 var cdlmList = [];
                 localStorage.setItem('versioneCdl', versione);
+                var promises = [];
                 for (var c in result) {
-                    fetch(result[c])
-                        .then(res => res.json())
-                        .then((result) => {
-                            cdlmList.push(result);
-                            localStorage.setItem('cdlmList', JSON.stringify(cdlmList));
-                            this.setState({
-                                cdlm: cdlmList,
-                            });
-                        });
+                    promises.push(fetch(result[c]));
                 }
+                Promise.all(promises).then(responses => {
+                    var jsonPromises = [];
+                    for (var res in responses) {
+                        jsonPromises.push(responses[res].json());
+                    }
+                    return Promise.all(jsonPromises);
+                }).then((results) => {
+                    for (var result in results) {
+                        cdlmList.push(results[result]);
+                    }
+                    localStorage.setItem('cdlmList', JSON.stringify(cdlmList));
+                    this.setState({
+                        cdlm: cdlmList,
+                    });
+                });
             }
         });
     }

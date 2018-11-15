@@ -15,51 +15,67 @@ class ListaCorsi extends React.Component {
         var versioneCdl;
         var localVersioneCdl = localStorage.getItem('versioneCdl');
         fetch('http://localhost:8080/AdvancedWeb/rest/cdl/triennale')
-                .then(res =>  {versioneCdl = res.headers.get('versione'); return res.json()})
-                .then((result) => {
-                    if (localVersioneCdl != null && versioneCdl === localVersioneCdl && localStorage.getItem('cdlList') != null) {
-                        this.setState({
-                            cdl: JSON.parse(localStorage.getItem('cdlList')),
-                        });
-                    } else {
-                        var cdlList = [];
-                        localStorage.setItem('versioneCdl', versioneCdl);
-                        for (var c in result) {
-                            fetch(result[c])
-                                .then(res => res.json())
-                                .then((result) => {
-                                    cdlList.push(result);
-                                    localStorage.setItem('cdlList', JSON.stringify(cdlList));
-                                    this.setState({
-                                        cdl: cdlList,
-                                    });
-                                });
-                        }
+            .then(res =>  {versioneCdl = res.headers.get('versione'); return res.json()})
+            .then((result) => {
+                if (localVersioneCdl != null && versioneCdl === localVersioneCdl && localStorage.getItem('cdlList') != null) {
+                    this.setState({
+                        cdl: JSON.parse(localStorage.getItem('cdlList')),
+                    });
+                } else {
+                    var cdlList = [];
+                    localStorage.setItem('versioneCdl', versioneCdl);
+                    var promises = [];
+                    for (var c in result) {
+                        promises.push(fetch(result[c]));
                     }
-                });
-        fetch('http://localhost:8080/AdvancedWeb/rest/cdl/magistrale')
-        .then(res =>  {versioneCdl = res.headers.get('versione'); return res.json()})
-        .then((result) => {
-            if (localVersioneCdl != null && versioneCdl === localVersioneCdl && localStorage.getItem('cdlmList') != null) {
-                this.setState({
-                    cdlm: JSON.parse(localStorage.getItem('cdlmList')),
-                });
-            } else {
-                var cdlmList = [];
-                localStorage.setItem('versioneCdl', versioneCdl);
-                for (var c in result) {
-                    fetch(result[c])
-                        .then(res => res.json())
-                        .then((result) => {
-                            cdlmList.push(result);
-                            localStorage.setItem('cdlmList', JSON.stringify(cdlmList));
-                            this.setState({
-                                cdlm: cdlmList,
-                            });
+                    Promise.all(promises).then(responses => {
+                        var jsonPromises = [];
+                        for (var res in responses) {
+                            jsonPromises.push(responses[res].json());
+                        }
+                        return Promise.all(jsonPromises);
+                    }).then((results) => {
+                        for (var result in results) {
+                            cdlList.push(results[result]);
+                        }
+                        localStorage.setItem('cdlList', JSON.stringify(cdlList));
+                        this.setState({
+                            cdl: cdlList,
                         });
+                    });
                 }
-            }
-        });
+            });
+            fetch('http://localhost:8080/AdvancedWeb/rest/cdl/magistrale')
+            .then(res =>  {versioneCdl = res.headers.get('versione'); return res.json()})
+            .then((result) => {
+                if (localVersioneCdl != null && versioneCdl === localVersioneCdl && localStorage.getItem('cdlmList') != null) {
+                    this.setState({
+                        cdlm: JSON.parse(localStorage.getItem('cdlmList')),
+                    });
+                } else {
+                    var cdlmList = [];
+                    localStorage.setItem('versioneCdl', versioneCdl);
+                    var promises = [];
+                    for (var c in result) {
+                        promises.push(fetch(result[c]));
+                    }
+                    Promise.all(promises).then(responses => {
+                        var jsonPromises = [];
+                        for (var res in responses) {
+                            jsonPromises.push(responses[res].json());
+                        }
+                        return Promise.all(jsonPromises);
+                    }).then((results) => {
+                        for (var result in results) {
+                            cdlmList.push(results[result]);
+                        }
+                        localStorage.setItem('cdlmList', JSON.stringify(cdlmList));
+                        this.setState({
+                            cdlm: cdlmList,
+                        });
+                    });
+                }
+            });
         
         var versioneCorsi;
         var localVersioneCorsi = localStorage.getItem('versioneCorsi');
@@ -99,8 +115,8 @@ class ListaCorsi extends React.Component {
                         });
                     });
             } else {
-                for (var c in result) {
-                    corsiList[result[c]] = JSON.parse(localStorage.getItem(result[c]));
+                for (var corso in result) {
+                    corsiList[result[corso]] = JSON.parse(localStorage.getItem(result[corso]));
                 }
                 this.setState({
                     corsi: corsiList,

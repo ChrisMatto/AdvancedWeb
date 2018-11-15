@@ -41,7 +41,7 @@ class Page extends React.Component {
                     page: "insegnanti",
                 });
                 break;
-            case "reload":
+            default:
                 this.setState({
                     page: "reload",
                 });
@@ -69,7 +69,7 @@ class Page extends React.Component {
                 return <Home lingua = {this.state.lingua} onPageChange = {this.changePage}/>;
             case "listacorsi":
                 return <ListaCorsi/>;
-            case "reload":
+            default:
                 window.location.reload();
         }
     }
