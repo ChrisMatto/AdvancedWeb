@@ -692,7 +692,7 @@ function VariousThings(props) {
                     <div className="col-md-3 col-sm-6">
                         <h4>Link Rapidi</h4>
                         <ul className="list_1">
-                            <li><a onClick = {() => props.onPageChange("reload")}>Homepage</a></li>
+                            <li><a onClick = {() => props.onPageChange("home")}>Homepage</a></li>
                             <li><a onClick = {() => props.onPageChange("listacorsi")}>Corsi</a></li>
                             <li><a onClick = {() => props.onPageChange("insegnanti")}>Docenti</a></li>
                         </ul>
@@ -733,7 +733,7 @@ function VariousThings(props) {
                     <div className="col-md-3 col-sm-6">
                         <h4>Quick Links</h4>
                         <ul className="list_1">
-                            <li><a onClick = {() => props.onPageChange("reload")}>Homepage</a></li>
+                            <li><a onClick = {() => props.onPageChange("home")}>Homepage</a></li>
                             <li><a onClick = {() => props.onPageChange("listacorsi")}>Courses</a></li>
                             <li><a onClick = {() => props.onPageChange("insegnanti")}>Reachers</a></li>
                         </ul>

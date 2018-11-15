@@ -7,7 +7,7 @@ class Header extends React.Component {
                 <div className = "container">
                     <div className = "row">
                         <div className = "col-md-2 col-sm-2 col-xs-2">
-                            <a id = "logo" onClick = {() => this.props.onClick("reload")}>Learn</a>
+                            <a id = "logo" onClick = {() => this.props.onClick("home")}>Learn</a>
                         </div>
                         <div className = "col-md-10 col-sm-10 col-xs-10">
                             <div className = "pull-right">
@@ -59,14 +59,8 @@ class Nav extends React.Component {
                 text = "";
                 break;
         }
-        var change;
-        if (page === "home") {
-            change = "reload";
-        } else {
-            change = page;
-        }
         return (
-            <a onClick ={() => this.props.onPageChange(change)}>{text}</a>
+            <a onClick ={() => this.props.onPageChange(page)}>{text}</a>
         );
     }
 
@@ -120,15 +114,12 @@ class Footer extends React.Component {
                     text = "Teachers";
                 }
                 break;
-        }
-        var change;
-        if (page === "home") {
-            change = "reload";
-        } else {
-            change = page;
+            default:
+                text = "";
+                break;
         }
         return (
-            <a onClick ={() => this.props.onPageChange(change)}>{text}</a>
+            <a onClick ={() => this.props.onPageChange(page)}>{text}</a>
         );
     }
 
@@ -162,6 +153,9 @@ class Footer extends React.Component {
                 } else {
                     text = "Register";
                 }
+                break;
+            default:
+                text = "";
                 break;
         }
         return (

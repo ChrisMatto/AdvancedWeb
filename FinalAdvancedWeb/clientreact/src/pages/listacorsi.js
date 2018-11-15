@@ -1,4 +1,5 @@
 import React from 'react';
+import activeFilters from '../js/table_filter';
 
 class ListaCorsi extends React.Component {
     constructor() {
@@ -126,6 +127,10 @@ class ListaCorsi extends React.Component {
         });
     }
 
+    componentDidMount() {
+        activeFilters();
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -176,12 +181,16 @@ function BodySection(props) {
     var anniList = [];
     var corsiRows = [];
 
+    for (var cdl in props.cdl) {
+        cdlNames.push(<CdlName lingua = {props.lingua} tipo = {'cdl'} cdl = {props.cdl[cdl]} key = {props.cdl[cdl].idcdl}/>)
+    }
+
     if (props.lingua === "it") {
         return (
             <section id="main_content" >
                 <div className="container">
                     <ol className="breadcrumb">
-                        <li><a onClick = {() => props.onPageChange("reload")}>Home</a></li>
+                        <li><a onClick = {() => props.onPageChange("home")}>Home</a></li>
                         <li className="active">Lista corsi</li>
                     </ol>
                     <div className="row">
@@ -242,6 +251,31 @@ function BodySection(props) {
             </section>
         );
     }
+}
+
+function CdlName(props) {
+    var text;
+    switch (props.tipo) {
+        case 'cdl':
+            if (props.lingua === "it") {
+                if (props.cdl.nomeIt != null) {
+                    text = props.cdl.nomeIt;
+                } else {
+                    text = props.cdl.nomeEn;
+                }
+            } else {
+                if (props.cdl.nomeEn != null) {
+                    text = props.cdl.nomeEn;
+                } else {
+                    text = props.cdl.nomeIt;
+                }
+            }
+            break;
+        default:
+            text = "";
+            break;
+    }
+    return <li><a className = "uppercase" onClick = {() => {}}>{text}</a></li>;
 }
 
 export default ListaCorsi;

@@ -77,6 +77,23 @@ class Home extends React.Component {
         });
     }
 
+    componentDidMount() {
+        window.jQuery(document).ready(function () {
+
+            window.jQuery('.tp-banner').revolution({
+                delay: 9000,
+                startwidth: 1700,
+                startheight: 600,
+                hideThumbs: true,
+                navigationType: "none",
+                fullWidth: "on",
+                forceFullWidth: "on"
+            });
+
+        });
+    }
+
+
     render() {
         var cdl = this.state.cdl.slice().sort(() => Math.random() - 0.5).slice(0,4);
         var cdlm = this.state.cdlm.slice().sort(() => Math.random() - 0.5).slice(0,4);
