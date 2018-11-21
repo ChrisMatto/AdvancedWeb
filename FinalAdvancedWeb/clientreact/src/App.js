@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Header, Nav, Footer} from './pages/header_nav_footer';
 import Home from './pages/home';
 import ListaCorsi from './pages/listacorsi';
+import { Switch, Route } from 'react-router-dom';
 
 class App extends Component {
   constructor() {
@@ -14,37 +15,9 @@ class App extends Component {
         localStorage.setItem('lingua', lingua);
     }
     this.state = {
-        page: "home",
         lingua: lingua,
     };
-    this.changePage = this.changePage.bind(this);
     this.changeLingua = this.changeLingua.bind(this);
-    this.getBody = this.getBody.bind(this);
-}
-
-changePage(page) {
-    switch (page) {
-        case "home":
-            this.setState({
-                page: "home",
-            });
-            break;
-        case "listacorsi":
-            this.setState({
-                page: "listacorsi",
-            });
-            break;
-        case "insegnanti":
-            this.setState({
-                page: "insegnanti",
-            });
-            break;
-        default:
-            this.setState({
-                page: "reload",
-            });
-            break;
-    }
 }
 
 changeLingua(lingua) {
@@ -61,25 +34,16 @@ changeLingua(lingua) {
     }
 }
 
-getBody() {
-    switch (this.state.page) {
-        case "home":
-            return <Home lingua = {this.state.lingua} onPageChange = {this.changePage}/>;
-        case "listacorsi":
-            return <ListaCorsi lingua = {this.state.lingua} onPageChange = {this.changePage}/>;
-        default:
-            window.location.reload();
-    }
-}
-
 render() {
-    var body = this.getBody();
     return (
         <React.Fragment>
-            <Header onClick = {this.changePage}/>
-            <Nav lingua = {this.state.lingua} onPageChange = {this.changePage} onLinguaChange = {this.changeLingua}/>
-            {body}
-            <Footer lingua = {this.state.lingua} onPageChange = {this.changePage}/>
+            <Header/>
+            <Nav lingua = {this.state.lingua} onLinguaChange = {this.changeLingua}/>
+            <Switch>
+              <Route exact path = '/(|Home)' render = {() => <Home lingua = {this.state.lingua}/>}/>
+              <Route exact path = '/Courses' render = {() => <ListaCorsi lingua = {this.state.lingua}/>}/>
+            </Switch>
+            <Footer lingua = {this.state.lingua}/>
         </React.Fragment>
     );
 }
