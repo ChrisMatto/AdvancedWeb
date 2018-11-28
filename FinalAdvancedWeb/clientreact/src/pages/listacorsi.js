@@ -1,5 +1,6 @@
 import React from 'react';
 import activeFilters from '../js/table_filter';
+import { Link } from 'react-router-dom';
 
 class ListaCorsi extends React.Component {
     constructor() {
@@ -135,7 +136,7 @@ class ListaCorsi extends React.Component {
         return (
             <React.Fragment>
             <Banner lingua = {this.props.lingua}/>
-            <BodySection lingua = {this.props.lingua} onPageChange = {this.props.onPageChange} cdl = {this.state.cdl} cdlm = {this.state.cdlm} anniCorsi = {this.state.anniCorsi} corsi = {this.state.corsi}/>
+            <BodySection lingua = {this.props.lingua} cdl = {this.state.cdl} cdlm = {this.state.cdlm} anniCorsi = {this.state.anniCorsi} corsi = {this.state.corsi}/>
             </React.Fragment>
         );
     }
@@ -190,7 +191,7 @@ function BodySection(props) {
             <section id="main_content" >
                 <div className="container">
                     <ol className="breadcrumb">
-                        <li><a onClick = {() => props.onPageChange("home")}>Home</a></li>
+                        <li><Link to = '/Home'>Home</Link></li>
                         <li className="active">Lista corsi</li>
                     </ol>
                     <div className="row">
@@ -200,7 +201,7 @@ function BodySection(props) {
                                 
                             
                                 <ul className="submenu-col">
-                                    <li><a onClick = {() => props.onPageChange("listacorsi")}>Tutti i corsi</a></li>
+                                    <li><Link to = '/Courses'>Tutti i corsi</Link></li>
                                     <br></br>
                                     <h4>Anni Accademici</h4>
                                         {anniList}
@@ -275,7 +276,7 @@ function CdlName(props) {
             text = "";
             break;
     }
-    return <li><a className = "uppercase" onClick = {() => {}}>{text}</a></li>;
+    return <li><Link className = "uppercase" to = '/Courses'>{text}</Link></li>
 }
 
 export default ListaCorsi;
