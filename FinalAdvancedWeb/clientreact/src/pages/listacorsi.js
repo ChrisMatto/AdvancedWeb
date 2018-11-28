@@ -183,7 +183,19 @@ function BodySection(props) {
     var corsiRows = [];
 
     for (var cdl in props.cdl) {
-        cdlNames.push(<CdlName lingua = {props.lingua} tipo = {'cdl'} cdl = {props.cdl[cdl]} key = {props.cdl[cdl].idcdl}/>)
+        cdlNames.push(<LeftRowName lingua = {props.lingua} tipo = {'cdl'} cdl = {props.cdl[cdl]} key = {props.cdl[cdl].idcdl}/>)
+    }
+
+    for (var cdlm in props.cdlm) {
+        cdlmNames.push(<LeftRowName lingua = {props.lingua} tipo = {'cdl'} cdl = {props.cdlm[cdlm]} key = {props.cdlm[cdlm].idcdl}/>)
+    }
+
+    for (var year in props.anniCorsi) {
+        anniList.push(<LeftRowName tipo = {'year'} year = {props.anniCorsi[year]} key = {props.anniCorsi[year]}/>)
+    }
+
+    for (var corso in props.corsi) {
+        corsiRows.push(<TableRow lingua = {props.lingua} corso = {props.corsi[corso]} key = {props.corsi[corso]['idCorso']}/>)
     }
 
     if (props.lingua === "it") {
@@ -251,10 +263,75 @@ function BodySection(props) {
                 </div>
             </section>
         );
+    } else {
+        return (
+            <section id="main_content" >
+                <div className="container">
+                    <ol className="breadcrumb">
+                        <li><Link to = '/Home'>Home</Link></li>
+                        <li className="active">Courses</li>
+                    </ol>
+                    <div className="row">
+                
+                        <aside className="col-lg-3 col-md-4 col-sm-4">
+                            <div className="box_style_1">
+                                
+                            
+                                <ul className="submenu-col">
+                                    <li><Link to = '/Courses'>All Courses</Link></li>
+                                    <br></br>
+                                    <h4>Academic Years</h4>
+                                        {anniList}
+                                    <h4>Bachelor's Degree Courses</h4>
+                                        {cdlNames}
+                                    <h4>Master's Degree Courses</h4>  
+                                        {cdlmNames}
+                                </ul>                 
+                                <hr/>
+                            </div>
+                        </aside>
+                
+                        <div className="col-lg-9 col-md-8 col-sm-8">
+                    
+                            <h3 align="center">All Courses</h3>
+                            <p></p>
+
+                            <div className="panel panel-info filterable add_bottom_45">
+                                <div className="panel-heading">
+                                    <h3 className="panel-title">Courses</h3>
+                                    <div className="pull-right">
+                                        <button className="btn-filter"><span className="icon-th-list"></span>Filters</button>
+                                    </div>
+                                </div>
+                                <table className="table table-responsive table-striped">
+                                    <thead>
+                                        <tr className="filters">
+                                            
+                                            <th><input type="text" className="form-control" placeholder="Name" disabled/></th>
+                                            <th><input type="text" className="form-control" placeholder="SSD" disabled /></th>
+                                            <th><input type="text" className="form-control" placeholder="CFU" disabled /></th>
+                                            <th><input type="text" className="form-control" placeholder="Language" disabled /></th>
+                                            <th><input type="text" className="form-control" placeholder="Semester" disabled /></th>
+                                            <th><input type="text" className="form-control" placeholder="Type" disabled /></th>
+                                            <th><input type="text" className="form-control" placeholder="CDL" disabled /></th>
+                                            <th><input type="text" className="form-control" placeholder="Teachers" disabled /></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>                      
+                                        {corsiRows}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>                       
+                    </div>
+                    <hr/>     
+                </div>
+            </section>
+        );
     }
 }
 
-function CdlName(props) {
+function LeftRowName(props) {
     var text;
     switch (props.tipo) {
         case 'cdl':
@@ -272,11 +349,76 @@ function CdlName(props) {
                 }
             }
             break;
+        case 'year':
+            text = props.year + " / " + (props.year + 1);
+            break;
         default:
             text = "";
             break;
     }
     return <li><Link className = "uppercase" to = '/Courses'>{text}</Link></li>
+}
+
+function TableRow(props) {
+    let corso = props.corso
+    let nomeCorso;
+    let cdlCorso;
+    let docentiCorso;
+    if (props.lingua === "it") {
+        if (corso['nomeIt'] != null) {
+            nomeCorso = corso['nomeIt'];
+        } else {
+            nomeCorso = corso['nomeEn'];
+        }
+    } else {
+        if (corso['nomeEn'] != null) {
+            nomeCorso = corso['nomeEn'];
+        } else {
+            nomeCorso = corso['nomeIt'];
+        }
+    }
+    let cdlList = corso.cdl;
+    for (let cdl in cdlList) {
+        let abbrCdl;
+        if (props.lingua === 'it') {
+            if (cdlList[cdl]['abbrIt'] != null) {
+                abbrCdl = cdlList[cdl]['abbrIt'];
+            } else {
+                abbrCdl = cdlList[cdl]['abbrEn'];
+            }
+        } else {
+            if (cdlList[cdl]['abbrEn'] != null) {
+                abbrCdl = cdlList[cdl]['abbrEn'];
+            } else {
+                abbrCdl = cdlList[cdl]['abbrIt'];
+            }
+        }
+        if (cdlCorso) {
+            cdlCorso += ", " + abbrCdl;
+        } else {
+            cdlCorso = abbrCdl;
+        }
+    }
+    let docentiList = corso.docenti;
+    for (let docente in docentiList) {
+        if (docentiCorso) {
+            docentiCorso += ", " + docentiList[docente]['cognome'];
+        } else {
+            docentiCorso = docentiList[docente]['cognome'];
+        }
+    }
+    return (
+        <tr>
+            <td><strong><Link to = "/DetailsCourse">{nomeCorso}</Link></strong></td>
+            <td>{corso.ssd}</td>
+            <td>{corso.cfu}</td>
+            <td>{corso.lingua}</td>
+            <td>{corso.semestre}</td>
+            <td>{corso.tipologia}</td>
+            <td>{cdlCorso}</td>
+            <td>{docentiCorso}</td>
+        </tr>
+    );
 }
 
 export default ListaCorsi;

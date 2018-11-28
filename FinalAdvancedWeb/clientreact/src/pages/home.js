@@ -132,7 +132,7 @@ function CdlSection(props) {
         if (props.isCdlm) {
             title = "Our Master's Degree Courses"
         } else {
-            title = "Our Courses";
+            title = "Our Bachelor's Degree Courses";
             secondTitle = <p className = "lead"> Explore Our Training Offer </p>;
         }
         allCourses = "See All Courses";
