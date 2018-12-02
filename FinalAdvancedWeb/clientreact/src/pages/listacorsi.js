@@ -1,6 +1,7 @@
 import React from 'react';
 import activeFilters from '../js/table_filter';
 import { Link } from 'react-router-dom';
+import compareStrings from '../js/functions';
 
 class ListaCorsi extends React.Component {
     constructor() {
@@ -177,27 +178,38 @@ function Banner(props) {
 }
 
 function BodySection(props) {
+    var sortCorsiFunc;
+    var sortCdlFunc;
+    if (props.lingua === 'it') {
+        sortCorsiFunc = (a, b) => {return compareStrings(props.corsi[a].nomeIt, props.corsi[b].nomeIt);}
+        sortCdlFunc = (a, b) => {return compareStrings(a.nomeIt, b.nomeIt);}
+    } else {
+        sortCorsiFunc = (a, b) => {return compareStrings(props.corsi[a].nomeEn, props.corsi[b].nomeEn);}
+        sortCdlFunc = (a, b) => {return compareStrings(a.nomeEn, b.nomeEn);}
+    }
+    var corsiKeys = Object.keys(props.corsi).sort(sortCorsiFunc);
+    var cdl = props.cdl.sort(sortCdlFunc);
+    var cdlm = props.cdlm.sort(sortCdlFunc);
+    var anni = props.anniCorsi.sort((a, b) => {return (a > b) ? -1 : (a < b) ? 1 : 0;});
     var cdlNames = [];
     var cdlmNames = [];
     var anniList = [];
     var corsiRows = [];
 
-    for (var cdl in props.cdl) {
-        cdlNames.push(<LeftRowName lingua = {props.lingua} tipo = {'cdl'} cdl = {props.cdl[cdl]} key = {props.cdl[cdl].idcdl}/>)
+    for (let c in cdl) {
+        cdlNames.push(<LeftRowName lingua = {props.lingua} tipo = {'cdl'} cdl = {props.cdl[c]} key = {props.cdl[c].idcdl}/>)
     }
 
-    for (var cdlm in props.cdlm) {
-        cdlmNames.push(<LeftRowName lingua = {props.lingua} tipo = {'cdl'} cdl = {props.cdlm[cdlm]} key = {props.cdlm[cdlm].idcdl}/>)
+    for (let c in cdlm) {
+        cdlmNames.push(<LeftRowName lingua = {props.lingua} tipo = {'cdl'} cdl = {props.cdlm[c]} key = {props.cdlm[c].idcdl}/>)
     }
 
-    for (var year in props.anniCorsi) {
+    for (var year in anni) {
         anniList.push(<LeftRowName tipo = {'year'} year = {props.anniCorsi[year]} key = {props.anniCorsi[year]}/>)
     }
 
-    anniList.reverse();
-
-    for (var corso in props.corsi) {
-        corsiRows.push(<TableRow lingua = {props.lingua} corso = {props.corsi[corso]} key = {props.corsi[corso]['idCorso']}/>)
+    for (var key in corsiKeys) {
+        corsiRows.push(<TableRow lingua = {props.lingua} corso = {props.corsi[corsiKeys[key]]} key = {props.corsi[corsiKeys[key]]['idCorso']}/>)
     }
 
     if (props.lingua === "it") {
@@ -335,9 +347,10 @@ function BodySection(props) {
 
 function LeftRowName(props) {
     var text;
-    var link = '/Courses?year=current&cdl='
+    var link = '/Courses?';
     switch (props.tipo) {
         case 'cdl':
+            link += 'cdl=' + props.cdl.idcdl;
             if (props.lingua === "it") {
                 if (props.cdl.nomeIt != null) {
                     text = props.cdl.nomeIt;
@@ -353,13 +366,14 @@ function LeftRowName(props) {
             }
             break;
         case 'year':
+            link += 'year=' + props.year;
             text = props.year + " / " + (props.year + 1);
             break;
         default:
             text = "";
             break;
     }
-    return <li><Link className = "uppercase" to = '/Courses'>{text}</Link></li>
+    return <li><Link className = "uppercase" to = {link}>{text}</Link></li>
 }
 
 function TableRow(props) {
