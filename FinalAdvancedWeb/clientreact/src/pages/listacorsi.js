@@ -194,6 +194,8 @@ function BodySection(props) {
         anniList.push(<LeftRowName tipo = {'year'} year = {props.anniCorsi[year]} key = {props.anniCorsi[year]}/>)
     }
 
+    anniList.reverse();
+
     for (var corso in props.corsi) {
         corsiRows.push(<TableRow lingua = {props.lingua} corso = {props.corsi[corso]} key = {props.corsi[corso]['idCorso']}/>)
     }
@@ -333,6 +335,7 @@ function BodySection(props) {
 
 function LeftRowName(props) {
     var text;
+    var link = '/Courses?year=current&cdl='
     switch (props.tipo) {
         case 'cdl':
             if (props.lingua === "it") {
