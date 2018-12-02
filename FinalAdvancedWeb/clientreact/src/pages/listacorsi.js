@@ -2,6 +2,7 @@ import React from 'react';
 import activeFilters from '../js/table_filter';
 import { Link } from 'react-router-dom';
 import compareStrings from '../js/functions';
+import queryString from 'querystring';
 
 class ListaCorsi extends React.Component {
     constructor() {
@@ -11,6 +12,7 @@ class ListaCorsi extends React.Component {
             cdlm: [],
             anniCorsi: [],
             corsi: {},
+            filter: null,
         };
     }
 
@@ -79,20 +81,77 @@ class ListaCorsi extends React.Component {
                     });
                 }
             });
-        
+    }
+
+    componentDidMount() {
+        activeFilters();
+    }
+
+    componentDidUpdate() {
+        let filterString = window.location.search.substring(1);
+        if (this.state.filter == null || this.state.filter !== filterString) {
+            console.log('update');
+            console.log(this.state);
+            let filter = queryString.parse(window.location.search.substring(1));
+            var link;
+        switch (true) {
+        case filter['cdl'] != null:
+            link = 'http://localhost:8080/AdvancedWeb/rest/courses/current?cdl=' + filter['cdl'];
+            break;
+        case filter['year'] != null:
+            link = 'http://localhost:8080/AdvancedWeb/rest/courses/' + filter['year'];
+            break;
+        default:
+            link = 'http://localhost:8080/AdvancedWeb/rest/courses/current';
+        }
         var versioneCorsi;
         var localVersioneCorsi = localStorage.getItem('versioneCorsi');
-        fetch('http://localhost:8080/AdvancedWeb/rest/courses/current')
+        fetch(link)
         .then(res => {versioneCorsi = res.headers.get('versione'); return res.json()})
         .then((result) => {
             var corsiList = {};
             if (localVersioneCorsi == null || versioneCorsi !== localVersioneCorsi) {
                 localStorage.setItem('versioneCorsi', versioneCorsi);
-                var promises = [];
-                for (var c in result) {
+                let promises = [];
+                for (let c in result) {
                     promises.push(fetch([result[c]]));
                 }
-                var urls = [];
+                let urls = [];
+                Promise.all(promises).then(responses => {
+                    var jsonPromises = [];
+                    for (var res in responses) {
+                        urls.push(responses[res].url);
+                        jsonPromises.push(responses[res].json());
+                    }
+                    return Promise.all(jsonPromises);
+                }).then((results) => {
+                    for (var i = 0; i < results.length; i++) {
+                        corsiList[urls[i]] = results[i];
+                        localStorage.setItem(urls[i], JSON.stringify(results[i]));
+                    }
+                }).then(() => {
+                    fetch('http://localhost:8080/AdvancedWeb/rest/courses/years')
+                    .then(res => res.json())
+                    .then((result) => {
+                        localStorage.setItem('anniCorsi', JSON.stringify(result));
+                        this.setState({
+                            corsi: corsiList,
+                            anniCorsi: result,
+                            filter: filterString,
+                        });
+                    });
+                });
+            } else {
+                let promises = [];
+                for (let c in result) {
+                    let corso = JSON.parse(localStorage.getItem(result[c]));
+                    if (corso) {
+                        corsiList[result[c]] = JSON.parse(localStorage.getItem(result[c]));
+                    } else {
+                        promises.push(fetch([result[c]]));
+                    }
+                }
+                let urls = [];
                 Promise.all(promises).then(responses => {
                     var jsonPromises = [];
                     for (var res in responses) {
@@ -107,30 +166,16 @@ class ListaCorsi extends React.Component {
                     }
                     this.setState({
                         corsi: corsiList,
+                        anniCorsi: JSON.parse(localStorage.getItem("anniCorsi")),
+                        filter: filterString,
                     });
-                });
-                fetch('http://localhost:8080/AdvancedWeb/rest/courses/years')
-                    .then(res => res.json())
-                    .then((result) => {
-                        localStorage.setItem('anniCorsi', JSON.stringify(result));
-                        this.setState({
-                            anniCorsi: result,
-                        });
-                    });
-            } else {
-                for (var corso in result) {
-                    corsiList[result[corso]] = JSON.parse(localStorage.getItem(result[corso]));
-                }
-                this.setState({
-                    corsi: corsiList,
-                    anniCorsi: JSON.parse(localStorage.getItem("anniCorsi")),
                 });
             }
         });
-    }
-
-    componentDidMount() {
-        activeFilters();
+        this.setState({
+            filter: filterString,
+        });
+        }
     }
 
     render() {
