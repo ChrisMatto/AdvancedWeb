@@ -90,8 +90,6 @@ class ListaCorsi extends React.Component {
     componentDidUpdate() {
         let filterString = window.location.search.substring(1);
         if (this.state.filter == null || this.state.filter !== filterString) {
-            console.log('update');
-            console.log(this.state);
             let filter = queryString.parse(window.location.search.substring(1));
             var link;
         switch (true) {

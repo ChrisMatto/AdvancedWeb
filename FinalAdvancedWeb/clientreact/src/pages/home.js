@@ -185,7 +185,7 @@ function Cdl(props) {
         <div  className="col-lg-3 col-md-6 col-sm-6">
             <div className="col-item">
                 <div className="photo">
-                    <Link to = '/Courses'><img src={cdl['immagine']} alt="cdlimmagine"/></Link>
+                    <Link to = {'/Courses?cdl=' + cdl['idcdl']}><img src={cdl['immagine']} alt="cdlimmagine"/></Link>
                     <div className="cat_row" >{nome}<span className="pull-right"><i className="fas fa-university"></i></span></div>
                 </div>
                 <div className="info">
@@ -198,7 +198,7 @@ function Cdl(props) {
                         </div>
                     </div>
                     <div className="separator clearfix">
-                        <p className="btn-add" id="cdlink"><Link to = '/Courses'><i className="icon-export-4"></i></Link></p>
+                        <p className="btn-add" id="cdlink"><Link to = {'/Courses?cdl=' + cdl['idcdl']}><i className="icon-export-4"></i></Link></p>
                     </div>
                 </div>
             </div>
