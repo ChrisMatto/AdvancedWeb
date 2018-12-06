@@ -631,7 +631,13 @@ public class DataAccess {
                 .where(corso -> corso.getIdCorso() == id)
                 .toList();
         for (Corso corso : corsi) {
-            history.add(new HistoryCorso(corso.getAnno(), baseUri + corso.getAnno() + "/" + corso.getIdCorso()));
+            String anno;
+            if (corso.getAnno() == Utils.getCurrentYear()) {
+                anno = "current";
+            } else {
+                anno = String.valueOf(corso.getAnno());
+            }
+            history.add(new HistoryCorso(corso.getAnno(), baseUri + anno + "/" + corso.getIdCorso()));
         }
         return history;
     }
