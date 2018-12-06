@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Header, Nav, Footer} from './pages/header_nav_footer';
 import Home from './pages/home';
 import ListaCorsi from './pages/listacorsi';
+import DettagliCorso from './pages/dettagliCorso';
 import { Switch, Route } from 'react-router-dom';
 
 class App extends Component {
@@ -42,6 +43,7 @@ render() {
             <Switch>
               <Route exact path = '/(|Home)' render = {() => <Home lingua = {this.state.lingua}/>}/>
               <Route exact path = '/Courses' render = {() => <ListaCorsi lingua = {this.state.lingua}/>}/>
+              <Route exact path = '/Courses/:id' render = {({ match }) => <DettagliCorso id = {match.params.id} lingua = {this.state.lingua}/>}/>
             </Switch>
             <Footer lingua = {this.state.lingua}/>
         </React.Fragment>
