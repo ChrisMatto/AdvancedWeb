@@ -1,5 +1,6 @@
 import React from 'react';
 import {Slider, UnderSlider, VariousThings, Testimonials} from './homeComponents';
+import { Link } from 'react-router-dom';
 
 class Home extends React.Component {
     constructor() {
@@ -101,9 +102,9 @@ class Home extends React.Component {
             <div>
                 <Slider lingua = {this.props.lingua}/>
                 <UnderSlider lingua = {this.props.lingua}/>
-                <CdlSection lingua = {this.props.lingua} onPageChange = {this.props.onPageChange} cdlList = {cdl} isCdlm = {false}/>
-                <CdlSection lingua = {this.props.lingua} onPageChange = {this.props.onPageChange} cdlList = {cdlm} isCdlm = {true}/>
-                <VariousThings lingua = {this.props.lingua} onPageChange = {this.props.onPageChange}/>
+                <CdlSection lingua = {this.props.lingua} cdlList = {cdl} isCdlm = {false}/>
+                <CdlSection lingua = {this.props.lingua} cdlList = {cdlm} isCdlm = {true}/>
+                <VariousThings lingua = {this.props.lingua}/>
                 <Testimonials lingua = {this.props.lingua}/>
             </div>
         );
@@ -114,7 +115,7 @@ function CdlSection(props) {
     var cdlList = props.cdlList
     var cdlRows = [];
     for (var c in cdlList) {
-        cdlRows.push(<Cdl lingua = {props.lingua} onPageChange = {props.onPageChange} cdl = {cdlList[c]} key = {cdlList[c]["idcdl"]}/>)
+        cdlRows.push(<Cdl lingua = {props.lingua} cdl = {cdlList[c]} key = {cdlList[c]["idcdl"]}/>)
     }
     var title;
     var secondTitle = null;
@@ -131,7 +132,7 @@ function CdlSection(props) {
         if (props.isCdlm) {
             title = "Our Master's Degree Courses"
         } else {
-            title = "Our Courses";
+            title = "Our Bachelor's Degree Courses";
             secondTitle = <p className = "lead"> Explore Our Training Offer </p>;
         }
         allCourses = "See All Courses";
@@ -147,7 +148,7 @@ function CdlSection(props) {
                     </div>
                 </div>
                 {cdlRows}
-                <a onClick = {() => props.onPageChange("listacorsi")} className = "button_medium_outline pull-right">{allCourses}</a>
+                <Link to = '/Courses' className = "button_medium_outline pull-right">{allCourses}</Link>
             </div>
         </section>
     );
@@ -184,7 +185,7 @@ function Cdl(props) {
         <div  className="col-lg-3 col-md-6 col-sm-6">
             <div className="col-item">
                 <div className="photo">
-                    <a onClick = {() => props.onPageChange("listacorsi")}><img src={cdl['immagine']} alt="cdlimmagine"/></a>
+                    <Link to = '/Courses'><img src={cdl['immagine']} alt="cdlimmagine"/></Link>
                     <div className="cat_row" >{nome}<span className="pull-right"><i className="fas fa-university"></i></span></div>
                 </div>
                 <div className="info">
@@ -197,7 +198,7 @@ function Cdl(props) {
                         </div>
                     </div>
                     <div className="separator clearfix">
-                        <p className="btn-add" id="cdlink"><a onClick = {() => props.onPageChange("listacorsi")}><i className="icon-export-4"></i></a></p>
+                        <p className="btn-add" id="cdlink"><Link to = '/Courses'><i className="icon-export-4"></i></Link></p>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function Slider(props) {
     if (props.lingua === "it") {
@@ -672,7 +673,7 @@ function VariousThings(props) {
             <div className="container">
                 <div className="row">
                     <div className="col-md-3 col-sm-6">
-                        <h4><a onClick = {() => props.onPageChange("insegnanti")}>Docenti</a></h4>
+                        <h4><Link to = 'Teachers'>Docenti</Link></h4>
                         <p><img src="img/pic_1.jpg" alt="Pic" className="img-responsive"/></p>
                         <p>Non c'&#232; molto altro da dire sui nostri docenti, se non che sono incredibili!</p> 
                     </div>
@@ -692,9 +693,9 @@ function VariousThings(props) {
                     <div className="col-md-3 col-sm-6">
                         <h4>Link Rapidi</h4>
                         <ul className="list_1">
-                            <li><a onClick = {() => props.onPageChange("home")}>Homepage</a></li>
-                            <li><a onClick = {() => props.onPageChange("listacorsi")}>Corsi</a></li>
-                            <li><a onClick = {() => props.onPageChange("insegnanti")}>Docenti</a></li>
+                            <li><Link to = '/Home'>Homepage</Link></li>
+                            <li><Link to = '/Courses'>Corsi</Link></li>
+                            <li><Link to = '/Teachers'>Docenti</Link></li>
                         </ul>
                     </div>
                     
@@ -713,7 +714,7 @@ function VariousThings(props) {
             <div className="container">
                 <div className="row">
                     <div className="col-md-3 col-sm-6">
-                        <h4><a onClick = {() => props.onPageChange("insegnanti")}>Teachers</a></h4>
+                        <h4><Link to = 'Teachers'>Teachers</Link></h4>
                         <p><img src="img/pic_1.jpg" alt="Pic" className="img-responsive"/></p>
                         <p>We can't say other things on our teachers; they are incredibile!</p>
                     </div>
@@ -733,9 +734,9 @@ function VariousThings(props) {
                     <div className="col-md-3 col-sm-6">
                         <h4>Quick Links</h4>
                         <ul className="list_1">
-                            <li><a onClick = {() => props.onPageChange("home")}>Homepage</a></li>
-                            <li><a onClick = {() => props.onPageChange("listacorsi")}>Courses</a></li>
-                            <li><a onClick = {() => props.onPageChange("insegnanti")}>Reachers</a></li>
+                            <li><Link to = '/Home'>Homepage</Link></li>
+                            <li><Link to = '/Courses'>Courses</Link></li>
+                            <li><Link to = '/Teachers'>Teachers</Link></li>
                         </ul>
                     </div>
                     

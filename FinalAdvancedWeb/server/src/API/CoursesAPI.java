@@ -33,13 +33,17 @@ public class CoursesAPI implements Resource {
     public Response getCorsi(@PathParam("year") String year, @Context UriInfo uriInfo) {
         MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
         int anno = Utils.getYear(year);
+        String annoString = String.valueOf(anno);
+        if (anno == Utils.getCurrentYear()) {
+            annoString = "current";
+        }
         List<Integer> corsi = DataAccess.getCorsiByFilter(anno,queryParams);
         List<String> corsiUri = new ArrayList<>();
         String baseUri;
         if (token != null) {
-            baseUri = uriInfo.getBaseUri() + "auth/" + token + "/courses/" + year + "/";
+            baseUri = uriInfo.getBaseUri() + "auth/" + token + "/courses/" + annoString + "/";
         } else {
-            baseUri = uriInfo.getBaseUri() + "courses/" + year + "/";
+            baseUri = uriInfo.getBaseUri() + "courses/" + annoString + "/";
         }
         for (int id: corsi) {
             corsiUri.add(baseUri + id);
