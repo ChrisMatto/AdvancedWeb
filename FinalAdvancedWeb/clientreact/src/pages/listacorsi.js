@@ -469,7 +469,7 @@ function TableRow(props) {
     }
     return (
         <tr>
-            <td><strong><Link to = "/DetailsCourse">{nomeCorso}</Link></strong></td>
+            <td><strong><Link to = {"/Courses/" + corso['anno'] + '/' + corso['idCorso']}>{nomeCorso}</Link></strong></td>
             <td>{corso.ssd}</td>
             <td>{corso.cfu}</td>
             <td>{corso.lingua}</td>

@@ -1,9 +1,6 @@
 package API;
 
-import Classi.Corso;
-import Classi.Docente;
-import Classi.Links;
-import Classi.Versioni;
+import Classi.*;
 import ClassiTemp.*;
 import Controller.Utils;
 import DataAccess.DataAccess;
@@ -176,6 +173,31 @@ public class CoursesAPI implements Resource {
             jsonCorso = mapper.writerWithView(Views.CorsoEn.class).writeValueAsString(corso);
         }
         return Response.ok(jsonCorso).build();
+    }
+
+    @Path("{year}/{id}/syllabus")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSyllabus(@PathParam("year") String year, @PathParam("id") int id) {
+        int anno = Utils.getYear(year);
+        Sillabo sillabo = new Sillabo(id, anno);
+        return Response.ok(sillabo).build();
+    }
+
+    @Path("{year}/{id}/syllabus/{lingua:it|en}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSyllabusLingua(@PathParam("year") String year, @PathParam("id") int id, @PathParam("lingua") String lingua) throws JsonProcessingException {
+        int anno = Utils.getYear(year);
+        Sillabo sillabo = new Sillabo(id, anno);
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonSillabo;
+        if (lingua.equals("it")) {
+            jsonSillabo = mapper.writerWithView(Views.SillaboIt.class).writeValueAsString(sillabo);
+        } else {
+            jsonSillabo = mapper.writerWithView(Views.SillaboEn.class).writeValueAsString(sillabo);
+        }
+        return Response.ok(jsonSillabo).build();
     }
 
     @Path("{year}/{id}/teachers")
