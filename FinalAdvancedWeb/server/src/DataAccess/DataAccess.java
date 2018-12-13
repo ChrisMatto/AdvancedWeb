@@ -731,7 +731,7 @@ public class DataAccess {
         return stream.streamAll(em, Links.class)
                 .where(links -> links.getCorso() == idCorso && links.getAnnoCorso() == year)
                 .findFirst()
-                .orElse(null);
+                .orElse(new Links());
     }
 
     public static List<Cdl> getAllCdl() {

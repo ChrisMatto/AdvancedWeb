@@ -23,6 +23,41 @@ export default class DettagliCorso extends Component {
         let relazioniLink = baseLink + this.props.year + '/' + this.props.id + '/relations';
         let linksLink = baseLink + this.props.year + '/' + this.props.id + '/links';
         let storiaCorsoLink = baseLink + 'history/' + this.props.id;
+        fetch(corsoLink)
+        .then(res => res.json())
+        .then(result => {
+            this.setState({corso: result});
+        });
+        fetch(infoBaseLink)
+        .then(res => res.json())
+        .then(result => {
+            this.setState({infoBase: result});
+        });
+        fetch(sillaboLink)
+        .then(res => res.json())
+        .then(result => {
+            this.setState({sillabo: result});
+        });
+        fetch(insegnantiLink)
+        .then(res => res.json())
+        .then(result => {
+            this.setState({insegnanti: result});
+        });
+        fetch(relazioniLink)
+        .then(res => res.json())
+        .then(result => {
+            this.setState({relazioni: result});
+        });
+        fetch(linksLink)
+        .then(res => res.json())
+        .then(result => {
+            this.setState({links: result});
+        });
+        fetch(storiaCorsoLink)
+        .then(res => res.json())
+        .then(result => {
+            this.setState({storiaCorso: result});
+        });
     }
 
     render() {
