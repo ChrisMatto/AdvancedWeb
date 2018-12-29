@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import {Header, Nav, Footer} from './pages/header_nav_footer';
+import { Header, Nav, Footer } from './pages/header_nav_footer';
 import Home from './pages/home';
 import ListaCorsi from './pages/listacorsi';
 import DettagliCorso from './pages/dettagliCorso';
-import { Switch, Route} from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 
 class App extends Component {
   constructor() {
