@@ -62,46 +62,55 @@ export default class DettagliCorso extends Component {
 
     render() {
         var infoBase = this.state.infoBase;
-        var descrizione = this.state.corso.descrizioneIt;
-        if (descrizione === undefined)
+        var descrizioneIt = this.state.corso.descrizioneIt;
+        if (descrizioneIt === undefined)
         {
-            descrizione = {};
+            descrizioneIt = {};
+        }
+        var descrizioneEn = this.state.corso.descrizioneEn;
+        if (descrizioneEn === undefined)
+        {
+            descrizioneEn = {};
         }
         var propedeudici = [];
         var mutuati = [];
         var moduli = [];
-        var mutuato = <span>Mutuato da:</span>;
+        var mutuato = <span>{this.props.lingua === "it" ? 'Mutuato Da' : 'Borrowed By'}:</span>;
         var cdlList = [];
         return (
             <section id = "sub-header">
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12 text-center">
-                            <h1>Dettagli Del Corso</h1>
+                            <h1>{this.props.lingua === "it" ? "Dettagli Del Corso" : "Course Details"}</h1>
                             <p className="lead"></p>
                         </div>
                     </div>
                     <div className="row" id="sub-header-features-2">
                         <div className="col-md-4">
-                            <h2>{this.props.lingua === "it" ? 'Informazioni Generali' : 'Generics'}</h2>
+                            <h2>{this.props.lingua === "it" ? 'Informazioni Generali' : 'General Informations'}</h2>
                             <ul className="list_ok">
                                 <li><strong>SSD:</strong> &nbsp;{infoBase.ssd}</li>
                                 <li><strong>CDL:</strong>&nbsp;{cdlList}</li>
-                                <li><strong>Lingua:</strong>&nbsp;{infoBase.lingua}</li>
-                                <li><strong>Semestre:</strong>&nbsp;{infoBase.semestre}</li>
-                                <li><strong>CFU (e tipo):</strong>&nbsp;  {infoBase.cfu} / {infoBase.tipologia}</li>
-                                <li><strong>Anno Accademico:</strong>&nbsp; {infoBase.anno} / {infoBase.anno + 1}</li>
+                                <li><strong>{this.props.lingua === "it" ? 'Lingua' : 'Language'}:</strong>&nbsp;{infoBase.lingua}</li>
+                                <li><strong>{this.props.lingua === "it" ? 'Semestre' : 'Semester'}:</strong>&nbsp;{infoBase.semestre}</li>
+                                <li><strong>CFU ({this.props.lingua === "it" ? 'e tipo' : 'and type'}):</strong>&nbsp;  {infoBase.cfu} / {infoBase.tipologia}</li>
+                                <li><strong>{this.props.lingua === "it" ? 'Anno Accademico' : 'Accademic Year'}:</strong>&nbsp; {infoBase.anno} / {infoBase.anno + 1}</li>
                             </ul>
                         </div>
 
                         <div className="col-md-4">
-                            <h2>Prerequisiti</h2>
-                            <span><p>{descrizione.prerequisiti}</p></span>
+                            <h2>{this.props.lingua === "it" ? 'Prerequisiti' : 'Prerequisites'}</h2>
+                            <span dangerouslySetInnerHTML = {{
+                                __html: this.props.lingua === 'it' ? descrizioneIt.prerequisiti ? descrizioneIt.prerequisiti : descrizioneEn.prerequisiti : descrizioneEn.prerequisiti ? descrizioneEn.prerequisiti : descrizioneIt.prerequisiti
+                                }}/>
                         </div>
 
                         <div className="col-md-4">
-                            <h2>Obiettivi</h2>
-                            <span><p>{descrizione.obiettivi}</p></span>
+                            <h2>{this.props.lingua === "it" ? 'Obiettivi' : 'Objectives'}</h2>
+                            <span dangerouslySetInnerHTML = {{
+                                __html: this.props.lingua === 'it' ? descrizioneIt.obiettivi ? descrizioneIt.obiettivi : descrizioneEn.obiettivi : descrizioneEn.obiettivi ? descrizioneEn.obiettivi : descrizioneIt.obiettivi
+                                }}/>
                         </div>
 
                             
