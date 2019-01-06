@@ -1,7 +1,5 @@
 package ClassiTemp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.List;
 
 public class RelazioniCorso {
@@ -52,7 +50,6 @@ public class RelazioniCorso {
         return mutua;
     }
 
-    @JsonIgnore
     public void setMutua(String mutua) {
         this.mutua = mutua;
     }

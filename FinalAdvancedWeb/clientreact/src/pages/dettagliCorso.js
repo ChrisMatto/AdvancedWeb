@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 export default class DettagliCorso extends Component {
     constructor() {
@@ -15,11 +16,16 @@ export default class DettagliCorso extends Component {
                 mutua: {}
             },
             links: {},
-            storiaCorso: []
+            storiaCorso: [],
+            mustUpdateData: false
         }
     }
 
     componentWillMount() {
+        this.getData();
+    }
+
+    getData() {
         let baseLink = 'http://localhost:8080/AdvancedWeb/rest/courses/';
         let corsoLink = baseLink + this.props.year + '/' + this.props.id;
         let infoBaseLink = baseLink + this.props.year + '/' + this.props.id + '/basic';
@@ -139,8 +145,63 @@ export default class DettagliCorso extends Component {
         fetch(storiaCorsoLink)
         .then(res => res.json())
         .then(result => {
-            this.setState({storiaCorso: result});
+            var storiaPromises = [];
+            var storia = [];
+            for (var corso in result) {
+                storiaPromises.push(fetch(result[corso].url + '/basic'));
+            }
+            Promise.all(storiaPromises).then(responses => {
+                var jsonPromises = [];
+                for (var res in responses) {
+                    jsonPromises.push(responses[res].json());
+                }
+                return Promise.all(jsonPromises);
+            }).then((results) => {
+                for (var result in results) {
+                    if (results[result].anno !== this.state.infoBase.anno) {
+                        storia.push(results[result]);
+                    }
+                }
+                this.setState({
+                    storiaCorso: storia.sort((a, b) => {return (a.anno > b.anno) ? -1 : (a.anno < b.anno) ? 1 : 0;})
+                });
+            });
         });
+    }
+
+    componentDidUpdate() {
+        if (this.state.mustUpdateData) {
+            this.setState({mustUpdateData: false});
+            this.getData();
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props !== nextProps) {
+            this.setState({mustUpdateData: true});
+        }
+    }
+
+    getRelationName(corso) {
+        return <strong><Link to = {'/Courses/' + corso.anno + '/' + corso.idCorso} className = "dc">{this.props.lingua === 'it' ? corso.nomeIt || corso.nomeEn : corso.nomeEn || corso.nomeIt}</Link></strong>
+    }
+
+    getCorsoPrecedente(corso) {
+        return <li key = {corso.anno}><Link to = {'/Courses/' + corso.anno + '/' + corso.idCorso}>{corso.anno === this.state.storiaCorso[0].anno && corso.anno > this.state.infoBase.anno ? this.props.lingua === 'it' ? 'Informazioni Correnti' : 'Current Information' : corso.anno + '/' + (corso.anno + 1)}</Link></li>
+    }
+
+    getDocente(docente) {
+        return (
+        <div key = {docente.idDocente} className = 'media'>
+            <div className = 'pull-right'>
+                <img id="img-piccola" src= {docente.immagine} className="img-circle" alt=""/>
+            </div>
+            <div className = 'media-body'>
+                <h5 className = 'media-heading'><Link to = '/Docenten'>{docente.nome} {docente.cognome}</Link></h5>
+                <p>{docente.specializzazione}</p>
+            </div>
+        </div>
+        );
     }
 
     render() {
@@ -156,20 +217,56 @@ export default class DettagliCorso extends Component {
         {
             descrizioneEn = {};
         }
-        var propedeudici = [];
-        var mutuati = [];
-        var moduli = [];
-        var mutuato = [];
+        var dublinoIt = this.state.corso.dublinoIt;
+        if (dublinoIt === undefined) {
+            dublinoIt = {};
+        }
+        var dublinoEn = this.state.corso.dublinoEn;
+        if (dublinoEn === undefined) {
+            dublinoEn = {};
+        }
+        var propedeudiciList = this.state.relazioni.propedeudici;
+        var mutuatiList = this.state.relazioni.mutuati;
+        var moduliList = this.state.relazioni.modulo;
+        var mutuato = this.state.relazioni.mutua;
         var cdlList = this.state.corso.cdl;
+        var docentiList = this.state.insegnanti;
         var cdlString = null;
+        var mutuati = [];
+        var propedeudici = [];
+        var modulo = [];
+        var precedentiList = this.state.storiaCorso;
+        var storia = [];
+        var docenti = [];
 
         var abbrCdl;
-        for (let cdl in cdlList)
-        {
+        for (let cdl in cdlList) {
             abbrCdl = lingua === 'it' ? cdlList[cdl].abbrIt || cdlList[cdl].abbrEn : cdlList[cdl].abbrEn || cdlList[cdl].abbrIt;
             cdlString = cdlString ? cdlString + ', ' + abbrCdl : abbrCdl;
         }
+
+        for (let corso in mutuatiList) {
+            mutuati.push(<React.Fragment key = {mutuatiList[corso].idCorso}>{this.getRelationName(mutuatiList[corso])}{(corso + 1) < mutuatiList.length ? ', ' : ""}</React.Fragment>);
+        }
+
+        for (let corso in propedeudiciList) {
+            propedeudici.push(<React.Fragment>{this.getRelationName(propedeudiciList[corso])}{(corso + 1) < propedeudiciList.length ? ', ' : ""}</React.Fragment>);
+        }
+        
+        for (let corso in moduliList) {
+            modulo.push(<React.Fragment>{this.getRelationName(moduliList[corso])}{(corso + 1) < moduliList.length ? ', ' : ""}</React.Fragment>);
+        }
+
+        for (let corso in precedentiList) {
+            storia.push(this.getCorsoPrecedente(precedentiList[corso]));
+        }
+
+        for (let docente in docentiList) {
+            docenti.push(this.getDocente(docentiList[docente]));
+        }
+
         return (
+            <React.Fragment>
             <section id = "sub-header">
                 <div className="container">
                     <div className="row">
@@ -182,6 +279,7 @@ export default class DettagliCorso extends Component {
                         <div className="col-md-4">
                             <h2>{lingua === "it" ? 'Informazioni Generali' : 'General Informations'}</h2>
                             <ul className="list_ok">
+                                <li><strong>{lingua === 'it' ? 'Nome' : 'Name'}:</strong>&nbsp;{lingua === 'it' ? infoBase.nomeIt || infoBase.nomeEn : infoBase.nomeEn || infoBase.nomeIt}</li>
                                 <li><strong>SSD:</strong> &nbsp;{infoBase.ssd}</li>
                                 <li><strong>CDL:</strong>&nbsp;{cdlString}</li>
                                 <li><strong>{lingua === "it" ? 'Lingua' : 'Language'}:</strong>&nbsp;{infoBase.lingua}</li>
@@ -212,25 +310,117 @@ export default class DettagliCorso extends Component {
                     <div className="row">
                         <div className="col-md-12" id="tipocorso">
 
+                                {propedeudici.length > 0 ? <li><strong>Corsi Propedeudici: </strong> {propedeudici} </li> : null}
 
-                                {propedeudici}
-
-
-                                {mutuati}   
+                                {mutuati.length > 0 ? <li><strong>Corsi Mutuati: </strong> {mutuati} </li> : null}   
                                 
-                                {mutuato}
-                                
+                                {mutuato ? <li><strong>Mutuato da: </strong> {this.getRelationName(mutuato)} </li> : null}
                             
-                                {moduli}
-
-                            
+                                {modulo.length > 0 ? <li><strong>Corsi Modulo: </strong> {modulo} </li> : null}
 
                         </div>
                     </div>
+                </div>
+                <div className = 'divider_top'/>
+            </section>
 
+            <section id = 'main_content'>
+                <div className = 'container'>
+                    <ol className="breadcrumb">
+                        <li><Link to = '/Home'>Home</Link></li>
+                        <li><Link to = '/Courses'>Lista Corsi</Link></li>
+                        <li className="active">{lingua === 'it' ? infoBase.nomeIt || infoBase.nomeEn : infoBase.nomeEn || infoBase.nomeIt}</li>
+                    </ol>
+                    <div className = 'row'>
+                        <div className = 'col-md-8'>
+                        <section id="space">
+                            <h3>{lingua === 'it' ? 'Sillabo' : 'Syllabus'}</h3>
+                                <div dangerouslySetInnerHTML = {{
+                                __html: lingua === 'it' ? descrizioneIt.sillabo || descrizioneEn.sillabo : descrizioneEn.sillabo || descrizioneIt.sillabo
+                                }}></div>
+                        </section>
 
+                        <h3>{lingua === 'it' ? 'Descrittori di Dublino' : 'Dublin Descriptors'}</h3>
+                            <main className="main" id="space">
+
+                                <input className="input" id="tab1" type="radio" name="tabs" defaultChecked/>
+                                <label htmlFor="tab1">Knowledge</label>
+                                
+                                <input className="input" id="tab2" type="radio" name="tabs"/>
+                                <label htmlFor="tab2">Application</label>
+                                
+                                <input className="input" id="tab3" type="radio" name="tabs"/>
+                                <label htmlFor="tab3">Evaluation</label>
+                                
+                                <input className="input" id="tab4" type="radio" name="tabs"/>
+                                <label htmlFor="tab4">Communication</label>
+                                
+                                <input className="input" id="tab5" type="radio" name="tabs"/>
+                                <label htmlFor="tab5">Lifelong</label>
+                                
+
+                                <section className="section" id="content1" dangerouslySetInnerHTML = {{
+                                __html: lingua === 'it' ? dublinoIt.knowledge || dublinoEn.knowledge : dublinoEn.knowledge || dublinoIt.knowledge
+                                }}/>
+                                
+                                <section className="section" id="content2" dangerouslySetInnerHTML = {{
+                                    __html: lingua === 'it' ? dublinoIt.application || dublinoEn.application : dublinoEn.application || dublinoIt.application
+                                }}/>
+                                
+                                <section className="section" id="content3" dangerouslySetInnerHTML = {{
+                                    __html: lingua === 'it' ? dublinoIt.evaluation || dublinoEn.evaluation : dublinoEn.evaluation || dublinoIt.evaluation
+                                }}/>
+                                
+                                <section className="section" id="content4" dangerouslySetInnerHTML = {{
+                                    __html: lingua === 'it' ? dublinoIt.communication || dublinoEn.communication : dublinoEn.communication || dublinoIt.communication
+                                }}/>
+                                
+                                <section className="section" id="content5" dangerouslySetInnerHTML = {{
+                                    __html: lingua === 'it' ? dublinoIt.lifelong || dublinoEn.lifelong : dublinoEn.lifelong || dublinoIt.lifelong
+                                }}/>
+                            </main>
+
+                            <section className = 'space'>
+                                <h3>{lingua === 'it' ? "Modalità d'Esame" : "Examination Procedure"}</h3>
+                                <div dangerouslySetInnerHTML = {{
+                                __html: lingua === 'it' ? descrizioneIt.modEsame || descrizioneEn.modEsame : descrizioneEn.modEsame || descrizioneIt.modEsame
+                                }}></div>
+                            </section>
+                                
+                            <section className = 'space'>
+                                <h3>{lingua === 'it' ? "Modalità d'Insegnmento" : "Teaching Methods"}</h3>
+                                <div dangerouslySetInnerHTML = {{
+                                __html: lingua === 'it' ? descrizioneIt.modInsegnamento || descrizioneEn.modInsegnamento : descrizioneEn.modInsegnamento || descrizioneIt.modInsegnamento
+                                }}></div>
+                            </section>
+                            
+                            <section className = 'space'>
+                                <h3>{lingua === 'it' ? "Note" : "Notes"}</h3>
+                                <div dangerouslySetInnerHTML = {{
+                                __html: lingua === 'it' ? descrizioneIt.note || descrizioneEn.note : descrizioneEn.note || descrizioneIt.note
+                                }}></div>
+                            </section>
+
+                            {storia.length > 0 ? 
+                            <section id = 'space'>
+                                <h3>{lingua === 'it' ? 'Versioni Pagina Corso' : 'Course Page Updates'}</h3>
+                                {storia}
+                            </section> : null}
+
+                        </div>
+                        
+                        <aside className = 'col-md-4'>
+                            <div className="box_style_1">
+                                <h4><Link to = '/Material'>{lingua === 'it' ? 'Materiale' : 'Material'}</Link></h4><br/>
+                                <h4>{lingua === 'it' ? 'Insegnanti' : 'Teachers'}</h4>
+                                    {docenti}
+                            </div>
+                        </aside>
+
+                    </div>
                 </div>
             </section>
+            </React.Fragment>
         );
     }
 }

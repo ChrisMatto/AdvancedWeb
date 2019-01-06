@@ -225,15 +225,15 @@ input[type='checkbox'] {
 }
 
 
-#dc {
+.dc {
   color: #00FFFFFF
 }
 
-#dc:hover {
+.dc:hover {
   color: #007bff
 }
 
-#space {
+.space {
   margin-bottom: 40px;
 }
 
