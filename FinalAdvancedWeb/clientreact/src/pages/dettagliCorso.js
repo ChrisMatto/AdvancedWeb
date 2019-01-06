@@ -8,7 +8,12 @@ export default class DettagliCorso extends Component {
             infoBase: {},
             sillabo: {},
             insegnanti: [],
-            relazioni: {},
+            relazioni: {
+                mutuati: [],
+                modulo: [],
+                propedeudici: [],
+                mutua: {}
+            },
             links: {},
             storiaCorso: []
         }
@@ -46,7 +51,85 @@ export default class DettagliCorso extends Component {
         fetch(relazioniLink)
         .then(res => res.json())
         .then(result => {
-            this.setState({relazioni: result});
+            let mutuati = [];
+            let propedeudici = [];
+            let modulo = [];
+            var mutuatiPromises = [];
+            var propedeudiciPromises = [];
+            var moduloPromises = [];
+
+            for (let c in result.mutuati) {
+                mutuatiPromises.push(fetch(result.mutuati[c] + "/basic"));
+            }
+            Promise.all(mutuatiPromises).then(responses => {
+                var jsonPromises = [];
+                for (var res in responses) {
+                    jsonPromises.push(responses[res].json());
+                }
+                return Promise.all(jsonPromises);
+            }).then((results) => {
+                for (var result in results) {
+                    mutuati.push(results[result]);
+                }
+                this.setState({
+                    relazioni: {
+                        mutuati: mutuati
+                    }
+                });
+            });
+
+            for (let c in result.propedeudici) {
+                propedeudiciPromises.push(fetch(result.propedeudici[c] + "/basic"));
+            }
+            Promise.all(propedeudiciPromises).then(responses => {
+                var jsonPromises = [];
+                for (var res in responses) {
+                    jsonPromises.push(responses[res].json());
+                }
+                return Promise.all(jsonPromises);
+            }).then((results) => {
+                for (var result in results) {
+                    propedeudici.push(results[result]);
+                }
+                this.setState({
+                    relazioni: {
+                        propedeudici: propedeudici
+                    }
+                });
+            });
+
+            for (let c in result.modulo) {
+                moduloPromises.push(fetch(result.modulo[c] + "/basic"));
+            }
+            Promise.all(moduloPromises).then(responses => {
+                var jsonPromises = [];
+                for (var res in responses) {
+                    jsonPromises.push(responses[res].json());
+                }
+                return Promise.all(jsonPromises);
+            }).then((results) => {
+                for (var result in results) {
+                    modulo.push(results[result]);
+                }
+                this.setState({
+                    relazioni: {
+                        modulo: modulo
+                    }
+                });
+            });
+
+            if (result.mutua !== null)
+            {
+                fetch(result.mutua + "/basic")
+                .then(res => res.json())
+                .then(result => {
+                    this.setState({
+                        relazioni: {
+                            mutua: result
+                        }
+                    });
+                });
+            }
         });
         fetch(linksLink)
         .then(res => res.json())

@@ -1,21 +1,27 @@
 package ClassiTemp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 public class RelazioniCorso {
     private List<String> propedeudici;
     private List<String> mutuati;
     private List<String> modulo;
+    private String mutua;
 
     public RelazioniCorso() {
         propedeudici = null;
         modulo = null;
+        mutuati = null;
+        mutua = null;
     }
 
-    public RelazioniCorso(List<String> propedeudici, List<String > mutuati, List<String> modulo) {
+    public RelazioniCorso(List<String> propedeudici, List<String > mutuati, List<String> modulo, String mutua) {
         this.propedeudici = propedeudici;
         this.mutuati = mutuati;
         this.modulo = modulo;
+        this.mutua = mutua;
     }
 
     public List<String> getPropedeudici() {
@@ -40,5 +46,14 @@ public class RelazioniCorso {
 
     public void setModulo(List<String> modulo) {
         this.modulo = modulo;
+    }
+
+    public String getMutua() {
+        return mutua;
+    }
+
+    @JsonIgnore
+    public void setMutua(String mutua) {
+        this.mutua = mutua;
     }
 }

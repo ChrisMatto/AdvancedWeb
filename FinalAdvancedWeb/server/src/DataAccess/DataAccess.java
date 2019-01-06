@@ -724,7 +724,15 @@ public class DataAccess {
         for (CollegCorsi modulo : collegCorsi) {
             moduli.add(baseUri + modulo.getAnnoOtherCorso() + "/" + modulo.getOtherCorso());
         }
-        return new RelazioniCorso(propedeudici, mutuati, moduli);
+        CollegCorsi corsoMutua = stream.streamAll(em, CollegCorsi.class)
+                .where(cc -> cc.getOtherCorso() == idCorso && cc.getAnnoOtherCorso() == year && cc.getTipo().equals("mutuato"))
+                .findFirst()
+                .orElse(null);
+        String mutua = null;
+        if (corsoMutua != null) {
+            mutua = baseUri + corsoMutua.getAnnoThisCorso() + "/" + corsoMutua.getThisCorso();
+        }
+        return new RelazioniCorso(propedeudici, mutuati, moduli, mutua);
     }
 
     public static Links getLinks(int idCorso, int year) {
