@@ -220,6 +220,13 @@ export default class DettagliCorso extends Component {
         );
     }
 
+    getLibro(libro) {
+        if (libro.link) {
+            return <li><a href = {libro.link}>{libro.titolo}</a>, {libro.volume > 0 ? libro.volume + ',' : null} {libro.anno}, {libro.autore}, {libro.editore}</li>
+        }
+        return <li>{libro.volume > 0 ? libro.volume + ',' : null} {libro.anno}, {libro.autore}, {libro.editore}</li>
+    }
+
     render() {
         var lingua = this.props.lingua;
         var infoBase = this.state.infoBase;
@@ -254,6 +261,9 @@ export default class DettagliCorso extends Component {
         var precedentiList = this.state.storiaCorso;
         var storia = [];
         var docenti = [];
+        var libriList = this.state.corso.libri;
+        var libri = [];
+        var links = this.state.links;
 
         var abbrCdl;
         for (let cdl in cdlList) {
@@ -279,6 +289,10 @@ export default class DettagliCorso extends Component {
 
         for (let docente in docentiList) {
             docenti.push(this.getDocente(docentiList[docente]));
+        }
+
+        for (let libro in libriList) {
+            libri.push(this.getLibro(libriList[libro]));
         }
 
         return (
@@ -431,8 +445,32 @@ export default class DettagliCorso extends Component {
                                 <h4>{lingua === 'it' ? 'Insegnanti' : 'Teachers'}</h4>
                                     {docenti}
                             </div>
-                        </aside>
 
+                            <div className="box_style_1">
+                                <h4>{lingua === 'it' ? 'Libri di Testo' : 'Books'}</h4>
+                                <ul className="legend_course">
+                                    {libri}
+                                </ul>
+                            </div>
+
+                            {
+                                links.homepage || links.forum || links.risorseExt || links.elearning 
+                                ? 
+                                <div class="box_style_1">
+                                    <h4>{lingua === 'it' ? 'Link Esterni' : 'External Links'}</h4>
+                                    <ul class="list_1">
+                                        {links.homepage ? <li><a href = {links.homepage}>Homepage</a></li> : null}
+                                        {links.elearning ? <li><a href = {links.elearning}>E-Learning</a></li> : null}
+                                        {links.forum ? <li><a href = {links.forum}>Forum</a></li> : null}
+                                        {links.risorseExt ? <li><a href = {links.risorseExt}>{lingua === 'it' ? 'Risorse Esterne' : 'External Resources'}</a></li> : null}
+                                    </ul>
+                                </div>
+                                :
+                                null
+                            }
+
+                        </aside>
+    
                     </div>
                 </div>
             </section>
