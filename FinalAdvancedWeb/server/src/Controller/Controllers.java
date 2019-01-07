@@ -5,6 +5,7 @@ public enum Controllers {
     courses("courses"),
     users("users"),
     cdl("cdl"),
+    teachers("teachers"),
     noController("");
 
     private String controller;

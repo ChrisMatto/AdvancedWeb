@@ -26,14 +26,14 @@ export default class DettagliCorso extends Component {
     }
 
     getData() {
-        let baseLink = 'http://localhost:8080/AdvancedWeb/rest/courses/';
-        let corsoLink = baseLink + this.props.year + '/' + this.props.id;
-        let infoBaseLink = baseLink + this.props.year + '/' + this.props.id + '/basic';
-        let sillaboLink = baseLink + this.props.year + '/' + this.props.id + '/syllabus';
-        let insegnantiLink = baseLink + this.props.year + '/' + this.props.id + '/teachers';
-        let relazioniLink = baseLink + this.props.year + '/' + this.props.id + '/relations';
-        let linksLink = baseLink + this.props.year + '/' + this.props.id + '/links';
-        let storiaCorsoLink = baseLink + 'history/' + this.props.id;
+        let baseLink = 'http://localhost:8080/AdvancedWeb/rest/';
+        let corsoLink = baseLink + 'courses/' + this.props.year + '/' + this.props.id;
+        let infoBaseLink = baseLink + 'courses/' + this.props.year + '/' + this.props.id + '/basic';
+        let sillaboLink = baseLink + 'courses/' + this.props.year + '/' + this.props.id + '/syllabus';
+        let insegnantiLink = baseLink + 'courses/' + this.props.year + '/' + this.props.id + '/teachers';
+        let relazioniLink = baseLink + 'courses/' + this.props.year + '/' + this.props.id + '/relations';
+        let linksLink = baseLink + 'courses/' + this.props.year + '/' + this.props.id + '/links';
+        let storiaCorsoLink = baseLink + 'courses/history/' + this.props.id;
         fetch(corsoLink)
         .then(res => res.json())
         .then(result => {
@@ -52,7 +52,23 @@ export default class DettagliCorso extends Component {
         fetch(insegnantiLink)
         .then(res => res.json())
         .then(result => {
-            this.setState({insegnanti: result});
+            let teachers = [];
+            let teachersPromises = [];
+            for (let doc in result) {
+                teachersPromises.push(fetch(baseLink + 'teachers/' + result[doc].idDocente));
+            }
+            Promise.all(teachersPromises).then(responses => {
+                var jsonPromises = [];
+                for (var res in responses) {
+                    jsonPromises.push(responses[res].json());
+                }
+                return Promise.all(jsonPromises);
+            }).then((results) => {
+                for (var result in results) {
+                    teachers.push(results[result]);
+                }
+                this.setState({insegnanti: teachers});
+            });
         });
         fetch(relazioniLink)
         .then(res => res.json())
@@ -194,7 +210,7 @@ export default class DettagliCorso extends Component {
         return (
         <div key = {docente.idDocente} className = 'media'>
             <div className = 'pull-right'>
-                <img id="img-piccola" src= {docente.immagine} className="img-circle" alt=""/>
+                <img id="img-piccola" src={'/' + docente.immagine} className="img-circle" alt=""/>
             </div>
             <div className = 'media-body'>
                 <h5 className = 'media-heading'><Link to = '/Docenten'>{docente.nome} {docente.cognome}</Link></h5>

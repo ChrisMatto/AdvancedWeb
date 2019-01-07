@@ -28,6 +28,8 @@ public class ControllerAPI {
                 return new CoursesAPI();
             case cdl:
                 return new CdlAPI();
+            case teachers:
+                return new TeachersAPI();
             default:
                 Response.ResponseBuilder responseBuilder = Response.status(404);
                 throw new WebApplicationException(responseBuilder.build());

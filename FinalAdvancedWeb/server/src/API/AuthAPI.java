@@ -54,6 +54,8 @@ public class AuthAPI implements Resource {
                 return new UsersAPI(token);
             case cdl:
                 return new CdlAPI(token);
+            case teachers:
+                return new TeachersAPI(token);
             default:
                 Response.ResponseBuilder responseBuilder = Response.status(404);
                 throw new WebApplicationException(responseBuilder.build());

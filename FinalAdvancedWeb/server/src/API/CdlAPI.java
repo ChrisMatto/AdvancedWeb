@@ -114,6 +114,6 @@ public class CdlAPI implements Resource {
         if (cdl != null) {
             return Response.ok(new CdlCompleto(cdl, baseUriCorsi)).build();
         }
-        return Response.ok().build();
+        return Response.status(404).build();
     }
 }

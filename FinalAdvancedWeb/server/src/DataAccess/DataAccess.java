@@ -92,6 +92,24 @@ public class DataAccess {
                 .orElse(null);
     }
 
+    public static List<String> getDocenti(String baseUri) {
+        List<Integer> docenti = stream.streamAll(em, Docente.class)
+                .select(Docente::getIdDocente)
+                .toList();
+        List<String> docentiUri = new ArrayList<>();
+        for (int id : docenti) {
+            docentiUri.add(baseUri + id);
+        }
+        return docentiUri;
+    }
+
+    public static Docente getDocente(int id) {
+        return stream.streamAll(em, Docente.class)
+                .where(docente -> docente.getIdDocente() == id)
+                .findFirst()
+                .orElse(null);
+    }
+
     public static void insertCorso(CorsoCompleto corsoCompleto) {
         int newId = stream.streamAll(em,Corso.class)
                 .max(Corso::getIdCorso) +1;
