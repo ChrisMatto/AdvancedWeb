@@ -164,4 +164,19 @@ public class Docente {
     public int hashCode() {
         return Objects.hash(idDocente, immagine, nome, cognome, email, ufficio, telefono, specializzazione, ricerche, pubblicazioni, curriculum, ricevimento);
     }
+
+    public void copyFrom(Docente docente) {
+        this.idDocente = docente.idDocente;
+        this.immagine = docente.immagine;
+        this.nome = docente.nome;
+        this.cognome = docente.cognome;
+        this.email = docente.email;
+        this.ufficio = docente.ufficio;
+        this.telefono = docente.telefono;
+        this.specializzazione = docente.specializzazione;
+        this.ricerche = docente.ricerche;
+        this.pubblicazioni = docente.pubblicazioni;
+        this.curriculum = docente.curriculum;
+        this.ricevimento = docente.ricevimento;
+    }
 }

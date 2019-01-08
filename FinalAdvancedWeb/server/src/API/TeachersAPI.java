@@ -2,6 +2,7 @@ package API;
 
 import Classi.Docente;
 import Classi.Versioni;
+import ClassiTemp.DocenteCompleto;
 import DataAccess.DataAccess;
 
 import javax.ws.rs.GET;
@@ -47,7 +48,7 @@ public class TeachersAPI implements Resource {
     public Response getTeacher(@PathParam("id") int id) {
         Docente docente = DataAccess.getDocente(id);
         if (docente != null) {
-            return Response.ok(docente).build();
+            return Response.ok(new DocenteCompleto(docente)).build();
         }
         return Response.status(404).build();
     }

@@ -213,7 +213,7 @@ export default class DettagliCorso extends Component {
                 <img id="img-piccola" src={'/' + docente.immagine} className="img-circle" alt=""/>
             </div>
             <div className = 'media-body'>
-                <h5 className = 'media-heading'><Link to = '/Docenten'>{docente.nome} {docente.cognome}</Link></h5>
+                <h5 className = 'media-heading'><Link to = {'/Teachers/' + docente.idDocente}>{docente.nome} {docente.cognome}</Link></h5>
                 <p>{docente.specializzazione}</p>
             </div>
         </div>

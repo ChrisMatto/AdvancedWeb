@@ -87,7 +87,7 @@ export default class ListaDocenti extends Component {
                         <li><a href="#"><i className=" icon-google"></i></a></li>
                 </ul>    
                 <hr/>
-                    <Link to = '/Docenten' className="button_medium_outline">{this.props.lingua === 'it' ? 'Profilo' : 'Profile'}</Link>           
+                    <Link to = {'/Teachers/' + docente.idDocente} className="button_medium_outline">{this.props.lingua === 'it' ? 'Profilo' : 'Profile'}</Link>           
                 </div>
             </div>
         );

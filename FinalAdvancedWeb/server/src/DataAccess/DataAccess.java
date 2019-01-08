@@ -110,6 +110,16 @@ public class DataAccess {
                 .orElse(null);
     }
 
+    public static List<Corso> getCorsiDocente(int idDocente) {
+        return stream.streamAll(em, Corso.class)
+                .join((corso, source) -> source.stream(DocentiCorso.class))
+                .where(corsoDocentiCorsoPair -> corsoDocentiCorsoPair.getTwo().getDocente() == idDocente &&
+                        corsoDocentiCorsoPair.getTwo().getCorso() == corsoDocentiCorsoPair.getOne().getIdCorso() &&
+                        corsoDocentiCorsoPair.getTwo().getAnnoCorso() == corsoDocentiCorsoPair.getOne().getAnno())
+                .select(Pair::getOne)
+                .toList();
+    }
+
     public static void insertCorso(CorsoCompleto corsoCompleto) {
         int newId = stream.streamAll(em,Corso.class)
                 .max(Corso::getIdCorso) +1;

@@ -5,6 +5,7 @@ import ListaCorsi from './pages/listacorsi';
 import DettagliCorso from './pages/dettagliCorso';
 import ListaDocenti from './pages/listaDocenti';
 import { Switch, Route } from 'react-router-dom';
+import DettagliDocente from './pages/dettagliDocente';
 
 class App extends Component {
   constructor() {
@@ -46,6 +47,7 @@ render() {
               <Route exact path = '/Courses' render = {() => <ListaCorsi lingua = {this.state.lingua}/>}/>
               <Route exact path = '/Courses/:year(\d{4})/:id(\d+)' render = {({ match }) => <DettagliCorso year = {match.params.year} id = {match.params.id} lingua = {this.state.lingua}/>}/>
               <Route exact path = '/Teachers' render = {() => <ListaDocenti lingua = {this.state.lingua}/>}/>
+              <Route exact path = '/Teachers/:id(\d+)' render = {({ match }) => <DettagliDocente id = {match.params.id} lingua = {this.state.lingua}/>}/>
             </Switch>
             <Footer lingua = {this.state.lingua}/>
         </React.Fragment>
