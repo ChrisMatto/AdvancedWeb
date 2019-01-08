@@ -3,6 +3,7 @@ import { Header, Nav, Footer } from './pages/header_nav_footer';
 import Home from './pages/home';
 import ListaCorsi from './pages/listacorsi';
 import DettagliCorso from './pages/dettagliCorso';
+import ListaDocenti from './pages/listaDocenti';
 import { Switch, Route } from 'react-router-dom';
 
 class App extends Component {
@@ -44,6 +45,7 @@ render() {
               <Route exact path = '/(|Home)' render = {() => <Home lingua = {this.state.lingua}/>}/>
               <Route exact path = '/Courses' render = {() => <ListaCorsi lingua = {this.state.lingua}/>}/>
               <Route exact path = '/Courses/:year(\d{4})/:id(\d+)' render = {({ match }) => <DettagliCorso year = {match.params.year} id = {match.params.id} lingua = {this.state.lingua}/>}/>
+              <Route exact path = '/Teachers' render = {() => <ListaDocenti lingua = {this.state.lingua}/>}/>
             </Switch>
             <Footer lingua = {this.state.lingua}/>
         </React.Fragment>
