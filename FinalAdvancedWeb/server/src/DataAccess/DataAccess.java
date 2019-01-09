@@ -111,11 +111,13 @@ public class DataAccess {
     }
 
     public static List<Corso> getCorsiDocente(int idDocente) {
+        int year = Utils.getCurrentYear();
         return stream.streamAll(em, Corso.class)
                 .join((corso, source) -> source.stream(DocentiCorso.class))
                 .where(corsoDocentiCorsoPair -> corsoDocentiCorsoPair.getTwo().getDocente() == idDocente &&
                         corsoDocentiCorsoPair.getTwo().getCorso() == corsoDocentiCorsoPair.getOne().getIdCorso() &&
-                        corsoDocentiCorsoPair.getTwo().getAnnoCorso() == corsoDocentiCorsoPair.getOne().getAnno())
+                        corsoDocentiCorsoPair.getTwo().getAnnoCorso() == corsoDocentiCorsoPair.getOne().getAnno() &&
+                        corsoDocentiCorsoPair.getTwo().getAnnoCorso() == year)
                 .select(Pair::getOne)
                 .toList();
     }

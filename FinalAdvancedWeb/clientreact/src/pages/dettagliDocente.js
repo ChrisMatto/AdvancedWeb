@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import compareStrings from '../js/functions';
 
 export default class DettagliDocente extends Component {
     constructor() {
@@ -26,7 +27,16 @@ export default class DettagliDocente extends Component {
     render() {
         var lingua = this.props.lingua;
         var docente = this.state.docente;
-        var corsi = this.state.docente.corsi.sort();
+        var sortCorsiFunc;
+        if (lingua === 'it') {
+            sortCorsiFunc = (a, b) => {return compareStrings(a.nomeIt, b.nomeIt);}
+        } else {
+            sortCorsiFunc = (a, b) => {return compareStrings(a.nomeEn, b.nomeEn);}
+        }
+        var corsi = this.state.docente.corsi;
+        if (corsi) {
+            corsi.sort(sortCorsiFunc);
+        }
         return (
             <React.Fragment>
                 <section id="sub-header">
@@ -94,13 +104,29 @@ export default class DettagliDocente extends Component {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-
+                                                        {corsi ? corsi.map((corso) => (
+                                                            <tr>
+                                                                <td><Link to = {"/Courses/" + corso.anno + '/' + corso.idCorso}>{lingua === 'it' ? corso.nomeIt || corso.nomeEn : corso.nomeEn || corso.nomeIt}</Link></td>
+                                                                <td>{corso.ssd}</td>
+                                                                <td>{corso.cfu}</td>
+                                                                <td>{corso.lingua}</td>
+                                                                <td>{corso.semestre}</td>
+                                                                <td>
+                                                                    {corso.cdl.map((cdl, index) => {
+                                                                        if (index > 0) {
+                                                                            return ", " + lingua === 'it' ? cdl.abbrIt || cdl.abbrEn : cdl.abbrEn || cdl.abbrIt;
+                                                                        } else {
+                                                                            return lingua === 'it' ? cdl.abbrIt || cdl.abbrEn : cdl.abbrEn || cdl.abbrIt;
+                                                                        }
+                                                                    })}
+                                                                </td>
+                                                            </tr>
+                                                        )) : null}
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>
                                     </section>
-
                                 </main>
                             </div>
                         </div>
