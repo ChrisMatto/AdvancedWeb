@@ -53,4 +53,11 @@ public class TeachersAPI implements Resource {
         return Response.status(404).build();
     }
 
+    @GET
+    @Path("{id}/curriculum")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response downloadCurriculum(@PathParam("id") int id) {
+        return Response.ok().header("Content-Disposition", "attachment;").build();
+    }
+
 }

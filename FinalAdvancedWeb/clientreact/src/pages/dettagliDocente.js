@@ -64,7 +64,7 @@ export default class DettagliDocente extends Component {
                                             <li>{lingua === 'it' ? 'Ufficio' : 'Office'}<strong className="pull-right">{docente.ufficio}</strong></li>
                                             <li>{lingua === 'it' ? 'Telefono' : 'Telephone'}<strong className="pull-right">{docente.telefono}</strong></li>
                                             <li>{lingua === 'it' ? 'Ricevimento' : 'Receipt'}<strong className="pull-right">{docente.ricevimento}</strong></li>
-                                            <li>Curriculum<strong className="pull-right"><a href = {docente.curriculum ? 'download/' + docente.curriculum : '#'} target="_self"><i className="fa fa-arrow-circle-down" aria-hidden="true"></i></a></strong></li>
+                                            <li>Curriculum<strong className="pull-right"><a href = {"http://localhost:8080/AdvancedWeb/rest/teachers/" + docente.idDocente + "/curriculum"} target="_self" download><i className="fa fa-arrow-circle-down" aria-hidden="true"></i></a></strong></li>
                                         </ul>
                                     </div>
                             </aside>

@@ -1,5 +1,7 @@
 package Classi;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -123,10 +125,12 @@ public class Docente {
 
     @Basic
     @Column(name = "Curriculum")
+    @JsonIgnore
     public String getCurriculum() {
         return curriculum;
     }
 
+    @JsonIgnore
     public void setCurriculum(String curriculum) {
         this.curriculum = curriculum;
     }
