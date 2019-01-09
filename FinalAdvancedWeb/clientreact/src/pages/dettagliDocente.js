@@ -27,12 +27,7 @@ export default class DettagliDocente extends Component {
     render() {
         var lingua = this.props.lingua;
         var docente = this.state.docente;
-        var sortCorsiFunc;
-        if (lingua === 'it') {
-            sortCorsiFunc = (a, b) => {return compareStrings(a.nomeIt, b.nomeIt);}
-        } else {
-            sortCorsiFunc = (a, b) => {return compareStrings(a.nomeEn, b.nomeEn);}
-        }
+        var sortCorsiFunc = lingua === 'it' ? (a, b) => {return compareStrings(a.nomeIt, b.nomeIt);} : (a, b) => {return compareStrings(a.nomeEn, b.nomeEn);};
         var corsi = this.state.docente.corsi;
         if (corsi) {
             corsi.sort(sortCorsiFunc);
