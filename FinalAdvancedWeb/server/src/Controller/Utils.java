@@ -2,11 +2,15 @@ package Controller;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.io.File;
 import java.time.LocalDate;
 
 public class Utils {
+
+    static ServletContext context;
 
     public static int getCurrentYear() {
         LocalDate date = LocalDate.now();
@@ -50,6 +54,10 @@ public class Utils {
             controller = Controllers.noController;
         }
         return controller;
+    }
+
+    public static File getFile(String filePath) {
+        return new File(context.getRealPath("") + filePath);
     }
 
 }

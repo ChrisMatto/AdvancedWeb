@@ -3,8 +3,10 @@ package API;
 import Classi.Docente;
 import Classi.Versioni;
 import ClassiTemp.DocenteCompleto;
+import Controller.Utils;
 import DataAccess.DataAccess;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -13,6 +15,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.io.File;
 
 public class TeachersAPI implements Resource {
 
@@ -57,7 +60,9 @@ public class TeachersAPI implements Resource {
     @Path("{id}/curriculum")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response downloadCurriculum(@PathParam("id") int id) {
-        return Response.ok().header("Content-Disposition", "attachment;").build();
+        Docente docente = DataAccess.getDocente(id);
+        File file = Utils.getFile(docente.getCurriculum());
+        return Response.ok(file).header("Content-Disposition", "attachment; filename=" + file.getName()).build();
     }
 
 }
