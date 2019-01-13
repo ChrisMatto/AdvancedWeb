@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -288,4 +289,22 @@ public class CoursesAPI implements Resource {
     public Response getAnniCorsi() {
         return Response.ok(DataAccess.getAnniCorsi()).build();
     }
+
+    @Path("{year}/{id}/material")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMaterialeCorso(@PathParam("year") String year, @PathParam("id") int id) {
+        int anno = Utils.getYear(year);
+        return Response.ok(DataAccess.getMaterialeCorso(id, anno)).build();
+    }
+
+    @Path("material/{idMateriale}")
+    @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response getMateriale(@PathParam("idMateriale") int idMateriale) {
+        Materiale materiale = DataAccess.getMateriale(idMateriale);
+        File file = Utils.getFile(materiale.getLink());
+        return Response.ok(file).header("Content-Disposition", "attachment; filename=" + file.getName()).build();
+    }
+
 }

@@ -441,7 +441,7 @@ export default class DettagliCorso extends Component {
                         
                         <aside className = 'col-md-4'>
                             <div className="box_style_1">
-                                <h4><Link to = '/Material'>{lingua === 'it' ? 'Materiale' : 'Material'}</Link></h4><br/>
+                                <h4><Link to = {'/Courses/' + infoBase.anno + '/' + infoBase.idCorso + '/Material'}>{lingua === 'it' ? 'Materiale' : 'Material'}</Link></h4><br/>
                                 <h4>{lingua === 'it' ? 'Insegnanti' : 'Teachers'}</h4>
                                     {docenti}
                             </div>

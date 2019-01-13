@@ -122,6 +122,13 @@ public class DataAccess {
                 .toList();
     }
 
+    public static Materiale getMateriale(int idMateriale) {
+        return stream.streamAll(em, Materiale.class)
+                .where(materiale -> materiale.getIdMateriale() == idMateriale)
+                .findFirst()
+                .orElse(null);
+    }
+
     public static void insertCorso(CorsoCompleto corsoCompleto) {
         int newId = stream.streamAll(em,Corso.class)
                 .max(Corso::getIdCorso) +1;
