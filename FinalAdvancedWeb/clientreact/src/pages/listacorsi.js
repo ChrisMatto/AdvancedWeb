@@ -1,7 +1,7 @@
 import React from 'react';
 import activeFilters from '../js/table_filter';
 import { Link } from 'react-router-dom';
-import compareStrings from '../js/functions';
+import { compareStrings } from '../js/functions';
 import queryString from 'querystring';
 
 class ListaCorsi extends React.Component {

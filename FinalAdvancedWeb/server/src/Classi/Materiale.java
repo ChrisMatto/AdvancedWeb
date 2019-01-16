@@ -79,6 +79,14 @@ public class Materiale {
                 Objects.equals(descrizioneEn, materiale.descrizioneEn);
     }
 
+    public void copyFrom(Materiale materiale) {
+        this.idMateriale = materiale.idMateriale;
+        this.nome = materiale.nome;
+        this.link = materiale.link;
+        this.descrizioneIt = materiale.descrizioneIt;
+        this.descrizioneEn = materiale.descrizioneEn;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(idMateriale, nome, link, descrizioneIt, descrizioneEn);

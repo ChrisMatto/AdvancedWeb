@@ -28,7 +28,7 @@ public class CorsoCompleto extends Corso {
     private DublinoEn dublinoEn;
 
     private List<Libro> libri;
-    private List<Materiale> materiale;
+    private List<MaterialeCompleto> materiale;
     private RelazioniCorso relazioni;
 
     public CorsoCompleto() {
@@ -135,11 +135,11 @@ public class CorsoCompleto extends Corso {
         this.libri = libri;
     }
 
-    public List<Materiale> getMateriale() {
+    public List<MaterialeCompleto> getMateriale() {
         return materiale;
     }
 
-    public void setMateriale(List<Materiale> materiale) {
+    public void setMateriale(List<MaterialeCompleto> materiale) {
         this.materiale = materiale;
     }
 

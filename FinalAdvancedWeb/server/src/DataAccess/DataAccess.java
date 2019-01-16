@@ -122,11 +122,11 @@ public class DataAccess {
                 .toList();
     }
 
-    public static Materiale getMateriale(int idMateriale) {
-        return stream.streamAll(em, Materiale.class)
+    public static MaterialeCompleto getMateriale(int idMateriale) {
+        return new MaterialeCompleto(stream.streamAll(em, Materiale.class)
                 .where(materiale -> materiale.getIdMateriale() == idMateriale)
                 .findFirst()
-                .orElse(null);
+                .orElse(null));
     }
 
     public static void insertCorso(CorsoCompleto corsoCompleto) {
@@ -249,7 +249,7 @@ public class DataAccess {
         }
     }
 
-    private static void insertMaterialeCorso(int idCorso, int annoCorso, List<Materiale> materiale) {
+    private static void insertMaterialeCorso(int idCorso, int annoCorso, List<MaterialeCompleto> materiale) {
         for (Materiale mat : materiale) {
             MaterialeCorso materialeCorso = new MaterialeCorso();
             materialeCorso.setCorso(idCorso);
@@ -573,7 +573,7 @@ public class DataAccess {
         }
     }
 
-    private static void updateMaterialeCorso(int idCorso, int year, List<Materiale> materialeCorso) {
+    private static void updateMaterialeCorso(int idCorso, int year, List<MaterialeCompleto> materialeCorso) {
         List<MaterialeCorso> oldMaterialeCorso = stream.streamAll(em, MaterialeCorso.class)
                 .where(mc -> mc.getCorso() == idCorso && mc.getAnnoCorso() == year)
                 .toList();
@@ -730,13 +730,18 @@ public class DataAccess {
                 .toList();
     }
 
-    public static List<Materiale> getMaterialeCorso(int idCorso, int year) {
-        return stream.streamAll(em, MaterialeCorso.class)
+    public static List<MaterialeCompleto> getMaterialeCorso(int idCorso, int year) {
+        List<Materiale> materiale = stream.streamAll(em, MaterialeCorso.class)
                 .where(materialeCorso -> materialeCorso.getCorso() == idCorso && materialeCorso.getAnnoCorso() == year)
                 .join((c, source) -> source.stream(Materiale.class))
                 .where(materialeCorsoMaterialePair -> materialeCorsoMaterialePair.getOne().getMateriale() == materialeCorsoMaterialePair.getTwo().getIdMateriale())
                 .select(Pair::getTwo)
                 .toList();
+        List<MaterialeCompleto> materialeCompleto = new ArrayList<>();
+        for (Materiale mat : materiale) {
+            materialeCompleto.add(new MaterialeCompleto(mat));
+        }
+        return materialeCompleto;
     }
 
     public static RelazioniCorso getRelazioniCorso(int idCorso, int year, String baseUri) {

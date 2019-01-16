@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import compareStrings from '../js/functions';
+import { compareStrings } from '../js/functions';
 import filterTeachers from '../js/teachers_filter';
 
 export default class ListaDocenti extends Component {
