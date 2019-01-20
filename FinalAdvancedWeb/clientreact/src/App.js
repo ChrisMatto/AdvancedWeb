@@ -4,7 +4,7 @@ import Home from './pages/home';
 import ListaCorsi from './pages/listacorsi';
 import DettagliCorso from './pages/dettagliCorso';
 import ListaDocenti from './pages/listaDocenti';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import DettagliDocente from './pages/dettagliDocente';
 import ListaMateriali from './pages/listaMateriali';
 import Login from './pages/login';
@@ -21,7 +21,8 @@ class App extends Component {
     }
     this.state = {
         lingua: lingua,
-        token: null
+        token: null,
+        utente: null
     };
     this.changeLingua = this.changeLingua.bind(this);
     }
@@ -32,7 +33,18 @@ class App extends Component {
             fetch('http://localhost:8080/AdvancedWeb/rest/auth/checkSession', {
                 method: 'POST',
                 body: token
-            }).then(res => res.ok ? this.setState({ token: token }) : this.setState({ token: null }));
+            })
+            .then(res => res.ok ? res.json() : null)
+            .then(result => {
+                if (result) {
+                    this.setState({
+                        token: token,
+                        utente: result
+                    });
+                } else {
+                    localStorage.removeItem('token');
+                }
+            });
         }
     }
 
@@ -50,10 +62,44 @@ class App extends Component {
         }
     }
 
+    login = (token) => {
+        fetch('http://localhost:8080/AdvancedWeb/rest/auth/checkSession', {
+                method: 'POST',
+                body: token
+            })
+            .then(res => res.ok ? res.json() : null)
+            .then(result => {
+                if (result) {
+                    localStorage.setItem('token', token);
+                    this.setState({
+                        token: token,
+                        utente: result
+                    });
+                }
+            });
+    }
+
+    Logout = () => {
+        fetch('http://localhost:8080/AdvancedWeb/rest/auth/logout', {
+                method: 'POST',
+                body: this.state.token
+            })
+            .then(res => {
+                if (res.ok) {
+                    this.setState({
+                        token: null,
+                        utente: null
+                    });
+                    sessionStorage.removeItem('token');
+                }
+            });
+        return <Redirect to = '/Home'/>
+    }
+
     render() {
         return (
             <React.Fragment>
-                <Header/>
+                <Header login = {this.state.token && this.state.utente ? true : false} lingua = {this.state.lingua} utente = {this.state.utente}/>
                 <Nav lingua = {this.state.lingua} onLinguaChange = {this.changeLingua}/>
                 <Switch>
                 <Route exact path = '/(|Home)' render = {() => <Home lingua = {this.state.lingua}/>}/>
@@ -62,7 +108,8 @@ class App extends Component {
                 <Route exact path = '/Courses/:year(\d{4})/:id(\d+)/Material' render = {({ match }) => <ListaMateriali year = {match.params.year} id = {match.params.id} lingua = {this.state.lingua}/>}/>
                 <Route exact path = '/Teachers' render = {() => <ListaDocenti lingua = {this.state.lingua}/>}/>
                 <Route exact path = '/Teachers/:id(\d+)' render = {({ match }) => <DettagliDocente id = {match.params.id} lingua = {this.state.lingua}/>}/>
-                <Route exact path = '/Login' render = {() => <Login/>}/>
+                <Route exact path = '/Login' render = {() => <Login login = {this.login}/>}/>
+                <Route exact path = '/Logout' render = {() => <this.Logout/>}/>
                 </Switch>
                 <Footer lingua = {this.state.lingua}/>
             </React.Fragment>

@@ -1,17 +1,27 @@
 package Classi;
 
+import ClassiTemp.Views;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 public class Utente {
+
+    @JsonView(Views.SimpleUtente.class)
     private int idUtente;
+
+    @JsonView(Views.SimpleUtente.class)
     private String username;
+
     private String password;
+
     private Integer docente;
+
+    @JsonView(Views.FullUtente.class)
     private Integer gruppo;
 
     @Id

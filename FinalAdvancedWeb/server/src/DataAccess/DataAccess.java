@@ -972,6 +972,16 @@ public class DataAccess {
                 .orElse(null);
     }
 
+    public static Utente getSessionUtente(String token) {
+        return stream.streamAll(em, Sessione.class)
+                .where(sessione -> sessione.getToken().equals(token))
+                .join((c, source) -> source.stream(Utente.class))
+                .where(sessioneUtentePair -> sessioneUtentePair.getOne().getUtente() == sessioneUtentePair.getTwo().getIdUtente())
+                .select(Pair::getTwo)
+                .findFirst()
+                .orElse(null);
+    }
+
     public static void deleteSession(String token) {
         Optional<Sessione> sessione = stream.streamAll(em, Sessione.class)
                 .where(s -> s.getToken().equals(token))

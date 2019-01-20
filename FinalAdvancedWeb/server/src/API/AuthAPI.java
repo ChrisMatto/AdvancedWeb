@@ -2,9 +2,12 @@ package API;
 
 import ClassiTemp.Login;
 import Classi.Utente;
+import ClassiTemp.Views;
 import Controller.Controllers;
 import Controller.Utils;
 import DataAccess.DataAccess;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -40,12 +43,16 @@ public class AuthAPI implements Resource {
 
     @Path("checkSession")
     @POST
-    public Response checkSession(String token) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response checkSession(String token) throws JsonProcessingException {
         if (token == null) {
             return Response.status(400).build();
         }
         if (DataAccess.existsSessione(token)) {
-            return Response.ok().build();
+            Utente utente = DataAccess.getSessionUtente(token);
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonUtente = mapper.writerWithView(Views.SimpleUtente.class).writeValueAsString(utente);
+            return Response.ok(jsonUtente).build();
         }
         return Response.status(404).build();
     }

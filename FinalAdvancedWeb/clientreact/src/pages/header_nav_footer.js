@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Header() {
+function Header(props) {
     return (
         <header>
             <div className = "container">
@@ -10,9 +10,44 @@ function Header() {
                         <Link id = 'logo' to = '/Home'>Learn</Link>
                     </div>
                     <div className = "col-md-10 col-sm-10 col-xs-10">
-                        <div className = "pull-right">
-                            <Link to = '/Login' className = "button_top" id = "login_top">Login</Link>
-                        </div>
+                        {props.login 
+                            ?
+                                <ul className = 'pull-right user_panel'>
+                                    <li className = 'dropdown'>
+                                    <a href="#" className="dropdown-toggle" data-toggle="dropdown">Welcome, <strong>{props.utente.username}</strong>
+                                        <b className="caret"></b>
+                                    </a>
+                                        <ul className = 'dropdown-menu'>
+                                            <li>
+                                                <Link to = '/Profile'>
+                                                <i className="icon-user"></i>Profile</Link>
+                                            </li>
+                                            <li>
+                                                <Link to = "/Backoffice">
+                                                <i className="icon-cog"></i>Backoffice Area</Link>
+                                            </li>
+                                            {props.utente.docente 
+                                            ?
+                                                null
+                                            :
+                                                <li>
+                                                    <Link to = '/Log'>
+                                                        <i className=""></i>Log</Link>
+                                                </li>
+                                            }
+                                            <li className="divider"></li>
+                                            <li>
+                                                <Link to = "/Logout">
+                                                    <i className="icon-off"></i>Logout</Link>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            :
+                            <div className = "pull-right">
+                                <Link to = '/Login' className = "button_top" id = "login_top">Login</Link>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
