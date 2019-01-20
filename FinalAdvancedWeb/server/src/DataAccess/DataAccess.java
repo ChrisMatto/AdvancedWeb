@@ -16,6 +16,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.*;
 
 public class DataAccess {
@@ -930,6 +931,25 @@ public class DataAccess {
                 .isPresent();
     }
 
+    public static Boolean existsSessione(String token) {
+        return stream.streamAll(em, Sessione.class)
+                .where(sessione -> sessione.getToken().equals(token))
+                .findFirst()
+                .isPresent();
+    }
+
+    public static void deleteOldSessions() {
+        List<Sessione> sessioni = stream.streamAll(em, Sessione.class)
+                .toList();
+        for (Sessione sessione : sessioni) {
+            if (Utils.shouldDeleteSession(sessione.getData())) {
+                entityTransaction.begin();
+                em.remove(sessione);
+                entityTransaction.commit();
+            }
+        }
+    }
+
     public static String makeSessione(Utente utente) {
         Sessione sessione = new Sessione();
         sessione.setUtente(utente.getIdUtente());
@@ -942,6 +962,14 @@ public class DataAccess {
         Optional<Sessione> optionalSessione = stream.streamAll(em, Sessione.class)
                 .where(s -> s.getToken().equals(token)).findFirst();
         return optionalSessione.map(Sessione::getToken).orElse(null);
+    }
+
+    public static String getSessionToken(int idUtente) {
+        return stream.streamAll(em, Sessione.class)
+                .where(sessione -> sessione.getUtente() == idUtente)
+                .select(Sessione::getToken)
+                .findFirst()
+                .orElse(null);
     }
 
     public static void deleteSession(String token) {

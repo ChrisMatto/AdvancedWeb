@@ -11,12 +11,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import java.sql.Timestamp;
 
 public class AuthAPI implements Resource {
 
     @Path("login")
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response login(Login login) {
         if(login == null)
             return Response.status(400).build();
@@ -24,6 +25,10 @@ public class AuthAPI implements Resource {
         if(login.getUsername() != null && login.getPassword() != null && !login.getUsername().isEmpty() && !login.getPassword().isEmpty()) {
             Utente utente = DataAccess.getUtente(login.getUsername(), login.getPassword());
             if(utente != null) {
+                token = DataAccess.getSessionToken(utente.getIdUtente());
+                if (token != null) {
+                    DataAccess.deleteSession(token);
+                }
                 token = DataAccess.makeSessione(utente);
                 return Response.ok(token).build();
             } else {
@@ -31,6 +36,18 @@ public class AuthAPI implements Resource {
             }
         }
         return Response.status(400).build();
+    }
+
+    @Path("checkSession")
+    @POST
+    public Response checkSession(String token) {
+        if (token == null) {
+            return Response.status(400).build();
+        }
+        if (DataAccess.existsSessione(token)) {
+            return Response.ok().build();
+        }
+        return Response.status(404).build();
     }
 
     @Path("logout")

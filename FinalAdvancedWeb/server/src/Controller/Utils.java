@@ -6,7 +6,9 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.concurrent.TimeUnit;
 
 public class Utils {
 
@@ -58,6 +60,14 @@ public class Utils {
 
     public static File getFile(String filePath) {
         return new File(context.getRealPath("") + filePath);
+    }
+
+    public static Boolean shouldDeleteSession(Timestamp timestamp)
+    {
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+        long diff = Math.abs(currentTimestamp.getTime() - timestamp.getTime());
+        long days = TimeUnit.MILLISECONDS.toDays(diff);
+        return days >= 1;
     }
 
 }
