@@ -14,8 +14,8 @@ public class Listener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         Utils.context = servletContextEvent.getServletContext();
-        ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
-        ses.scheduleAtFixedRate(DataAccess::deleteOldSessions, 0, 10, TimeUnit.MINUTES);
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new SessionTask(), 0, TimeUnit.MINUTES.toMillis(10));
     }
 
     @Override

@@ -11,7 +11,7 @@ export default class CreateCorso extends Component {
 
     render() {
         return (
-            <div></div>
+            <div className = 'col-md-8' style = {{ backgroundColor: 'red' }}>dsd</div>
         );
     }
 

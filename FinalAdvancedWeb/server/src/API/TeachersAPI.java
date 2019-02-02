@@ -57,6 +57,13 @@ public class TeachersAPI implements Resource {
     }
 
     @GET
+    @Path("{id}/courses")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTeacherCourses(@PathParam("id") int id) {
+        return Response.ok(DataAccess.getCorsiDocente(id)).build();
+    }
+
+    @GET
     @Path("{id}/curriculum")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response downloadCurriculum(@PathParam("id") int id) {

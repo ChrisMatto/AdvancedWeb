@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { BackPages } from '../js/enums';
+import CreateCorso from './backoffice/createCorso';
 
 export default class Backoffice extends Component {
     constructor(props) {
@@ -8,19 +9,88 @@ export default class Backoffice extends Component {
         this.state = {
             token: props.token,
             utente: props.utente,
+            corsi: [],
             backPage: null
         };
     }
 
+    componentWillMount() {
+        if (this.state.token && this.props.utente) {
+            if (this.props.utente.docente) {
+                fetch('http://localhost:8080/AdvancedWeb/rest/teachers/' + this.state.utente.docente + '/courses')
+                .then(res => res.ok ? res.json() : [])
+                .then(result => this.setState({ corsi: result }));
+            }
+        }
+    }
+
     AdminMenu = () => {
         return (
-            <div></div>
+            <aside className="col-md-4">
+                <div className="box_style_1 profile">
+                    <h4>Funzioni creazione</h4>
+
+                    <ul>
+                        <li><Link to = '/Backoffice/CreateCDL'>Crea Un Nuovo Cdl</Link></li>
+                        <li><Link to = '/Backoffice/CreateCorso'>Crea Un Nuovo Corso</Link></li>
+                        <li><Link to = '/Backoffice/RegisterDocente'>Registra Un Nuovo Docente</Link></li>
+                        <li><Link to = '/Backoffice/CreateAdmin'>Registra Un Nuovo Amministratore</Link></li>
+                        <li><Link to = '/Backoffice/NewMateriale'>Aggiungi Materiale</Link></li>
+                        <li><Link to = '/Backoffice/NewLibro'>Aggiungi Libro</Link></li>
+                    </ul>
+
+                    <h4>Funzioni modifica</h4>
+                    <ul>
+                        <li><Link to = '/Backoffice/UpdateCorsi'>Modifica Corsi</Link></li>
+                        <li><Link to = '/Backoffice/UpdateCDL'>Modifica Cdl</Link></li>
+                        <li><Link to = '/Backoffice/UpdateDocente'>Modifica Docente</Link></li>
+                    </ul>
+
+                    <h4>Funzioni Upload</h4>
+                    <ul>
+                        <li><Link to = '/Backoffice/ManageMateriale'>Materiale Gestione</Link></li>
+                        <li><Link to = '/Backoffice/ManageLibri'>Libri Gestione</Link></li>
+                    </ul>
+
+                </div>
+            </aside>
         );
     }
 
     TeachersMenu = () => {
         return (
-            <div></div>
+            <aside className="col-md-4">
+                <div className="box_style_1 profile">
+                    {
+                        this.state.corsi.length > 0 ?
+                            <Fragment>
+                                <h4>Corsi Assegnati</h4>
+                                <ul>
+                                    {
+                                        this.state.corsi.map(corso => 
+                                            <li key = {corso.idCorso}><Link to = {'/Backoffice/UpdateCorsi/' + corso.idCorso}>{corso.nomeIt}</Link></li>
+                                        )
+                                    }
+                                </ul>
+                            </Fragment>
+                        :
+                            null
+                    }
+                    
+
+                    <h4>Aggiunta Documenti</h4>
+                    <ul>
+                        <li><Link to = '/Backoffice/NewMateriale'>Aggiungi Materiale</Link></li>
+                        <li><Link to = '/Backoffice/NewLibro'>Aggiungi Libro</Link></li>
+                    </ul>
+
+                    <h4>Gestione Documenti</h4>
+                    <ul>
+                        <li><Link to = '/Backoffice/ManageMateriale'>Materiale Gestione</Link></li>
+                        <li><Link to = '/Backoffice/ManageLibri'>Libri Gestione</Link></li>
+                    </ul>
+                </div>
+            </aside>
         );
     }
 
@@ -56,6 +126,7 @@ export default class Backoffice extends Component {
                                 :
                                     <this.AdminMenu/>
                             }
+                            <CreateCorso/>
                             </div>
                         </div>
                     </section>                    
