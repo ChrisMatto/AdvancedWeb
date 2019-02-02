@@ -32,7 +32,9 @@ export default class Login extends Component {
                 token: result,
                 error: result ? false : true
             });
-            this.props.login(result);
+            if (result) {
+                this.props.login(result);
+            }
         });
     }
 
@@ -43,7 +45,7 @@ export default class Login extends Component {
     }
 
     render() {
-        if (this.state.token) {
+        if (this.props.loggedIn || this.state.token) {
             return <Redirect to = '/Backoffice'/>
         } else {
             return (
@@ -72,7 +74,7 @@ export default class Login extends Component {
                             </div>
                         </div>
                     </div>
-                    </section>
+                </section>
             );
         }
     }

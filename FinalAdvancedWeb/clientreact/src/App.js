@@ -8,6 +8,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import DettagliDocente from './pages/dettagliDocente';
 import ListaMateriali from './pages/listaMateriali';
 import Login from './pages/login';
+import Backoffice from './pages/backoffice';
 
 class App extends Component {
   constructor() {
@@ -30,21 +31,7 @@ class App extends Component {
     componentWillMount() {
         var token = localStorage.getItem('token');
         if (token) {
-            fetch('http://localhost:8080/AdvancedWeb/rest/auth/checkSession', {
-                method: 'POST',
-                body: token
-            })
-            .then(res => res.ok ? res.json() : null)
-            .then(result => {
-                if (result) {
-                    this.setState({
-                        token: token,
-                        utente: result
-                    });
-                } else {
-                    localStorage.removeItem('token');
-                }
-            });
+            this.login(token);
         }
     }
 
@@ -64,19 +51,20 @@ class App extends Component {
 
     login = (token) => {
         fetch('http://localhost:8080/AdvancedWeb/rest/auth/checkSession', {
-                method: 'POST',
-                body: token
-            })
-            .then(res => res.ok ? res.json() : null)
-            .then(result => {
-                if (result) {
-                    localStorage.setItem('token', token);
-                    this.setState({
-                        token: token,
-                        utente: result
-                    });
-                }
-            });
+            method: 'POST',
+            body: token
+        })
+        .then(res => res.ok ? res.json() : null)
+        .then(result => {
+            if (result) {
+                this.setState({
+                    token: token,
+                    utente: result
+                });
+            } else {
+                localStorage.removeItem('token');
+            }
+        });
     }
 
     Logout = () => {
@@ -108,8 +96,9 @@ class App extends Component {
                 <Route exact path = '/Courses/:year(\d{4})/:id(\d+)/Material' render = {({ match }) => <ListaMateriali year = {match.params.year} id = {match.params.id} lingua = {this.state.lingua}/>}/>
                 <Route exact path = '/Teachers' render = {() => <ListaDocenti lingua = {this.state.lingua}/>}/>
                 <Route exact path = '/Teachers/:id(\d+)' render = {({ match }) => <DettagliDocente id = {match.params.id} lingua = {this.state.lingua}/>}/>
-                <Route exact path = '/Login' render = {() => <Login login = {this.login}/>}/>
+                <Route exact path = '/Login' render = {() => <Login login = {this.login} loggedIn = {this.state.token && this.state.utente ? true : false} />}/>
                 <Route exact path = '/Logout' render = {() => <this.Logout/>}/>
+                <Route exact path = '/Backoffice' render = {() => <Backoffice loggedIn = {this.state.token && this.state.utente ? true : false}/>}/>
                 </Switch>
                 <Footer lingua = {this.state.lingua}/>
             </React.Fragment>
