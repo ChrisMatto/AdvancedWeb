@@ -98,7 +98,7 @@ class App extends Component {
                 <Route exact path = '/Teachers/:id(\d+)' render = {({ match }) => <DettagliDocente id = {match.params.id} lingua = {this.state.lingua}/>}/>
                 <Route exact path = '/Login' render = {() => <Login login = {this.login} loggedIn = {this.state.token && this.state.utente ? true : false} />}/>
                 <Route exact path = '/Logout' render = {() => <this.Logout/>}/>
-                <Route exact path = '/Backoffice' render = {() => <Backoffice loggedIn = {this.state.token && this.state.utente ? true : false}/>}/>
+                <Route exact path = '/Backoffice' render = {() => <Backoffice token = {this.state.token} utente = {this.state.utente}/>}/>
                 </Switch>
                 <Footer lingua = {this.state.lingua}/>
             </React.Fragment>
