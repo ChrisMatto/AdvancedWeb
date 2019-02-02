@@ -1,0 +1,1 @@
+export const BackPages = Object.freeze({'CreateCDL': 'CreateCDL', 'CreateCorso': 'CreateCorso'});
