@@ -113,7 +113,7 @@ export default class Backoffice extends Component {
                     </section>
                     
                     <section id="main_content">
-                        <div className="container">
+                        <div className="container" style = {{ padding: 0 }}>
                             <div className = 'row'>
                             {
                                 this.state.utente.docente ?

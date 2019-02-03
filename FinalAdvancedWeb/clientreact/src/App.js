@@ -9,6 +9,7 @@ import DettagliDocente from './pages/dettagliDocente';
 import ListaMateriali from './pages/listaMateriali';
 import Login from './pages/login';
 import Backoffice from './pages/backoffice';
+import './css/index.css';
 
 class App extends Component {
   constructor() {
