@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { Segment, Header, Progress, Form, Button, Tab } from 'semantic-ui-react';
+import { Segment, Header, Progress, Form, Button, Accordion } from 'semantic-ui-react';
+import Editor from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export default class CreateCorso extends Component {
     constructor() {
@@ -212,7 +214,11 @@ export default class CreateCorso extends Component {
                         />
                 break;
             case 1:
-                Step = <SecondStep descrizione = {this.state.corso.descrizioneIt} handleEditorChange = {this.handleEditorChange}/>
+                Step = <SecondStep 
+                            descrizione = {this.state.corso.descrizioneIt} 
+                            handleEditorChange = {this.handleEditorChange}
+                            className = {"descrizioneIt"}
+                        />
                 break;
         }
         var title;
@@ -417,7 +423,42 @@ function FirstStep(props) {
 function SecondStep(props) {
     return (
         <Fragment>
-            
+            <CustomEditor 
+                className = {props.className}
+                objName = 'prerequisiti' 
+                title = 'Prerequisiti Del Corso' 
+                placeholder = 'Scrivi I Prerequisiti Qui'
+                handleEditorChange = {props.handleEditorChange}
+                value = {props.descrizione.prerequisiti}
+            />
+            <CustomEditor 
+                className = {props.className}
+                objName = 'obiettivi' 
+                title = 'Obiettivi Del Corso' 
+                placeholder = 'Scrivi Gli Obiettivi Qui'
+                handleEditorChange = {props.handleEditorChange}
+                value = {props.descrizione.obiettivi}
+            />
+        </Fragment>
+    );
+}
+
+function CustomEditor(props) {
+    var panels = [
+        {
+            key: props.objName, 
+            title: props.title, 
+            content: {
+                as: Editor,
+                placeholder: props.placeholder,
+                value: props.value ? props.value : "",
+                onChange: (value) => {props.handleEditorChange(props.className, props.objName, value)}
+            }
+        }
+    ];
+    return (
+        <Fragment>
+            <Accordion as = {Form.Field} panels = {panels} styled style = {{ width: '100%' }}/>
         </Fragment>
     );
 }
