@@ -83,8 +83,12 @@ export default class CreateCorso extends Component {
                     this.setState({ cdl: cdl });
                 });
             });
+        }
+    }
 
-            fetch('http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/courses/' + this.state.corso.anno ? this.state.corso.anno : 'current')
+    handleChange = (e, {name, value}) => {
+        if (name === "anno") {
+            fetch('http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/courses/' + value)
             .then(res => res.json())
             .then(result => {
                 let promises = [];
@@ -102,13 +106,20 @@ export default class CreateCorso extends Component {
                     results.forEach(corso => {
                         corsi.push(corso);
                     });
-                    this.setState({ corsi: corsi });
+                    this.setState({
+                        corsi: corsi,
+                        corso: {
+                            ...this.state.corso,
+                            relazioni: {
+                                propedeudici: [],
+                                modulo: [],
+                                mutuati: []
+                            }
+                        }
+                    });
                 });
             });
         }
-    }
-
-    handleChange = (e, {name, value}) => {
         this.setState({
             corso: {...this.state.corso, [name]: value}
         });
@@ -137,21 +148,21 @@ export default class CreateCorso extends Component {
             case 'propedeudici':
                 isRelazione = true;
                 value.forEach(v => {
-                    let string = 'http://localhost:8080/AdvancedWeb/rest/courses/' + this.state.corso.anno ? this.state.corso.anno : 'current' + '/' + v;
+                    let string = 'http://localhost:8080/AdvancedWeb/rest/courses/' + (this.state.corso.anno ? this.state.corso.anno : 'current') + '/' + v;
                     arr.push(string);
                 });
                 break;
             case 'mutuati':
                 isRelazione = true;
                     value.forEach(v => {
-                        let string = 'http://localhost:8080/AdvancedWeb/rest/courses/' + this.state.corso.anno ? this.state.corso.anno : 'current' + '/' + v;
+                        let string = 'http://localhost:8080/AdvancedWeb/rest/courses/' + (this.state.corso.anno ? this.state.corso.anno : 'current') + '/' + v;
                         arr.push(string);
                     });
                 break;
             case 'modulo':
                 isRelazione = true;
                     value.forEach(v => {
-                        let string = 'http://localhost:8080/AdvancedWeb/rest/courses/' + this.state.corso.anno ? this.state.corso.anno : 'current' + '/' + v;
+                        let string = 'http://localhost:8080/AdvancedWeb/rest/courses/' + (this.state.corso.anno ? this.state.corso.anno : 'current') + '/' + v;
                         arr.push(string);
                     });
                 break;
@@ -452,6 +463,7 @@ function BaseInfoStep(props) {
                                     var arr = url.split('/');
                                     return parseInt(arr[arr.length - 1]);
                                 })}
+                                disabled = {props.corso.anno ? false : true}
                             />
                             <Form.Dropdown
                                 clearable
@@ -465,7 +477,7 @@ function BaseInfoStep(props) {
                                 name = 'propedeudici'
                                 options = {filteredCorsi}
                                 placeholder = {props.selectedCdl.length > 0 ? 'Seleziona Corsi...' : 'Seleziona Un CDL...'}
-                                disabled = {props.selectedCdl.length > 0 ? false : true}
+                                disabled = {props.selectedCdl.length > 0 && props.corso.anno ? false : true}
                                 closeOnBlur
                                 value = {props.corso.relazioni.propedeudici.map(url => {
                                     var arr = url.split('/');
@@ -484,7 +496,7 @@ function BaseInfoStep(props) {
                                 name = 'modulo'
                                 options = {filteredCorsi}
                                 placeholder = {props.selectedCdl.length > 0 ? 'Seleziona Corsi...' : 'Seleziona Un CDL...'}
-                                disabled = {props.selectedCdl.length > 0 ? false : true}
+                                disabled = {props.selectedCdl.length > 0 && props.corso.anno ? false : true}
                                 closeOnBlur
                                 value = {props.corso.relazioni.modulo.map(url => {
                                     var arr = url.split('/');
