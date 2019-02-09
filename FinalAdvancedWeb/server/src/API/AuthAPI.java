@@ -29,10 +29,9 @@ public class AuthAPI implements Resource {
             Utente utente = DataAccess.getUtente(login.getUsername(), login.getPassword());
             if(utente != null) {
                 token = DataAccess.getSessionToken(utente.getIdUtente());
-                if (token != null) {
-                    DataAccess.deleteSession(token);
+                if (token == null) {
+                    token = DataAccess.makeSessione(utente);
                 }
-                token = DataAccess.makeSessione(utente);
                 return Response.ok(token).build();
             } else {
                 return Response.status(401).build();

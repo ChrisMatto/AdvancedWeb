@@ -195,12 +195,15 @@ export default class CreateCorso extends Component {
         } else {
             this.setState({ formError: true });
         }
+        document.documentElement.scrollTop = 200;
     }
 
     render() {
+        var title;
         var Step;
         switch (this.state.step) {
             default:
+                title = 'Crea Un Nuovo Corso';
                 Step = <FirstStep 
                             handleChange = {this.handleChange} 
                             handleSelectChange = {this.handleSelectChange}
@@ -214,21 +217,22 @@ export default class CreateCorso extends Component {
                         />
                 break;
             case 1:
-                Step = <SecondStep 
+                title = 'Descrizione Italiana Del Corso';
+                Step = <DescriptionStep 
                             descrizione = {this.state.corso.descrizioneIt} 
                             handleEditorChange = {this.handleEditorChange}
                             className = {"descrizioneIt"}
+                            step = {this.state.step}
                         />
                 break;
-        }
-        var title;
-        switch(this.state.step) {
-            case 1:
-                title = 'Descrizione Italiana Del Corso';
-                break;
-            default:
-                title = 'Crea Un Nuovo Corso';
-                break;
+            case 2:
+                title = 'Descrizione Inglese Del Corso';
+                Step = <DescriptionStep
+                            descrizione = {this.state.corso.descrizioneEn}
+                            handleEditorChange = {this.handleEditorChange}
+                            className = {"descrizioneEn"}
+                            step = {this.state.step}
+                        />
         }
         return (
             <Segment className = 'col-md-8' color = 'teal' style = {{ marginTop: 4 }}>
@@ -239,7 +243,7 @@ export default class CreateCorso extends Component {
                 </Form>
                 <div style = {{ textAlign: 'center', paddingTop: 20 }}>
                     <Button.Group>
-                        <Button onClick = {() => this.setState({ step: this.state.step - 1 })} disabled = {this.state.step === 0}>Indietro</Button>
+                        <Button onClick = {() => {this.setState({ step: this.state.step - 1 }); document.documentElement.scrollTop = 200}} disabled = {this.state.step === 0}>Indietro</Button>
                         <Button.Or text = 'O'/>
                         <Button positive onClick = {this.aheadButtonClick} disabled = {this.state.step === 5}>Avanti</Button>
                     </Button.Group>
@@ -420,7 +424,7 @@ function FirstStep(props) {
     );
 }
 
-function SecondStep(props) {
+function DescriptionStep(props) {
     return (
         <Fragment>
             <CustomEditor 
@@ -430,6 +434,7 @@ function SecondStep(props) {
                 placeholder = 'Scrivi I Prerequisiti Qui'
                 handleEditorChange = {props.handleEditorChange}
                 value = {props.descrizione.prerequisiti}
+                step = {props.step}
             />
             <CustomEditor 
                 className = {props.className}
@@ -438,27 +443,79 @@ function SecondStep(props) {
                 placeholder = 'Scrivi Gli Obiettivi Qui'
                 handleEditorChange = {props.handleEditorChange}
                 value = {props.descrizione.obiettivi}
+                step = {props.step}
+            />
+            <CustomEditor 
+                className = {props.className}
+                objName = 'modEsame' 
+                title = "Modalità D'Esame Del Corso" 
+                placeholder = "Scrivi le Modalità D'Esame Qui"
+                handleEditorChange = {props.handleEditorChange}
+                value = {props.descrizione.modEsame}
+                step = {props.step}
+            />
+            <CustomEditor 
+                className = {props.className}
+                objName = 'modInsegnamento' 
+                title = "Modalità D'Insegnamento Del Corso" 
+                placeholder = "Scrivi Le Modalità D'Insegnamento Qui"
+                handleEditorChange = {props.handleEditorChange}
+                value = {props.descrizione.modInsegnamento}
+                step = {props.step}
+            />
+            <CustomEditor 
+                className = {props.className}
+                objName = 'sillabo' 
+                title = 'Sillabo Del Corso' 
+                placeholder = 'Scrivi Il Sillabo Qui'
+                handleEditorChange = {props.handleEditorChange}
+                value = {props.descrizione.sillabo}
+                step = {props.step}
+            />
+            <CustomEditor 
+                className = {props.className}
+                objName = 'note' 
+                title = 'Note Extra Sul Corso' 
+                placeholder = 'Scrivi Le Note Qui'
+                handleEditorChange = {props.handleEditorChange}
+                value = {props.descrizione.note}
+                step = {props.step}
             />
         </Fragment>
     );
 }
 
-function CustomEditor(props) {
-    var panels = [
-        {
-            key: props.objName, 
-            title: props.title, 
-            content: {
-                as: Editor,
-                placeholder: props.placeholder,
-                value: props.value ? props.value : "",
-                onChange: (value) => {props.handleEditorChange(props.className, props.objName, value)}
+class CustomEditor extends Component{
+
+    step;
+    
+    componentWillMount() {
+        this.step = this.props.step;
+    }
+
+    render() {
+        var panels = [
+            {
+                key: this.props.objName, 
+                title: this.props.title, 
+                content: {
+                    as: Editor,
+                    placeholder: this.props.placeholder,
+                    value: this.props.value ? this.props.value : "",
+                    onChange: (value) => {
+                        if (this.step !== this.props.step) {
+                            this.step = this.props.step;
+                        } else {
+                            this.props.handleEditorChange(this.props.className, this.props.objName, value);
+                        }
+                    }
+                }
             }
-        }
-    ];
-    return (
-        <Fragment>
-            <Accordion as = {Form.Field} panels = {panels} styled style = {{ width: '100%' }}/>
-        </Fragment>
-    );
+        ];
+        return (
+            <Fragment>
+                <Accordion as = {Form.Field} panels = {panels} styled style = {{ width: '100%' }}/>
+            </Fragment>
+        );
+    }
 }
