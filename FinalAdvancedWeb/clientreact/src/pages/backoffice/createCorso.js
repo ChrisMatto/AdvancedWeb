@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import { Link, Redirect } from 'react-router-dom';
-import { Segment, Header, Progress, Form, Button, Accordion } from 'semantic-ui-react';
+import { Redirect } from 'react-router-dom';
+import { Segment, Header, Progress, Form, Button, Accordion, Icon, Loader } from 'semantic-ui-react';
 import Editor from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -15,22 +15,26 @@ export default class CreateCorso extends Component {
                 ssd: "",
                 lingua: "",
                 cfu: "",
+                anno: null,
                 descrizioneIt: {},
                 descrizioneEn: {},
                 dublinoIt: {},
                 dublinoEn: {},
                 docenti: [],
                 cdl: [],
-                relazioniCorso: {
+                relazioni: {
                     propedeudici: [],
                     modulo: [],
                     mutuati: []
-                }
+                },
+                links: {}
             },
             docenti: [],
             cdl: [],
             corsi: [],
-            formError: false
+            formError: false,
+            loading: false,
+            redirect: false
         };
     }
 
@@ -80,7 +84,7 @@ export default class CreateCorso extends Component {
                 });
             });
 
-            fetch('http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/courses/current')
+            fetch('http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/courses/' + this.state.corso.anno ? this.state.corso.anno : 'current')
             .then(res => res.json())
             .then(result => {
                 let promises = [];
@@ -133,21 +137,21 @@ export default class CreateCorso extends Component {
             case 'propedeudici':
                 isRelazione = true;
                 value.forEach(v => {
-                    let string = 'http://localhost:8080/AdvancedWeb/rest/courses/current/' + v;
+                    let string = 'http://localhost:8080/AdvancedWeb/rest/courses/' + this.state.corso.anno ? this.state.corso.anno : 'current' + '/' + v;
                     arr.push(string);
                 });
                 break;
             case 'mutuati':
                 isRelazione = true;
                     value.forEach(v => {
-                        let string = 'http://localhost:8080/AdvancedWeb/rest/courses/current/' + v;
+                        let string = 'http://localhost:8080/AdvancedWeb/rest/courses/' + this.state.corso.anno ? this.state.corso.anno : 'current' + '/' + v;
                         arr.push(string);
                     });
                 break;
             case 'modulo':
                 isRelazione = true;
                     value.forEach(v => {
-                        let string = 'http://localhost:8080/AdvancedWeb/rest/courses/current/' + v;
+                        let string = 'http://localhost:8080/AdvancedWeb/rest/courses/' + this.state.corso.anno ? this.state.corso.anno : 'current' + '/' + v;
                         arr.push(string);
                     });
                 break;
@@ -158,8 +162,8 @@ export default class CreateCorso extends Component {
             this.setState({
                 corso: {
                     ...this.state.corso,
-                    relazioniCorso: {
-                        ...this.state.corso.relazioniCorso,
+                    relazioni: {
+                        ...this.state.corso.relazioni,
                         [name]: arr
                     }
                 }
@@ -175,9 +179,6 @@ export default class CreateCorso extends Component {
     }
 
     handleEditorChange = (className, objName, content) => {
-        console.log(className);
-        console.log(objName);
-        console.log(content);
         this.setState({
             corso: {
                 ...this.state.corso,
@@ -190,7 +191,7 @@ export default class CreateCorso extends Component {
     }
 
     aheadButtonClick = () => {
-        if (this.state.corso.nomeIt.trim().length > 0 && this.state.corso.cdl.length > 0) {
+        if (this.state.corso.nomeIt.trim().length > 0 && this.state.corso.cdl.length > 0 && this.state.corso.anno) {
             this.setState({ step: this.state.step + 1, formError: false });
         } else {
             this.setState({ formError: true });
@@ -198,13 +199,32 @@ export default class CreateCorso extends Component {
         document.documentElement.scrollTop = 200;
     }
 
+    confirmCorso = () => {
+        this.setState({ loading: true });
+        var headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        fetch("http://localhost:8080/AdvancedWeb/rest/auth/" + this.props.token + "/courses/" + this.state.corso.anno, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(this.state.corso)
+        })
+        .then(res => {
+            if (res.ok) {
+                this.setState({ redirect: true });
+            }
+        });
+    }
+
     render() {
+        if (this.state.redirect) {
+            return <Redirect to = '/Backoffice'/>
+        }
         var title;
         var Step;
         switch (this.state.step) {
             default:
                 title = 'Crea Un Nuovo Corso';
-                Step = <FirstStep 
+                Step = <BaseInfoStep 
                             handleChange = {this.handleChange} 
                             handleSelectChange = {this.handleSelectChange}
                             admin = {this.props.utente.docente ? false : true} 
@@ -233,10 +253,42 @@ export default class CreateCorso extends Component {
                             className = {"descrizioneEn"}
                             step = {this.state.step}
                         />
+                break;
+            case 3:
+                title = 'Descrittori Di Dublino (Italiano)';
+                Step = <DublinoStep
+                            dublino = {this.state.corso.dublinoIt}
+                            handleEditorChange = {this.handleEditorChange}
+                            className = {"dublinoIt"}
+                            step = {this.state.step}
+                        />
+                break;
+            case 4:
+                title = 'Descrittori Di Dublino (Inglese)';
+                Step = <DublinoStep
+                            dublino = {this.state.corso.dublinoEn}
+                            handleEditorChange = {this.handleEditorChange}
+                            className = {"dublinoEn"}
+                            step = {this.state.step}
+                        />
+                break;
+            case 5:
+                title = 'Risorse Esterne';
+                Step = <LinkStep
+                            links = {this.state.corso.links}
+                            handleEditorChange = {this.handleEditorChange}
+                        />
+                break;
+            case 6:
+                title = 'Conferma';
+                Step = <ConfirmStep onClick = {this.confirmCorso}/>
         }
         return (
             <Segment className = 'col-md-8' color = 'teal' style = {{ marginTop: 4 }}>
-                <Progress value = {this.state.step} total='5' indicating/>
+                <div hidden = {!this.state.loading} className = 'loader-container'>
+                    <Loader active size = 'massive'>Inviando Informazioni</Loader>
+                </div>
+                <Progress value = {this.state.step} total='6' indicating/>
                 <Header size='medium' style = {{ textAlign: 'center' }} dividing>{title}</Header>
                 <Form>
                     {Step}
@@ -245,7 +297,7 @@ export default class CreateCorso extends Component {
                     <Button.Group>
                         <Button onClick = {() => {this.setState({ step: this.state.step - 1 }); document.documentElement.scrollTop = 200}} disabled = {this.state.step === 0}>Indietro</Button>
                         <Button.Or text = 'O'/>
-                        <Button positive onClick = {this.aheadButtonClick} disabled = {this.state.step === 5}>Avanti</Button>
+                        <Button positive onClick = {this.aheadButtonClick} disabled = {this.state.step === 6}>Avanti</Button>
                     </Button.Group>
                 </div>
             </Segment>
@@ -253,7 +305,7 @@ export default class CreateCorso extends Component {
     }
 }
 
-function FirstStep(props) {
+function BaseInfoStep(props) {
     var docenti = [];
     props.docenti.forEach(docente => {
         let obj = {
@@ -304,6 +356,17 @@ function FirstStep(props) {
         corsiPerMutuati.push(obj);
     });
 
+    var anniAccademici = [];
+    var currentYear = new Date().getFullYear();
+    for (var i = currentYear - 5; i < currentYear + 5; i++) {
+        let obj = {
+            key: i,
+            text: i + '/' + (i + 1),
+            value: i
+        };
+        anniAccademici.push(obj);
+    }
+
     return (
         <React.Fragment>
             <Form.Group widths = 'equal'>
@@ -316,11 +379,24 @@ function FirstStep(props) {
             </Form.Group>
             <Form.Group widths = 'equal'>
                 <Form.Select fluid name = 'semestre' value = {props.corso.semestre} onChange = {props.handleChange} label = 'Semestre' placeholder = 'Seleziona un semestre...' options = {[{value: 1, text: 1}, {value: 2, text: 2}]}/>
-                <Form.Input fluid name = 'cfu' value = {props.corso.cfu} onChange = {props.handleChange} label = 'CFU' placeholder = 'CFU'/>
+                <Form.Dropdown 
+                    fluid
+                    scrolling
+                    search
+                    selection
+                    label = 'Anno Accademico'
+                    onChange = {props.handleChange}
+                    name = 'anno'
+                    options = {anniAccademici}
+                    placeholder = 'Seleziona Anno...'
+                    closeOnBlur
+                    value = {props.corso.anno}
+                    error = {props.formError && !props.corso.anno}
+                />
             </Form.Group>
             <Form.Group widths = 'two'>
+                <Form.Input fluid name = 'cfu' value = {props.corso.cfu} onChange = {props.handleChange} label = 'CFU' placeholder = 'CFU'/>
                 <Form.Select fluid name = 'tipologia' value = {props.corso.tipologia} onChange = {props.handleChange} label = 'Tipologia CFU' placeholder = 'Seleziona una tipologia...' options = {[{value: 'A', text: 'A'}, {value: 'B', text: 'B'}, {value: 'F', text: 'F'}]}/>
-                <Form.Field/>
             </Form.Group>
             {
                 props.admin ?
@@ -372,7 +448,7 @@ function FirstStep(props) {
                                 options = {corsiPerMutuati}
                                 placeholder = 'Seleziona Corsi...'
                                 closeOnBlur
-                                value = {props.corso.relazioniCorso.mutuati.map(url => {
+                                value = {props.corso.relazioni.mutuati.map(url => {
                                     var arr = url.split('/');
                                     return parseInt(arr[arr.length - 1]);
                                 })}
@@ -384,14 +460,14 @@ function FirstStep(props) {
                                 multiple
                                 search
                                 selection
-                                label = 'Seleziona Corsi Propedeudici'
+                                label = 'Seleziona Corsi Propedeutici'
                                 onChange = {props.handleSelectChange}
                                 name = 'propedeudici'
                                 options = {filteredCorsi}
                                 placeholder = {props.selectedCdl.length > 0 ? 'Seleziona Corsi...' : 'Seleziona Un CDL...'}
                                 disabled = {props.selectedCdl.length > 0 ? false : true}
                                 closeOnBlur
-                                value = {props.corso.relazioniCorso.propedeudici.map(url => {
+                                value = {props.corso.relazioni.propedeudici.map(url => {
                                     var arr = url.split('/');
                                     return parseInt(arr[arr.length - 1]);
                                 })}
@@ -410,7 +486,7 @@ function FirstStep(props) {
                                 placeholder = {props.selectedCdl.length > 0 ? 'Seleziona Corsi...' : 'Seleziona Un CDL...'}
                                 disabled = {props.selectedCdl.length > 0 ? false : true}
                                 closeOnBlur
-                                value = {props.corso.relazioniCorso.modulo.map(url => {
+                                value = {props.corso.relazioni.modulo.map(url => {
                                     var arr = url.split('/');
                                     return parseInt(arr[arr.length - 1]);
                                 })}
@@ -482,6 +558,82 @@ function DescriptionStep(props) {
                 step = {props.step}
             />
         </Fragment>
+    );
+}
+
+function DublinoStep(props) {
+    return (
+        <Fragment>
+            <CustomEditor 
+                className = {props.className}
+                objName = 'knowledge' 
+                title = 'Knowledge' 
+                placeholder = 'Knowledge Qui'
+                handleEditorChange = {props.handleEditorChange}
+                value = {props.dublino.knowledge}
+                step = {props.step}
+            />
+            <CustomEditor 
+                className = {props.className}
+                objName = 'application' 
+                title = 'Application' 
+                placeholder = 'Application Qui'
+                handleEditorChange = {props.handleEditorChange}
+                value = {props.dublino.application}
+                step = {props.step}
+            />
+            <CustomEditor 
+                className = {props.className}
+                objName = 'evaluation' 
+                title = 'Evaluation' 
+                placeholder = 'Evaluation Qui'
+                handleEditorChange = {props.handleEditorChange}
+                value = {props.dublino.evaluation}
+                step = {props.step}
+            />
+            <CustomEditor 
+                className = {props.className}
+                objName = 'communication' 
+                title = 'Communication' 
+                placeholder = 'Communication Qui'
+                handleEditorChange = {props.handleEditorChange}
+                value = {props.dublino.communication}
+                step = {props.step}
+            />
+            <CustomEditor 
+                className = {props.className}
+                objName = 'lifelong' 
+                title = 'Lifelong' 
+                placeholder = 'Lifelong Qui'
+                handleEditorChange = {props.handleEditorChange}
+                value = {props.dublino.lifelong}
+                step = {props.step}
+            />
+        </Fragment>
+    );
+}
+
+function LinkStep(props) {
+    return (
+        <Fragment>
+            <Form.Group widths = 'equal'>
+                <Form.Input fluid name = 'homepage' value = {props.links.homepage ? props.links.homepage : ""} onChange = {(e, {name, value}) => props.handleEditorChange('links', name, value)} label = 'Homepage' placeholder = 'Homepage'/>
+                <Form.Input fluid name = 'forum' value = {props.links.forum ? props.links.forum : ""} onChange = {(e, {name, value}) => props.handleEditorChange('links', name, value)} label = 'Forum' placeholder = 'Forum'/>
+            </Form.Group>
+            <Form.Group widths = 'equal'>
+                <Form.Input fluid name = 'elearning' value = {props.links.elearning ? props.links.elearning : ""} onChange = {(e, {name, value}) => props.handleEditorChange('links', name, value)} label = 'E-Learning' placeholder = 'E-Learning'/>
+                <Form.Input fluid name = 'risorseExt' value = {props.links.risorseExt ? props.links.risorseExt : ""} onChange = {(e, {name, value}) => props.handleEditorChange('links', name, value)} label = 'Risorse Esterne' placeholder = 'Risorse Esterne'/>
+            </Form.Group>
+        </Fragment>
+    );
+}
+
+function ConfirmStep(props) {
+    return (
+        <div style = {{ textAlign: 'center', paddingTop: 30, paddingBottom: 50 }}>
+            <Icon name = 'share square' size = 'massive' className = 'confirmIcon'/>
+            <Button inverted color = 'green' size = 'massive' onClick = {props.onClick}>Completa La Registazione Del Corso</Button>
+        </div>
     );
 }
 

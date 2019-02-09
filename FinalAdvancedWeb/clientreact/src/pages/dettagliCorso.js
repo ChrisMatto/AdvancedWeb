@@ -13,7 +13,7 @@ export default class DettagliCorso extends Component {
                 mutuati: [],
                 modulo: [],
                 propedeudici: [],
-                mutua: {}
+                mutua: null
             },
             links: {},
             storiaCorso: [],
@@ -95,6 +95,7 @@ export default class DettagliCorso extends Component {
                 }
                 this.setState({
                     relazioni: {
+                        ...this.state.relazioni,
                         mutuati: mutuati
                     }
                 });
@@ -115,6 +116,7 @@ export default class DettagliCorso extends Component {
                 }
                 this.setState({
                     relazioni: {
+                        ...this.state.relazioni,
                         propedeudici: propedeudici
                     }
                 });
@@ -135,18 +137,20 @@ export default class DettagliCorso extends Component {
                 }
                 this.setState({
                     relazioni: {
+                        ...this.state.relazioni,
                         modulo: modulo
                     }
                 });
             });
 
-            if (result.mutua !== null)
+            if (result.mutua)
             {
                 fetch(result.mutua + "/basic")
                 .then(res => res.json())
                 .then(result => {
                     this.setState({
                         relazioni: {
+                            ...this.state.relazioni,
                             mutua: result
                         }
                     });
@@ -194,12 +198,26 @@ export default class DettagliCorso extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.props !== nextProps) {
-            this.setState({mustUpdateData: true});
+            this.setState({
+                corso: {},
+                infoBase: {},
+                sillabo: {},
+                insegnanti: [],
+                relazioni: {
+                    mutuati: [],
+                    modulo: [],
+                    propedeudici: [],
+                    mutua: null
+                },
+                links: {},
+                storiaCorso: [],
+                mustUpdateData: true
+            });
         }
     }
 
     getRelationName(corso) {
-        return <strong><Link to = {'/Courses/' + corso.anno + '/' + corso.idCorso} className = "dc">{this.props.lingua === 'it' ? corso.nomeIt || corso.nomeEn : corso.nomeEn || corso.nomeIt}</Link></strong>
+        return <strong key = {corso.idCorso}><Link to = {'/Courses/' + corso.anno + '/' + corso.idCorso} className = "dc">{this.props.lingua === 'it' ? corso.nomeIt || corso.nomeEn : corso.nomeEn || corso.nomeIt}</Link></strong>
     }
 
     getCorsoPrecedente(corso) {
@@ -222,9 +240,9 @@ export default class DettagliCorso extends Component {
 
     getLibro(libro) {
         if (libro.link) {
-            return <li><a href = {libro.link}>{libro.titolo}</a>, {libro.volume > 0 ? libro.volume + ',' : null} {libro.anno}, {libro.autore}, {libro.editore}</li>
+            return <li key = {libro.idLibro}><a href = {libro.link}>{libro.titolo}</a>, {libro.volume > 0 ? libro.volume + ',' : null} {libro.anno}, {libro.autore}, {libro.editore}</li>
         }
-        return <li>{libro.volume > 0 ? libro.volume + ',' : null} {libro.anno}, {libro.autore}, {libro.editore}</li>
+        return <li key = {libro.idLibro}>{libro.volume > 0 ? libro.volume + ',' : null} {libro.anno}, {libro.autore}, {libro.editore}</li>
     }
 
     render() {
@@ -276,11 +294,11 @@ export default class DettagliCorso extends Component {
         }
 
         for (let corso in propedeudiciList) {
-            propedeudici.push(<React.Fragment>{this.getRelationName(propedeudiciList[corso])}{(corso + 1) < propedeudiciList.length ? ', ' : ""}</React.Fragment>);
+            propedeudici.push(<React.Fragment key = {propedeudiciList[corso].idCorso}>{this.getRelationName(propedeudiciList[corso])}{(corso + 1) < propedeudiciList.length ? ', ' : ""}</React.Fragment>);
         }
         
         for (let corso in moduliList) {
-            modulo.push(<React.Fragment>{this.getRelationName(moduliList[corso])}{(corso + 1) < moduliList.length ? ', ' : ""}</React.Fragment>);
+            modulo.push(<React.Fragment key = {moduliList[corso].idCorso}>{this.getRelationName(moduliList[corso])}{(corso + 1) < moduliList.length ? ', ' : ""}</React.Fragment>);
         }
 
         for (let corso in precedentiList) {
@@ -340,7 +358,7 @@ export default class DettagliCorso extends Component {
                     <div className="row">
                         <div className="col-md-12" id="tipocorso">
 
-                                {propedeudici.length > 0 ? <li><strong>Corsi Propedeudici: </strong> {propedeudici} </li> : null}
+                                {propedeudici.length > 0 ? <li><strong>Corsi Propedeutici: </strong> {propedeudici} </li> : null}
 
                                 {mutuati.length > 0 ? <li><strong>Corsi Mutuati: </strong> {mutuati} </li> : null}   
                                 
@@ -456,9 +474,9 @@ export default class DettagliCorso extends Component {
                             {
                                 links.homepage || links.forum || links.risorseExt || links.elearning 
                                 ? 
-                                <div class="box_style_1">
+                                <div className="box_style_1">
                                     <h4>{lingua === 'it' ? 'Link Esterni' : 'External Links'}</h4>
-                                    <ul class="list_1">
+                                    <ul className="list_1">
                                         {links.homepage ? <li><a href = {links.homepage}>Homepage</a></li> : null}
                                         {links.elearning ? <li><a href = {links.elearning}>E-Learning</a></li> : null}
                                         {links.forum ? <li><a href = {links.forum}>Forum</a></li> : null}
