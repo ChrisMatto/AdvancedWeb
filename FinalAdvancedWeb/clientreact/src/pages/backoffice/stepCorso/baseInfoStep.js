@@ -86,6 +86,7 @@ export default function BaseInfoStep(props) {
                     options = {anniAccademici}
                     placeholder = 'Seleziona Anno...'
                     closeOnBlur
+                    required
                     value = {props.corso.anno}
                     error = {props.formError && !props.corso.anno}
                 />
@@ -126,6 +127,7 @@ export default function BaseInfoStep(props) {
                                 options = {cdl}
                                 placeholder = 'Seleziona CDL...'
                                 closeOnBlur
+                                required
                                 value = {props.corso.cdl.map(cdl => cdl.idCdl)}
                                 error = {props.formError && props.corso.cdl.length === 0}
                             />
