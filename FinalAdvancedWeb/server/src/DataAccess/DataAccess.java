@@ -747,11 +747,11 @@ public class DataAccess {
 
     public static RelazioniCorso getRelazioniCorso(int idCorso, int year, String baseUri) {
         List<CollegCorsi> collegCorsi = stream.streamAll(em, CollegCorsi.class)
-                .where(cc -> cc.getThisCorso() == idCorso && cc.getAnnoThisCorso() == year && cc.getTipo().equals("propedeudico"))
+                .where(cc -> cc.getThisCorso() == idCorso && cc.getAnnoThisCorso() == year && cc.getTipo().equals("propedeutico"))
                 .toList();
         List<String> propedeudici = new ArrayList<>();
-        for (CollegCorsi propedeudico : collegCorsi) {
-            propedeudici.add(baseUri + propedeudico.getAnnoOtherCorso() + "/" + propedeudico.getOtherCorso());
+        for (CollegCorsi propedeutico : collegCorsi) {
+            propedeudici.add(baseUri + propedeutico.getAnnoOtherCorso() + "/" + propedeutico.getOtherCorso());
         }
         collegCorsi = stream.streamAll(em, CollegCorsi.class)
                 .where(cc -> cc.getThisCorso() == idCorso && cc.getAnnoThisCorso() == year && cc.getTipo().equals("mutuato"))

@@ -11,6 +11,6 @@ public class ResponseFilter implements ContainerResponseFilter {
         containerResponseContext.getHeaders().putSingle("Access-Control-Allow-Origin",
                 "*");
         containerResponseContext.getHeaders().putSingle("Access-Control-Expose-Headers", "*");
-        containerResponseContext.getHeaders().putSingle("Access-Control-Allow-Headers", "*");
+        containerResponseContext.getHeaders().putSingle("Access-Control-Allow-Headers", "content-type");
     }
 }

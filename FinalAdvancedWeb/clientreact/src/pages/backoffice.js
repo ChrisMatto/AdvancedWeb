@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import { Link, Redirect } from 'react-router-dom';
-import { BackPages } from '../js/enums';
 import CreateCorso from './backoffice/createCorso';
+import 'semantic-ui-css/semantic.min.css';
+import { Switch, Route, Redirect, Link } from 'react-router-dom';
 
 export default class Backoffice extends Component {
     constructor(props) {
@@ -113,12 +113,7 @@ export default class Backoffice extends Component {
                     </section>
                     
                     <section id="main_content">
-                        <div className="container">
-                            <ol className="breadcrumb">
-                                <li className="active">
-                                    <Link to = '/Backoffice'>Backoffice</Link>
-                                </li>
-                            </ol>
+                        <div className="container" style = {{ padding: 0 }}>
                             <div className = 'row'>
                             {
                                 this.state.utente.docente ?
@@ -126,7 +121,9 @@ export default class Backoffice extends Component {
                                 :
                                     <this.AdminMenu/>
                             }
-                            <CreateCorso/>
+                            <Switch>
+                                <Route exact path = '/Backoffice/CreateCorso' render = {() => <CreateCorso utente = {this.state.utente} token = {this.state.token}/>}/>
+                            </Switch>
                             </div>
                         </div>
                     </section>                    
