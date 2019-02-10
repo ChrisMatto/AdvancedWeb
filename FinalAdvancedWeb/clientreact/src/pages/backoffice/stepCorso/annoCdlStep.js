@@ -18,7 +18,7 @@ export default class AnnoCdlStep extends Component{
         this.setState({ [name]: value });
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.setState({
             anno: this.props.annoCorso,
             cdl: this.props.cdlCorso,
@@ -33,7 +33,11 @@ export default class AnnoCdlStep extends Component{
             this.props.selectedCorso(null, this.state.anno, this.state.cdl);
             this._anno = this.state.anno;
             this._cdl = this.state.cdl;
-            fetch('http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/courses/' + this.state.anno + '?cdl=' + this.state.cdl)
+            let link = 'http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/courses/' + this.state.anno + '?cdl=' + this.state.cdl;
+            if (this.props.utente.docente) {
+                link += '?teacher=' + this.props.utente.docente;
+            }
+            fetch(link)
             .then(res => res.json())
             .then(result => {
                 let promises = [];

@@ -181,9 +181,18 @@ export default class CreateCorso extends Component {
                 }
             });
         } else {
+            let relazioni = this.state.corso.relazioni;
+            if (name === 'cdl') {
+                relazioni = {
+                    propedeudici: [],
+                    modulo: [],
+                    mutuati: []
+                }
+            }
             this.setState({
                 corso: {
                     ...this.state.corso,
+                    relazioni: relazioni,
                     [name]: arr
                 }
             });

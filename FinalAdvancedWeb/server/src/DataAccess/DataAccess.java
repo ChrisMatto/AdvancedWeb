@@ -39,9 +39,22 @@ public class DataAccess {
                     }
                     streamCorsi = streamCorsi
                             .join((c,source) -> source.stream(CorsiCdl.class))
-                            .where(corsoCorsiCdlPair -> corsoCorsiCdlPair.getTwo().getCdl() == idCdl && corsoCorsiCdlPair.getOne().getIdCorso() == corsoCorsiCdlPair.getTwo().getCorso()
-                            && corsoCorsiCdlPair.getTwo().getAnnoCorso() == year)
-                            .select(org.jinq.tuples.Pair::getOne);
+                            .where(corsoCorsiCdlPair -> corsoCorsiCdlPair.getTwo().getCdl() == idCdl && corsoCorsiCdlPair.getOne().getIdCorso() == corsoCorsiCdlPair.getTwo().getCorso() &&
+                                    corsoCorsiCdlPair.getTwo().getAnnoCorso() == corsoCorsiCdlPair.getOne().getAnno())
+                            .select(Pair::getOne);
+                    break;
+                case "teacher":
+                    int idDocente;
+                    if (NumberUtils.isParsable(param)) {
+                        idDocente = Integer.parseInt(param);
+                    } else {
+                        break;
+                    }
+                    streamCorsi = streamCorsi
+                            .join((c, source) -> source.stream(DocentiCorso.class))
+                            .where(corsoDocentiCorsoPair -> corsoDocentiCorsoPair.getTwo().getDocente() == idDocente && corsoDocentiCorsoPair.getOne().getIdCorso() == corsoDocentiCorsoPair.getTwo().getCorso() &&
+                                    corsoDocentiCorsoPair.getTwo().getAnnoCorso() == corsoDocentiCorsoPair.getOne().getAnno())
+                            .select(Pair::getOne);
                     break;
                 case "nome":
                     streamCorsi = streamCorsi.where(corso -> corso.getNomeIt().equals(param) || corso.getNomeEn().equals(param));

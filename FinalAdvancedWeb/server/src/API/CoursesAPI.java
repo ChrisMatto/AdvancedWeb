@@ -35,7 +35,7 @@ public class CoursesAPI implements Resource {
         if (anno == Utils.getCurrentYear()) {
             annoString = "current";
         }
-        List<Integer> corsi = DataAccess.getCorsiByFilter(anno,queryParams);
+        List<Integer> corsi = DataAccess.getCorsiByFilter(anno, queryParams);
         List<String> corsiUri = new ArrayList<>();
         String baseUri;
         if (token != null) {
