@@ -959,6 +959,7 @@ public class DataAccess {
             if (Utils.shouldDeleteSession(sessione.getData())) {
                 entityTransaction.begin();
                 em.remove(sessione);
+                em.flush();
                 entityTransaction.commit();
             }
         }

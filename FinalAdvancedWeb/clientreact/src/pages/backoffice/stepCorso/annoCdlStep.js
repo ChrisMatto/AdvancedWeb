@@ -28,14 +28,26 @@ export default class AnnoCdlStep extends Component{
     }
 
     loadCorsi = () => {
-        if (this.state.anno && this.state.cdl && (this.state.anno !== this._anno || this.state.cdl !== this._cdl)) {
+        let canLoad = false;
+        if (this.props.utente.docente) {
+            if (this.state.anno && this.state.anno !== this._anno) {
+                canLoad = true;
+            }
+        } else {
+            if (this.state.anno && this.state.cdl && (this.state.anno !== this._anno || this.state.cdl !== this._cdl)) {
+                canLoad = true;
+            }
+        }
+        if (canLoad) {
             this.setState({ corsi: [], idCorso: null });
             this.props.selectedCorso(null, this.state.anno, this.state.cdl);
             this._anno = this.state.anno;
             this._cdl = this.state.cdl;
-            let link = 'http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/courses/' + this.state.anno + '?cdl=' + this.state.cdl;
+            let link = 'http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/courses/' + this.state.anno;
             if (this.props.utente.docente) {
                 link += '?teacher=' + this.props.utente.docente;
+            } else {
+                link += '?cdl=' + this.state.cdl;
             }
             fetch(link)
             .then(res => res.json())
@@ -76,15 +88,17 @@ export default class AnnoCdlStep extends Component{
             anniAccademici.push(obj);
         });
 
-        var cdl = [];
-        this.props.cdl.forEach(c => {
-            let obj = {
-                key: c.idcdl,
-                text: c.nomeIt,
-                value: c.idcdl
-            };
-            cdl.push(obj);
-        });
+        if (!this.props.utente.docente) {
+            var cdl = [];
+            this.props.cdl.forEach(c => {
+                let obj = {
+                    key: c.idcdl,
+                    text: c.nomeIt,
+                    value: c.idcdl
+                };
+                cdl.push(obj);
+            });
+        }
 
         var corsi = [];
         this.state.corsi.forEach(corso => {
@@ -96,65 +110,108 @@ export default class AnnoCdlStep extends Component{
             corsi.push(obj);
         });
 
-        return (
-            <Fragment>
-                <Form.Group widths = 'equal'>
-                    <Form.Dropdown 
-                        fluid
-                        scrolling
-                        search
-                        selection
-                        label = 'Corso Di Laurea'
-                        onChange = {this.handleChange}
-                        name = 'cdl'
-                        options = {cdl}
-                        placeholder = 'Seleziona CDL...'
-                        closeOnBlur
-                        required
-                        value = {this.state.cdl}
-                        error = {this.props.formError && !this.state.cdl}
-                    />
-                    <Form.Dropdown 
-                        fluid
-                        scrolling
-                        search
-                        selection
-                        label = 'Anno Accademico'
-                        onChange = {this.handleChange}
-                        name = 'anno'
-                        options = {anniAccademici}
-                        placeholder = 'Seleziona Anno...'
-                        closeOnBlur
-                        required
-                        value = {this.state.anno}
-                        error = {this.props.formError && !this.state.anno}
-                    />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Field width = {4}/>
-                    <Form.Dropdown
-                        width = {10}
-                        fluid
-                        scrolling
-                        search
-                        selection
-                        label = 'Seleziona Corso Da Modificare'
-                        onChange = {(e, {name, value}) => {
-                            this.setState({ idCorso: value });
-                            this.props.selectedCorso(value, this.state.anno, this.state.cdl);
-                        }}
-                        name = 'corso'
-                        options = {corsi}
-                        placeholder = 'Seleziona Corso...'
-                        closeOnBlur
-                        required
-                        value = {this.state.idCorso}
-                        disabled = {!this.state.anno || !this.state.cdl}
-                        error = {this.props.formError && !this.state.idCorso}
-                    />
-                    <Form.Field width = {4}/>
-                </Form.Group>
-            </Fragment>
-        );
+        if (this.props.utente.docente) {
+            return (
+                <Fragment>
+                    <Form.Group widths = 'equal'>
+                        <Form.Dropdown 
+                            fluid
+                            scrolling
+                            search
+                            selection
+                            label = 'Seleziona Un Anno Accademico'
+                            onChange = {this.handleChange}
+                            name = 'anno'
+                            options = {anniAccademici}
+                            placeholder = 'Seleziona Anno...'
+                            closeOnBlur
+                            required
+                            value = {this.state.anno}
+                            error = {this.props.formError && !this.state.anno}
+                        />
+                        <Form.Dropdown
+                            fluid
+                            scrolling
+                            search
+                            selection
+                            label = 'Seleziona Corso Da Modificare'
+                            onChange = {(e, {name, value}) => {
+                                this.setState({ idCorso: value });
+                                this.props.selectedCorso(value, this.state.anno, this.state.cdl);
+                            }}
+                            name = 'corso'
+                            options = {corsi}
+                            placeholder = 'Seleziona Corso...'
+                            closeOnBlur
+                            required
+                            value = {this.state.idCorso}
+                            disabled = {!this.state.anno}
+                            error = {this.props.formError && !this.state.idCorso}
+                        />
+                    </Form.Group>
+                </Fragment>
+            );
+        } else {
+            return (
+                <Fragment>
+                    <Form.Group widths = 'equal'>
+                        <Form.Dropdown 
+                            fluid
+                            scrolling
+                            search
+                            selection
+                            label = 'Corso Di Laurea'
+                            onChange = {this.handleChange}
+                            name = 'cdl'
+                            options = {cdl}
+                            placeholder = 'Seleziona CDL...'
+                            closeOnBlur
+                            required
+                            value = {this.state.cdl}
+                            error = {this.props.formError && !this.state.cdl}
+                        />
+                        <Form.Dropdown 
+                            fluid
+                            scrolling
+                            search
+                            selection
+                            label = 'Anno Accademico'
+                            onChange = {this.handleChange}
+                            name = 'anno'
+                            options = {anniAccademici}
+                            placeholder = 'Seleziona Anno...'
+                            closeOnBlur
+                            required
+                            value = {this.state.anno}
+                            error = {this.props.formError && !this.state.anno}
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Field width = {4}/>
+                        <Form.Dropdown
+                            width = {10}
+                            fluid
+                            scrolling
+                            search
+                            selection
+                            label = 'Seleziona Corso Da Modificare'
+                            onChange = {(e, {name, value}) => {
+                                this.setState({ idCorso: value });
+                                this.props.selectedCorso(value, this.state.anno, this.state.cdl);
+                            }}
+                            name = 'corso'
+                            options = {corsi}
+                            placeholder = 'Seleziona Corso...'
+                            closeOnBlur
+                            required
+                            value = {this.state.idCorso}
+                            disabled = {!this.state.anno || !this.state.cdl}
+                            error = {this.props.formError && !this.state.idCorso}
+                        />
+                        <Form.Field width = {4}/>
+                    </Form.Group>
+                </Fragment>
+            );
+        }
     }
 }

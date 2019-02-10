@@ -234,18 +234,26 @@ export default class UpdateCorso extends Component {
     }
 
     aheadButtonClick = () => {
+        var canGo = false;
         if (this.state.step === 0) {
-            if (this.state.annoCorso && this.state.cdlCorso && this.state.idCorso) {
-                this.setState({ step: this.state.step + 1, formError: false });
+            if (this.props.utente.docente) {
+                if (this.state.annoCorso && this.state.idCorso) {
+                    canGo = true;
+                }
             } else {
-                this.setState({ formError: true });
+                if (this.state.annoCorso && this.state.cdlCorso && this.state.idCorso) {
+                    canGo = true;
+                }
             }
         } else if (this.state.step > 0) {
             if (this.state.corso.nomeIt.trim().length > 0 && this.state.corso.cdl.length > 0 && this.state.corso.anno) {
-                this.setState({ step: this.state.step + 1, formError: false });
-            } else {
-                this.setState({ formError: true });
+                canGo = true;
             }
+        }
+        if (canGo) {
+            this.setState({ step: this.state.step + 1, formError: false });
+        } else {
+            this.setState({ formError: true });
         }
         document.documentElement.scrollTop = 200;
     }

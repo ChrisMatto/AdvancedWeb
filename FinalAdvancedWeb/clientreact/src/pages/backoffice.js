@@ -64,13 +64,9 @@ export default class Backoffice extends Component {
                     {
                         this.state.corsi.length > 0 ?
                             <Fragment>
-                                <h4>Corsi Assegnati</h4>
+                                <h4>Funzioni Modifica</h4>
                                 <ul>
-                                    {
-                                        this.state.corsi.map(corso => 
-                                            <li key = {corso.idCorso}><Link to = {'/Backoffice/UpdateCorsi/' + corso.idCorso}>{corso.nomeIt}</Link></li>
-                                        )
-                                    }
+                                    <li><Link to = '/Backoffice/UpdateCourse'>Modifica Un Corso</Link></li>
                                 </ul>
                             </Fragment>
                         :
