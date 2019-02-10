@@ -9,6 +9,8 @@ import DettagliDocente from './pages/dettagliDocente';
 import ListaMateriali from './pages/listaMateriali';
 import Login from './pages/login';
 import Backoffice from './pages/backoffice';
+import { Loader } from 'semantic-ui-react';
+import 'semantic-ui-css/semantic.min.css';
 import './css/index.css';
 
 class App extends Component {
@@ -24,7 +26,8 @@ class App extends Component {
     this.state = {
         lingua: lingua,
         token: null,
-        utente: null
+        utente: null,
+        isCheckingSession: false
     };
     this.changeLingua = this.changeLingua.bind(this);
     }
@@ -32,7 +35,7 @@ class App extends Component {
     componentWillMount() {
         var token = localStorage.getItem('token');
         if (token) {
-            this.login(token);
+            this.loggedIn(token);
         }
     }
 
@@ -50,7 +53,8 @@ class App extends Component {
         }
     }
 
-    login = (token) => {
+    loggedIn = (token) => {
+        this.setState({ isCheckingSession: true });
         fetch('http://localhost:8080/AdvancedWeb/rest/auth/checkSession', {
             method: 'POST',
             body: token
@@ -60,10 +64,12 @@ class App extends Component {
             if (result) {
                 this.setState({
                     token: token,
-                    utente: result
+                    utente: result,
+                    isCheckingSession: false
                 });
             } else {
                 localStorage.removeItem('token');
+                this.setState({ isCheckingSession: false });
             }
         });
     }
@@ -97,9 +103,16 @@ class App extends Component {
                 <Route exact path = '/Courses/:year(\d{4})/:id(\d+)/Material' render = {({ match }) => <ListaMateriali year = {match.params.year} id = {match.params.id} lingua = {this.state.lingua}/>}/>
                 <Route exact path = '/Teachers' render = {() => <ListaDocenti lingua = {this.state.lingua}/>}/>
                 <Route exact path = '/Teachers/:id(\d+)' render = {({ match }) => <DettagliDocente id = {match.params.id} lingua = {this.state.lingua}/>}/>
-                <Route exact path = '/Login' render = {() => <Login login = {this.login} loggedIn = {this.state.token && this.state.utente ? true : false} />}/>
+                <Route exact path = '/Login' render = {() => <Login login = {this.loggedIn} loggedIn = {this.state.token && this.state.utente ? true : false} />}/>
                 <Route exact path = '/Logout' render = {() => <this.Logout/>}/>
-                <Route path = '/Backoffice' render = {() => <Backoffice token = {this.state.token} utente = {this.state.utente}/>}/>
+                <Route path = '/Backoffice' render = {() => 
+                    this.state.isCheckingSession 
+                    ?  
+                        <div className = 'loader-container'>
+                            <Loader active size = 'massive'>Loading</Loader>
+                        </div>
+                    : 
+                        <Backoffice token = {this.state.token} utente = {this.state.utente}/>}/>
                 </Switch>
                 <Footer lingua = {this.state.lingua}/>
             </React.Fragment>

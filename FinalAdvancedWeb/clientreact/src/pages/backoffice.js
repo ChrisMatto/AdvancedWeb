@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import CreateCorso from './backoffice/createCorso';
-import 'semantic-ui-css/semantic.min.css';
 import { Switch, Route, Redirect, Link } from 'react-router-dom';
+import CreateCorso from './backoffice/createCorso';
+import UpdateCorso from './backoffice/updateCorso';
 
 export default class Backoffice extends Component {
     constructor(props) {
@@ -32,7 +32,7 @@ export default class Backoffice extends Component {
 
                     <ul>
                         <li><Link to = '/Backoffice/CreateCDL'>Crea Un Nuovo Cdl</Link></li>
-                        <li><Link to = '/Backoffice/CreateCorso'>Crea Un Nuovo Corso</Link></li>
+                        <li><Link to = '/Backoffice/CreateCourse'>Crea Un Nuovo Corso</Link></li>
                         <li><Link to = '/Backoffice/RegisterDocente'>Registra Un Nuovo Docente</Link></li>
                         <li><Link to = '/Backoffice/CreateAdmin'>Registra Un Nuovo Amministratore</Link></li>
                         <li><Link to = '/Backoffice/NewMateriale'>Aggiungi Materiale</Link></li>
@@ -41,7 +41,7 @@ export default class Backoffice extends Component {
 
                     <h4>Funzioni modifica</h4>
                     <ul>
-                        <li><Link to = '/Backoffice/UpdateCorsi'>Modifica Corsi</Link></li>
+                        <li><Link to = '/Backoffice/UpdateCourse'>Modifica Corsi</Link></li>
                         <li><Link to = '/Backoffice/UpdateCDL'>Modifica Cdl</Link></li>
                         <li><Link to = '/Backoffice/UpdateDocente'>Modifica Docente</Link></li>
                     </ul>
@@ -122,7 +122,8 @@ export default class Backoffice extends Component {
                                     <this.AdminMenu/>
                             }
                             <Switch>
-                                <Route exact path = '/Backoffice/CreateCorso' render = {() => <CreateCorso utente = {this.state.utente} token = {this.state.token}/>}/>
+                                <Route exact path = '/Backoffice/CreateCourse' render = {() => !this.state.utente.docente ? <CreateCorso utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>          
+                                <Route exact path = '/Backoffice/UpdateCourse' render = {() => <UpdateCorso utente = {this.state.utente} token = {this.state.token}/>}/>                      
                             </Switch>
                             </div>
                         </div>

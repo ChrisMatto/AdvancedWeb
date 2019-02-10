@@ -42,51 +42,49 @@ export default class CreateCorso extends Component {
     }
 
     componentWillMount() {
-        if (!this.props.utente.docente) {
-            fetch('http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/teachers')
-            .then(res => res.json())
-            .then(result => {
-                let promises = [];
-                result.forEach(uri => {
-                    promises.push(fetch(uri));
-                });
-                Promise.all(promises).then(responses => {
-                    var jsonPromises = [];
-                    responses.forEach(response => {
-                        jsonPromises.push(response.json());
-                    });
-                    return Promise.all(jsonPromises);
-                }).then(results => {
-                    var teachers = [];
-                    results.forEach(teacher => {
-                        teachers.push(teacher);
-                    });
-                    this.setState({ docenti: teachers });
-                });
+        fetch('http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/teachers')
+        .then(res => res.json())
+        .then(result => {
+            let promises = [];
+            result.forEach(uri => {
+                promises.push(fetch(uri));
             });
+            Promise.all(promises).then(responses => {
+                var jsonPromises = [];
+                responses.forEach(response => {
+                    jsonPromises.push(response.json());
+                });
+                return Promise.all(jsonPromises);
+            }).then(results => {
+                var teachers = [];
+                results.forEach(teacher => {
+                    teachers.push(teacher);
+                });
+                this.setState({ docenti: teachers });
+            });
+        });
 
-            fetch('http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/cdl')
-            .then(res => res.json())
-            .then(result => {
-                let promises = [];
-                result.forEach(uri => {
-                    promises.push(fetch(uri));
-                });
-                Promise.all(promises).then(responses => {
-                    var jsonPromises = [];
-                    responses.forEach(response => {
-                        jsonPromises.push(response.json());
-                    });
-                    return Promise.all(jsonPromises);
-                }).then(results => {
-                    var cdl = [];
-                    results.forEach(c => {
-                        cdl.push(c);
-                    });
-                    this.setState({ cdl: cdl });
-                });
+        fetch('http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/cdl')
+        .then(res => res.json())
+        .then(result => {
+            let promises = [];
+            result.forEach(uri => {
+                promises.push(fetch(uri));
             });
-        }
+            Promise.all(promises).then(responses => {
+                var jsonPromises = [];
+                responses.forEach(response => {
+                    jsonPromises.push(response.json());
+                });
+                return Promise.all(jsonPromises);
+            }).then(results => {
+                var cdl = [];
+                results.forEach(c => {
+                    cdl.push(c);
+                });
+                this.setState({ cdl: cdl });
+            });
+        });
     }
 
     handleChange = (e, {name, value}) => {

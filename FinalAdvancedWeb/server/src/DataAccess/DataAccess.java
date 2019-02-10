@@ -39,7 +39,8 @@ public class DataAccess {
                     }
                     streamCorsi = streamCorsi
                             .join((c,source) -> source.stream(CorsiCdl.class))
-                            .where(corsoCorsiCdlPair -> corsoCorsiCdlPair.getTwo().getCdl() == idCdl && corsoCorsiCdlPair.getOne().getIdCorso() == corsoCorsiCdlPair.getTwo().getCorso())
+                            .where(corsoCorsiCdlPair -> corsoCorsiCdlPair.getTwo().getCdl() == idCdl && corsoCorsiCdlPair.getOne().getIdCorso() == corsoCorsiCdlPair.getTwo().getCorso()
+                            && corsoCorsiCdlPair.getTwo().getAnnoCorso() == year)
                             .select(org.jinq.tuples.Pair::getOne);
                     break;
                 case "nome":
