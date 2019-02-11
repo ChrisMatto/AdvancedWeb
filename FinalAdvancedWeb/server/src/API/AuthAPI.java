@@ -58,6 +58,7 @@ public class AuthAPI implements Resource {
 
     @Path("logout")
     @POST
+    @Produces(MediaType.APPLICATION_JSON)
     public Response logout(String token) {
         DataAccess.deleteSession(token);
         return Response.ok().build();
