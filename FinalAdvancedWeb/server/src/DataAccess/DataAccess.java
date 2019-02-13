@@ -959,7 +959,6 @@ public class DataAccess {
             if (Utils.shouldDeleteSession(sessione.getData())) {
                 entityTransaction.begin();
                 em.remove(sessione);
-                em.flush();
                 entityTransaction.commit();
             }
         }
@@ -1004,6 +1003,7 @@ public class DataAccess {
         if(sessione.isPresent()) {
             entityTransaction.begin();
             em.remove(sessione.get());
+            em.flush();
             entityTransaction.commit();
         }
     }
