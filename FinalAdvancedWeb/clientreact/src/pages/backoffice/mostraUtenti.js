@@ -7,7 +7,8 @@ export default class MostraUtenti extends Component {
         super();
         this.state = {
             users: [],
-            redirect: null
+            redirect: null,
+            loading: false
         };
     }
 
@@ -35,6 +36,21 @@ export default class MostraUtenti extends Component {
         });
     }
 
+    deleteUser = (idUtente) => {
+        this.setState({ loading: true });
+        fetch("http://localhost:8080/AdvancedWeb/rest/auth/" + this.props.token + "/users/" + idUtente, {
+            method: 'DELETE'
+        })
+        .then(res => {
+            if (res.ok) {
+                var index = this.state.users.findIndex(utente => utente.idUtente === idUtente);
+                let users = this.state.users;
+                users.splice(index, 1);
+                this.setState({ users: users, loading: false });
+            }
+        })
+    }
+
     render() {
         if (this.state.redirect) {
             return <Redirect to = {'/Teachers/' + this.state.redirect}/>
@@ -51,6 +67,7 @@ export default class MostraUtenti extends Component {
                             <Table.HeaderCell>Username</Table.HeaderCell>
                             <Table.HeaderCell>Ruolo</Table.HeaderCell>
                             <Table.HeaderCell>Profilo</Table.HeaderCell>
+                            <Table.HeaderCell>Elimina</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
@@ -60,6 +77,7 @@ export default class MostraUtenti extends Component {
                                     <Table.Cell>{utente.username}</Table.Cell>
                                     <Table.Cell>{utente.docente ? 'Docente' : 'Amministratore'}</Table.Cell>
                                     <Table.Cell textAlign = 'center'>{utente.docente ? <Button icon = 'external' onClick = {() => this.setState({ redirect: utente.docente })}/> : null}</Table.Cell>
+                                    <Table.Cell textAlign = 'center'><Button icon = 'user delete' onClick = {() => this.deleteUser(utente.idUtente)}/></Table.Cell>
                                 </Table.Row>
                             )
                         }

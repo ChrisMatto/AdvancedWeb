@@ -56,7 +56,7 @@ export default class DettagliDocente extends Component {
                         <div className = 'row'>
                             <aside className="col-md-4">
                                 <div className="box_style_1 profile">
-                                <p className="text-center"><img id="img-docente" src={'/' + docente.immagine} alt="Teacher" className="img-circle styled"/></p> 
+                                <p className="text-center"><img id="img-docente" src={'data:image;base64,' + docente.immagine} alt="Teacher" className="img-circle styled"/></p> 
                                         <ul>
                                             <li>{lingua === 'it' ? 'Nome' : 'Name'}<strong className="pull-right">{docente.nome} {docente.cognome}</strong> </li>
                                             <li>{lingua === 'it' ? 'Specializzazione' : 'Specialization'}<strong className="pull-right">{docente.specializzazione}</strong></li>

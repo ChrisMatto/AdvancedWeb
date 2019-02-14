@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Segment, Form, Button, Loader, Header } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 import CustomEditor from './stepCorso/customEditor';
-import { validateCurr, validateImg } from '../../js/functions';
+import { validateCurr, validateImg, fileToBase64 } from '../../js/functions';
 
 export default class RegistraDocente extends Component {
     constructor() {
@@ -26,13 +26,44 @@ export default class RegistraDocente extends Component {
                 curriculum: "",
                 immagine: ""
             },
-            immagine: {},
-            curriculum: {}
+            immagine: null,
+            curriculum: null,
+            loading: false,
+            redirect: false
         };
     }
 
     registraDocente = () => {
-
+        this.setState({ loading: true });
+        let docente = JSON.parse(JSON.stringify(this.state.docente));
+        let utente = JSON.parse(JSON.stringify(this.state.utente));
+        docente.immagine = this.state.immagine;
+        docente.curriculum = this.state.curriculum;
+        let headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        if (this.state.docente.curriculum.trim()) {
+            let arr = this.state.docente.curriculum.split(".");
+            headers.append("file-type", arr[arr.length - 1]);
+        }
+        fetch("http://localhost:8080/AdvancedWeb/rest/auth/" + this.props.token + "/teachers", {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(docente)
+        })
+        .then(res => res.ok ? res.text() : null)
+        .then(result => {
+            utente.docente = result;
+            fetch("http://localhost:8080/AdvancedWeb/rest/auth/" + this.props.token + "/users", {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(utente)
+            })
+            .then(res => {
+                if (res.ok) {
+                    this.setState({ redirect: true });
+                }
+            });
+        });
     }
 
     handleDocenteChange = (e, {name, value}) => {
@@ -43,15 +74,27 @@ export default class RegistraDocente extends Component {
             case 'immagine':
                 e.persist();
                 canChange = validateImg(value);
-                if (canChange) {
-                    this.setState({ [name]: e.target.files[0] });
+                let immagine = e.target.files[0];
+                if (canChange && value.length > 0) {
+                    fileToBase64(immagine)
+                    .then(immagine => {
+                        this.setState({ immagine: immagine });
+                    });
+                } else {
+                    this.setState({ immagine: null });
                 }
                 break;
             case 'curriculum':
                 e.persist();
                 canChange = validateCurr(value);
-                if (canChange) {
-                    this.setState({ [name]: e.target.files[0] });
+                let curriculum = e.target.files[0];
+                if (canChange && value.length > 0) {
+                    fileToBase64(curriculum)
+                    .then(curriculum => {
+                        this.setState({ curriculum: curriculum });
+                    });
+                } else {
+                    this.setState({ curriculum: null });
                 }
                 break;
         }
@@ -60,6 +103,13 @@ export default class RegistraDocente extends Component {
                 docente: {
                     ...this.state.docente,
                     [name]: value
+                }
+            });
+        } else {
+            this.setState({
+                docente: {
+                    ...this.state.docente,
+                    [name]: ""
                 }
             });
         }
@@ -111,7 +161,7 @@ export default class RegistraDocente extends Component {
                         <Form.Input fluid name = 'specializzazione' value = {this.state.docente.specializzazione} onChange = {this.handleDocenteChange} label = 'Specializzazione' placeholder = 'Specializzazione'/>
                     </Form.Group>
                     <Form.Group widths = 'equal'>
-                        <Form.Input fluid name = 'Ricevimento' value = {this.state.docente.ricevimento} onChange = {this.handleDocenteChange} label = 'Ricevimento' placeholder = 'Ricevimento'/>
+                        <Form.Input fluid name = 'ricevimento' value = {this.state.docente.ricevimento} onChange = {this.handleDocenteChange} label = 'Ricevimento' placeholder = 'Ricevimento'/>
                         <Form.Field/>
                     </Form.Group>
                     <CustomEditor

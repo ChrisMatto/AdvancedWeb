@@ -78,7 +78,7 @@ export default class ListaDocenti extends Component {
         return (
             <div key = {docente.idDocente} className="col-md-6 col-sm-6">
                 <div className="box_style_3">
-                    <p><img id="img-docente" src={docente.immagine} alt="Teacher" className="img-circle styled"/></p>
+                    <p><img id="img-docente" src={'data:image;base64,' + docente.immagine} alt="Teacher" className="img-circle styled"/></p>
                     <h4 className="p-title"> {docente.nome} {docente.cognome} <br/> <small>{docente.specializzazione}</small></h4>
                     <p></p>
                     <ul className="social_team">

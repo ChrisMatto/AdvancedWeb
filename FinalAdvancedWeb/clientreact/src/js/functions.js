@@ -22,7 +22,7 @@ export function validateImg(fileName) {
           var blnValid = false;
           for (var j = 0; j < _validFileExtensions.length; j++) {
               var sCurExtension = _validFileExtensions[j];
-              if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+              if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() === sCurExtension.toLowerCase()) {
                   blnValid = true;
                   break;
               }
@@ -36,9 +36,6 @@ export function validateImg(fileName) {
       return true;
 }
 
-
-
-
 export function validateCurr(fileName) {
   var _validFileExtensions = [".doc", ".docx", ".txt", ".pdf"];    
       var sFileName = fileName;
@@ -46,7 +43,7 @@ export function validateCurr(fileName) {
           var blnValid = false;
           for (var j = 0; j < _validFileExtensions.length; j++) {
               var sCurExtension = _validFileExtensions[j];
-              if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+              if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() === sCurExtension.toLowerCase()) {
                   blnValid = true;
                   break;
               }
@@ -58,4 +55,16 @@ export function validateCurr(fileName) {
           }
       }
       return true;
+}
+
+export function fileToBase64(file) {
+  return new Promise(resolve => {
+    var reader = new FileReader();
+
+    reader.onload = function(event) {
+      resolve(btoa(event.target.result));
+    };
+    
+    reader.readAsBinaryString(file);
+  });
 }

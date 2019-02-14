@@ -8,11 +8,14 @@ import DataAccess.DataAccess;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
 
 public class TeachersAPI implements Resource {
 
@@ -44,9 +47,30 @@ public class TeachersAPI implements Resource {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertTeacher(Docente docente) {
-        DataAccess.insertDocente(docente);
-        return Response.ok(docente.getIdDocente()).build();
+    public Response insertTeacher(@Context ServletContext context, @Context HttpHeaders headers, Docente docente) {
+        String curriculumType = headers.getHeaderString("file-type");
+        if (curriculumType != null && docente.getCurriculum() != null) {
+            curriculumType = "." + curriculumType;
+            byte[] byteCurriculum = Base64.getDecoder().decode(docente.getCurriculum());
+            String stringPath = context.getRealPath("") + "curriculum/" + docente.getNome() + docente.getCognome();
+            File existingFile = new File(stringPath + curriculumType);
+            int i = 1;
+            String newStringPath = stringPath;
+            while (existingFile.exists()) {
+                newStringPath = stringPath + i;
+                i++;
+                existingFile = new File(newStringPath + curriculumType);
+            }
+            InputStream fileStream = new ByteArrayInputStream(byteCurriculum);
+            try {
+                Files.copy(fileStream, Paths.get(newStringPath + curriculumType));
+                docente.setCurriculum(newStringPath + curriculumType);
+            } catch (IOException e) {
+                System.out.println(e.toString());
+            }
+        }
+        int idDocente = DataAccess.insertDocente(docente);
+        return Response.ok(idDocente).build();
     }
 
     @GET
