@@ -302,7 +302,7 @@ export default class CreateCorso extends Component {
                 break;
             case 6:
                 title = 'Conferma';
-                Step = <ConfirmStep onClick = {this.confirmCorso}/>
+                Step = <ConfirmStep onClick = {this.confirmCorso} buttonTitle = 'Completa La Registazione Del Corso'/>
         }
         return (
             <Segment className = 'col-md-8' color = 'teal' style = {{ marginTop: 4 }}>

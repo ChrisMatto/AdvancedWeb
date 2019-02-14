@@ -8,8 +8,8 @@ import java.io.IOException;
 public class ResponseFilter implements ContainerResponseFilter {
     @Override
     public void filter(ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext){
-        containerResponseContext.getHeaders().putSingle("Access-Control-Allow-Origin",
-                "*");
+        containerResponseContext.getHeaders().putSingle("Access-Control-Allow-Origin", "*");
+        containerResponseContext.getHeaders().putSingle("Access-Control-Allow-Methods", "*");
         containerResponseContext.getHeaders().putSingle("Access-Control-Expose-Headers", "*");
         containerResponseContext.getHeaders().putSingle("Access-Control-Allow-Headers", "content-type");
     }

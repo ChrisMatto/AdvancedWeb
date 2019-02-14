@@ -441,7 +441,7 @@ public class DataAccess {
                 oldLinks.setForum(links.getForum());
             }
             if (links.getRisorseExt() != null) {
-                oldLinks.setElearning(links.getElearning());
+                oldLinks.setRisorseExt(links.getRisorseExt());
             }
             entityTransaction.begin();
             em.persist(oldLinks);

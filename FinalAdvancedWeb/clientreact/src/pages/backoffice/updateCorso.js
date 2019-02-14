@@ -3,6 +3,10 @@ import { Redirect } from 'react-router-dom';
 import { Segment, Header, Progress, Form, Button, Loader } from 'semantic-ui-react';
 import AnnoCdlStep from './stepCorso/annoCdlStep';
 import BaseInfoStep from './stepCorso/baseInfoStep';
+import DescriptionStep from './stepCorso/descriptionStep';
+import DublinoStep from './stepCorso/dublinoStep';
+import LinkStep from './stepCorso/linkStep';
+import ConfirmStep from './stepCorso/confirmStep';
 
 export default class UpdateCorso extends Component {
     constructor() {
@@ -10,6 +14,7 @@ export default class UpdateCorso extends Component {
         this.state = {
             step: 0,
             corso: {
+                idCorso: null,
                 nomeIt: "",
                 nomeEn: "",
                 ssd: "",
@@ -91,6 +96,7 @@ export default class UpdateCorso extends Component {
         fetch('http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/courses/years')
         .then(res => res.json())
         .then(result => {
+            result.sort((a, b) => (a > b) ? -1 : (a < b) ? 1 : 0);
             this.setState({ anniCorsi: result });
         });
     }
@@ -233,6 +239,18 @@ export default class UpdateCorso extends Component {
         }
     }
 
+    handleEditorChange = (className, objName, content) => {
+        this.setState({
+            corso: {
+                ...this.state.corso,
+                [className]: {
+                    ...this.state.corso[className],
+                    [objName]: content
+                }
+            }
+        });
+    }
+
     aheadButtonClick = () => {
         var canGo = false;
         if (this.state.step === 0) {
@@ -257,6 +275,22 @@ export default class UpdateCorso extends Component {
         }
         document.documentElement.scrollTop = 200;
     }
+
+    confirmCorso = () => {
+        this.setState({ loading: true });
+        var headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        fetch("http://localhost:8080/AdvancedWeb/rest/auth/" + this.props.token + "/courses/" + this.state.corso.anno + '/' + this.state.corso.idCorso, {
+            method: 'PUT',
+            headers: headers,
+            body: JSON.stringify(this.state.corso)
+        })
+        .then(res => {
+            if (res.ok) {
+                this.setState({ redirect: true });
+            }
+        });
+    }
     
     render() {
         if (this.state.redirect) {
@@ -279,26 +313,73 @@ export default class UpdateCorso extends Component {
                             utente = {this.props.utente}
                         />
                 break;
-                case 1:
-                    title = 'Modifica Le Informazioni Base';
-                    Step = <BaseInfoStep
-                            handleChange = {this.handleChange} 
-                            handleSelectChange = {this.handleSelectChange}
-                            admin = {this.props.utente.docente ? false : true} 
-                            docenti = {this.state.docenti} 
-                            cdl = {this.state.cdl}
-                            corsi = {this.state.corsi}
-                            selectedCdl = {this.state.corso.cdl}
-                            formError = {this.state.formError}
-                            corso = {this.state.corso}
+            case 1:
+                title = 'Modifica Le Informazioni Base';
+                Step = <BaseInfoStep
+                        handleChange = {this.handleChange} 
+                        handleSelectChange = {this.handleSelectChange}
+                        admin = {this.props.utente.docente ? false : true} 
+                        docenti = {this.state.docenti} 
+                        cdl = {this.state.cdl}
+                        corsi = {this.state.corsi}
+                        selectedCdl = {this.state.corso.cdl}
+                        formError = {this.state.formError}
+                        corso = {this.state.corso}
+                    />
+                break;
+            case 2:
+                title = 'Descrizione Italiana Del Corso';
+                Step = <DescriptionStep 
+                            descrizione = {this.state.corso.descrizioneIt} 
+                            handleEditorChange = {this.handleEditorChange}
+                            className = {"descrizioneIt"}
+                            step = {this.state.step}
                         />
+                break;
+            case 3:
+                title = 'Descrizione Inglese Del Corso';
+                Step = <DescriptionStep
+                            descrizione = {this.state.corso.descrizioneEn}
+                            handleEditorChange = {this.handleEditorChange}
+                            className = {"descrizioneEn"}
+                            step = {this.state.step}
+                        />
+                break;
+            case 4:
+                title = 'Descrittori Di Dublino (Italiano)';
+                Step = <DublinoStep
+                            dublino = {this.state.corso.dublinoIt}
+                            handleEditorChange = {this.handleEditorChange}
+                            className = {"dublinoIt"}
+                            step = {this.state.step}
+                        />
+                break;
+            case 5:
+                title = 'Descrittori Di Dublino (Inglese)';
+                Step = <DublinoStep
+                            dublino = {this.state.corso.dublinoEn}
+                            handleEditorChange = {this.handleEditorChange}
+                            className = {"dublinoEn"}
+                            step = {this.state.step}
+                        />
+                break;
+            case 6:
+                title = 'Risorse Esterne';
+                Step = <LinkStep
+                            links = {this.state.corso.links}
+                            handleEditorChange = {this.handleEditorChange}
+                        />
+                break;
+            case 7:
+                title = 'Conferma';
+                Step = <ConfirmStep onClick = {this.confirmCorso} buttonTitle = 'Conferma Le Modifiche Al Corso'/>
         }
         return (
             <Segment className = 'col-md-8' color = 'teal' style = {{ marginTop: 4 }}>
                 <div hidden = {!this.state.loading} className = 'loader-container'>
                     <Loader active size = 'massive'>Inviando Informazioni</Loader>
                 </div>
-                <Progress value = {this.state.step} total='6' indicating/>
+                <Progress value = {this.state.step} total='7' indicating/>
                 <Header size='medium' style = {{ textAlign: 'center' }} dividing>{title}</Header>
                 <Form>
                     {Step}
@@ -307,7 +388,7 @@ export default class UpdateCorso extends Component {
                     <Button.Group>
                         <Button onClick = {() => {this.setState({ step: this.state.step - 1 }); document.documentElement.scrollTop = 200}} disabled = {this.state.step === 0}>Indietro</Button>
                         <Button.Or text = 'O'/>
-                        <Button positive onClick = {this.aheadButtonClick} disabled = {this.state.step === 6}>Avanti</Button>
+                        <Button positive onClick = {this.aheadButtonClick} disabled = {this.state.step === 7}>Avanti</Button>
                     </Button.Group>
                 </div>
             </Segment>

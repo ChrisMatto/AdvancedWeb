@@ -25,10 +25,14 @@ export default function BaseInfoStep(props) {
         var result = false;
         corso.cdl.forEach(cdl => {
             props.selectedCdl.forEach(sCdl => {
-                if (cdl.idCdl === sCdl.idCdl) {
+                if (cdl.idCdl === sCdl.idCdl && props.corso.idCorso !== corso.idCorso) {
                     result = true;
+                    return;
                 }
             });
+            if (result) {
+                return;
+            }
         });
         return result;
     });
@@ -44,12 +48,14 @@ export default function BaseInfoStep(props) {
 
     var corsiPerMutuati = [];
     props.corsi.forEach(corso => {
-        let obj = {
-            key: corso.idCorso,
-            text: corso.nomeIt,
-            value: corso.idCorso
-        };
-        corsiPerMutuati.push(obj);
+        if (props.corso.idCorso !== corso.idCorso) {
+            let obj = {
+                key: corso.idCorso,
+                text: corso.nomeIt,
+                value: corso.idCorso
+            };
+            corsiPerMutuati.push(obj);
+        }
     });
 
     var anniAccademici = [];
@@ -75,29 +81,10 @@ export default function BaseInfoStep(props) {
             </Form.Group>
             <Form.Group widths = 'equal'>
                 <Form.Select fluid name = 'semestre' value = {props.corso.semestre} onChange = {props.handleChange} label = 'Semestre' placeholder = 'Seleziona un semestre...' options = {[{value: 1, text: 1}, {value: 2, text: 2}]}/>
-                {
-                    props.admin ?
-                        <Form.Dropdown 
-                            fluid
-                            scrolling
-                            search
-                            selection
-                            label = 'Anno Accademico'
-                            onChange = {props.handleChange}
-                            name = 'anno'
-                            options = {anniAccademici}
-                            placeholder = 'Seleziona Anno...'
-                            closeOnBlur
-                            required
-                            value = {props.corso.anno}
-                            error = {props.formError && !props.corso.anno}
-                        />
-                    :
-                        <Form.Field/>
-                }
+                <Form.Field/>
             </Form.Group>
             <Form.Group widths = 'two'>
-                <Form.Input fluid name = 'cfu' value = {props.corso.cfu} onChange = {props.handleChange} label = 'CFU' placeholder = 'CFU'/>
+                <Form.Input fluid name = 'cfu' value = {props.corso.cfu ? props.corso.cfu : ""} onChange = {props.handleChange} label = 'CFU' placeholder = 'CFU' type = 'number' min = '0'/>
                 <Form.Select fluid name = 'tipologia' value = {props.corso.tipologia} onChange = {props.handleChange} label = 'Tipologia CFU' placeholder = 'Seleziona una tipologia...' options = {[{value: 'A', text: 'A'}, {value: 'B', text: 'B'}, {value: 'F', text: 'F'}]}/>
             </Form.Group>
             {
