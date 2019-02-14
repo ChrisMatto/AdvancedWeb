@@ -14,3 +14,48 @@ export function formatBytes(bytes,decimals) {
       i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
+
+export function validateImg(fileName) {
+  var _validFileExtensions = [".jpg", ".jpeg", ".bmp", ".gif", ".png"];    
+      var sFileName = fileName;
+        if (sFileName.length > 0) {
+          var blnValid = false;
+          for (var j = 0; j < _validFileExtensions.length; j++) {
+              var sCurExtension = _validFileExtensions[j];
+              if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                  blnValid = true;
+                  break;
+              }
+          }
+
+          if (!blnValid) {
+              alert("Sorry, " + sFileName + " is invalid, allowed extensions are: " + _validFileExtensions.join(", "));
+              return false;
+          }
+      }
+      return true;
+}
+
+
+
+
+export function validateCurr(fileName) {
+  var _validFileExtensions = [".doc", ".docx", ".txt", ".pdf"];    
+      var sFileName = fileName;
+        if (sFileName.length > 0) {
+          var blnValid = false;
+          for (var j = 0; j < _validFileExtensions.length; j++) {
+              var sCurExtension = _validFileExtensions[j];
+              if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                  blnValid = true;
+                  break;
+              }
+          }
+
+          if (!blnValid) {
+              alert("Sorry, " + sFileName + " is invalid, allowed extensions are: " + _validFileExtensions.join(", "));
+              return false;
+          }
+      }
+      return true;
+}

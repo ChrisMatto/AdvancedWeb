@@ -8,7 +8,8 @@ export default class RegistraAmministratore extends Component {
         this.state = {
             username: "",
             password: "",
-            redirect: false
+            redirect: false,
+            loading: false
         };
     }
 
@@ -19,6 +20,7 @@ export default class RegistraAmministratore extends Component {
     }
 
     registraAmministratore = () => {
+        this.setState({ loading: true });
         var utente = {
             username: this.state.username,
             password: this.state.password
@@ -30,7 +32,7 @@ export default class RegistraAmministratore extends Component {
             headers: headers,
             body: JSON.stringify(utente)
         })
-        .then(res => this.setState({ redirect: true }));
+        .then(res => res.ok ? this.setState({ redirect: true }) : null);
     }
 
     render() {

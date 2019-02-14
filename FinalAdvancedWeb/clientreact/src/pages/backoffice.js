@@ -5,6 +5,7 @@ import UpdateCorso from './backoffice/updateCorso';
 import DeleteCorso from './backoffice/deleteCorso';
 import MostraUtenti from './backoffice/mostraUtenti';
 import RegistraAmministratore from './backoffice/registraAmministratore';
+import RegistraDocente from './backoffice/registraDocente';
 
 export default class Backoffice extends Component {
     constructor(props) {
@@ -41,7 +42,7 @@ export default class Backoffice extends Component {
                     <ul>
                         <li><Link to = '/Backoffice/CreateCDL'>Crea Un Nuovo Cdl</Link></li>
                         <li><Link to = '/Backoffice/CreateCourse'>Crea Un Nuovo Corso</Link></li>
-                        <li><Link to = '/Backoffice/RegisterDocente'>Registra Un Nuovo Docente</Link></li>
+                        <li><Link to = '/Backoffice/RegisterTeacher'>Registra Un Nuovo Docente</Link></li>
                         <li><Link to = '/Backoffice/RegisterAdmin'>Registra Un Nuovo Amministratore</Link></li>
                         <li><Link to = '/Backoffice/NewMateriale'>Aggiungi Materiale</Link></li>
                         <li><Link to = '/Backoffice/NewLibro'>Aggiungi Libro</Link></li>
@@ -136,7 +137,8 @@ export default class Backoffice extends Component {
                                 <Route exact path = '/Backoffice/UpdateCourse' render = {() => <UpdateCorso utente = {this.state.utente} token = {this.state.token}/>}/>                      
                                 <Route exact path = '/Backoffice/DeleteCourse' render = {() => !this.state.utente.docente ? <DeleteCorso utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
                                 <Route exact path = '/Backoffice/Users' render = {() => !this.state.utente.docente ? <MostraUtenti utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
-                                <Route exact path = '/Backoffice/RegisterAdmin' render = {() => !this.state.utente.docente ? <RegistraAmministratore utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>       
+                                <Route exact path = '/Backoffice/RegisterAdmin' render = {() => !this.state.utente.docente ? <RegistraAmministratore utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
+                                <Route exact path = '/Backoffice/RegisterTeacher' render = {() => !this.state.utente.docente ? <RegistraDocente utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>              
                             </Switch>
                             </div>
                         </div>
