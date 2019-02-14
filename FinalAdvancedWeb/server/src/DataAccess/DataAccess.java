@@ -832,9 +832,9 @@ public class DataAccess {
                 .toList();
     }
 
-    public static void insertCdl() {
+    /*public static Docente insertDocente(Docente docente) {
 
-    }
+    }*/
 
     public static List<Integer> getUtenti() {
         return stream.streamAll(em, Utente.class)
@@ -857,6 +857,9 @@ public class DataAccess {
     }
 
     public static void insertUtente(Utente utente) {
+        if (utente.getGruppo() == null) {
+            utente.setGruppo(1);
+        }
         entityTransaction.begin();
         em.persist(utente);
         entityTransaction.commit();

@@ -2,6 +2,9 @@ import React, { Component, Fragment } from 'react';
 import { Switch, Route, Redirect, Link } from 'react-router-dom';
 import CreateCorso from './backoffice/createCorso';
 import UpdateCorso from './backoffice/updateCorso';
+import DeleteCorso from './backoffice/deleteCorso';
+import MostraUtenti from './backoffice/mostraUtenti';
+import RegistraAmministratore from './backoffice/registraAmministratore';
 
 export default class Backoffice extends Component {
     constructor(props) {
@@ -28,22 +31,33 @@ export default class Backoffice extends Component {
         return (
             <aside className="col-md-4">
                 <div className="box_style_1 profile">
-                    <h4>Funzioni creazione</h4>
 
+                    <h4>Funzioni Utenti</h4>
+                    <ul>
+                        <li><Link to = '/Backoffice/Users'>Mostra Utenti</Link></li>
+                    </ul>
+
+                    <h4>Funzioni Creazione</h4>
                     <ul>
                         <li><Link to = '/Backoffice/CreateCDL'>Crea Un Nuovo Cdl</Link></li>
                         <li><Link to = '/Backoffice/CreateCourse'>Crea Un Nuovo Corso</Link></li>
                         <li><Link to = '/Backoffice/RegisterDocente'>Registra Un Nuovo Docente</Link></li>
-                        <li><Link to = '/Backoffice/CreateAdmin'>Registra Un Nuovo Amministratore</Link></li>
+                        <li><Link to = '/Backoffice/RegisterAdmin'>Registra Un Nuovo Amministratore</Link></li>
                         <li><Link to = '/Backoffice/NewMateriale'>Aggiungi Materiale</Link></li>
                         <li><Link to = '/Backoffice/NewLibro'>Aggiungi Libro</Link></li>
                     </ul>
 
-                    <h4>Funzioni modifica</h4>
+                    <h4>Funzioni Modifica</h4>
                     <ul>
                         <li><Link to = '/Backoffice/UpdateCourse'>Modifica Corsi</Link></li>
                         <li><Link to = '/Backoffice/UpdateCDL'>Modifica Cdl</Link></li>
                         <li><Link to = '/Backoffice/UpdateDocente'>Modifica Docente</Link></li>
+                    </ul>
+
+                    <h4>Funzioni Eliminazione</h4>
+                    <ul>
+                        <li><Link to = '/Backoffice/DeleteCourse'>Elimina Un Corso</Link></li>
+                        <li><Link to = '/Backoffice/DeleteUtente'>Elimina Un Utente</Link></li>
                     </ul>
 
                     <h4>Funzioni Upload</h4>
@@ -120,6 +134,9 @@ export default class Backoffice extends Component {
                             <Switch>
                                 <Route exact path = '/Backoffice/CreateCourse' render = {() => !this.state.utente.docente ? <CreateCorso utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>          
                                 <Route exact path = '/Backoffice/UpdateCourse' render = {() => <UpdateCorso utente = {this.state.utente} token = {this.state.token}/>}/>                      
+                                <Route exact path = '/Backoffice/DeleteCourse' render = {() => !this.state.utente.docente ? <DeleteCorso utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
+                                <Route exact path = '/Backoffice/Users' render = {() => !this.state.utente.docente ? <MostraUtenti utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
+                                <Route exact path = '/Backoffice/RegisterAdmin' render = {() => !this.state.utente.docente ? <RegistraAmministratore utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>       
                             </Switch>
                             </div>
                         </div>

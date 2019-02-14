@@ -38,3 +38,8 @@
 .loader-container>.ui.loader:after {
     border-color: slateblue transparent transparent;
 }
+
+.center-table {
+    margin: 0 auto !important;
+    width: 70% !important;
+}

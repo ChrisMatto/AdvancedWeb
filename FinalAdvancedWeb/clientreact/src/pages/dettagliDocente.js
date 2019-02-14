@@ -100,7 +100,7 @@ export default class DettagliDocente extends Component {
                                                     </thead>
                                                     <tbody>
                                                         {corsi ? corsi.map((corso) => (
-                                                            <tr>
+                                                            <tr key = {corso.idCorso}>
                                                                 <td><Link to = {"/Courses/" + corso.anno + '/' + corso.idCorso}>{lingua === 'it' ? corso.nomeIt || corso.nomeEn : corso.nomeEn || corso.nomeIt}</Link></td>
                                                                 <td>{corso.ssd}</td>
                                                                 <td>{corso.cfu}</td>

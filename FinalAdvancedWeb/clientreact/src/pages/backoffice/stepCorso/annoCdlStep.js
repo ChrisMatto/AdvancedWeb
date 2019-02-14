@@ -160,7 +160,7 @@ export default class AnnoCdlStep extends Component{
                             scrolling
                             search
                             selection
-                            label = 'Corso Di Laurea'
+                            label = 'Seleziona Un Corso Di Laurea'
                             onChange = {this.handleChange}
                             name = 'cdl'
                             options = {cdl}
@@ -175,7 +175,7 @@ export default class AnnoCdlStep extends Component{
                             scrolling
                             search
                             selection
-                            label = 'Anno Accademico'
+                            label = 'Seleziona Un Anno Accademico'
                             onChange = {this.handleChange}
                             name = 'anno'
                             options = {anniAccademici}
@@ -194,7 +194,7 @@ export default class AnnoCdlStep extends Component{
                             scrolling
                             search
                             selection
-                            label = 'Seleziona Corso Da Modificare'
+                            label = {'Seleziona Corso Da ' + (this.props.elimina ? 'Eliminare' : 'Modificare')}
                             onChange = {(e, {name, value}) => {
                                 this.setState({ idCorso: value });
                                 this.props.selectedCorso(value, this.state.anno, this.state.cdl);
