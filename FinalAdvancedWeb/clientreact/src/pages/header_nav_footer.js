@@ -19,8 +19,8 @@ function Header(props) {
                                     </a>
                                         <ul className = 'dropdown-menu'>
                                             <li>
-                                                <Link to = '/Profile'>
-                                                <i className="icon-user"></i>Profile</Link>
+                                                <Link to = '/Backoffice/Profile'>
+                                                <i className="icon-user"></i>Profilo Utente</Link>
                                             </li>
                                             <li>
                                                 <Link to = "/Backoffice">

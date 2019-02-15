@@ -871,7 +871,35 @@ public class DataAccess {
         em.persist(docente);
         em.flush();
         entityTransaction.commit();
+        updateVersione("docente");
         return docente.getIdDocente();
+    }
+
+    public static void updateDocente(int idDocente, Docente docente) {
+        Docente doc = stream.streamAll(em, Docente.class)
+                .where(d -> d.getIdDocente() == idDocente)
+                .findFirst()
+                .orElse(null);
+        if (doc == null) {
+            Response.ResponseBuilder responseBuilder = Response.status(400);
+            throw new WebApplicationException(responseBuilder.build());
+        }
+        String immagine = doc.getImmagine();
+        String curriculum = doc.getCurriculum();
+
+        doc.copyFrom(docente);
+
+        if (doc.getCurriculum() == null || doc.getCurriculum().trim().isEmpty()) {
+            doc.setCurriculum(curriculum);
+        }
+        if (doc.getImmagine() == null || doc.getImmagine().trim().isEmpty()) {
+            doc.setImmagine(immagine);
+        }
+        entityTransaction.begin();
+        em.persist(doc);
+        em.flush();
+        entityTransaction.commit();
+        updateVersione("docente");
     }
 
     public static List<Integer> getUtenti() {

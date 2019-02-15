@@ -33,6 +33,22 @@ export default class RegistraDocente extends Component {
         };
     }
 
+    componentWillMount() {
+        let docente = this.props.docente;
+        if (docente) {
+            docente.immagine = "";
+            docente.curriculum = "";
+            delete docente.corsi;
+            var keys = Object.keys(docente);
+            keys.forEach(key => {
+                if (!docente[key]) {
+                    docente[key] = "";
+                }
+            });
+            this.setState({ docente: docente });
+        }
+    }
+
     registraDocente = () => {
         this.setState({ loading: true });
         let docente = JSON.parse(JSON.stringify(this.state.docente));
@@ -41,29 +57,44 @@ export default class RegistraDocente extends Component {
         docente.curriculum = this.state.curriculum;
         let headers = new Headers();
         headers.append("Content-Type", "application/json");
-        if (this.state.docente.curriculum.trim()) {
+        if (this.state.docente.curriculum && this.state.docente.curriculum.trim()) {
             let arr = this.state.docente.curriculum.split(".");
             headers.append("file-type", arr[arr.length - 1]);
         }
-        fetch("http://localhost:8080/AdvancedWeb/rest/auth/" + this.props.token + "/teachers", {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(docente)
-        })
-        .then(res => res.ok ? res.text() : null)
-        .then(result => {
-            utente.docente = result;
-            fetch("http://localhost:8080/AdvancedWeb/rest/auth/" + this.props.token + "/users", {
+        if (this.state.docente.immagine && this.state.docente.immagine.trim()) {
+            let arr = this.state.docente.immagine.split(".");
+            headers.append("image-type", arr[arr.length - 1]);
+        }
+        if (!this.props.docente) {
+            fetch("http://localhost:8080/AdvancedWeb/rest/auth/" + this.props.token + "/teachers", {
                 method: 'POST',
                 headers: headers,
-                body: JSON.stringify(utente)
+                body: JSON.stringify(docente)
             })
-            .then(res => {
-                if (res.ok) {
-                    this.setState({ redirect: true });
-                }
+            .then(res => res.ok ? res.text() : null)
+            .then(result => {
+                utente.docente = result;
+                utente.gruppo = 2;
+                fetch("http://localhost:8080/AdvancedWeb/rest/auth/" + this.props.token + "/users", {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(utente)
+                })
+                .then(res => {
+                    if (res.ok) {
+                        this.setState({ redirect: true });
+                    }
+                });
             });
-        });
+        } else {
+            fetch("http://localhost:8080/AdvancedWeb/rest/auth/" + this.props.token + "/teachers/" + docente.idDocente, {
+                method: 'PUT',
+                headers: headers,
+                body: JSON.stringify(docente)
+            })
+            .then(res => res.ok ? this.setState({ redirect: true }) : null);
+        }
+        
     }
 
     handleDocenteChange = (e, {name, value}) => {
@@ -142,12 +173,19 @@ export default class RegistraDocente extends Component {
                 <div hidden = {!this.state.loading} className = 'loader-container'>
                     <Loader active size = 'massive'>Inviando Informazioni</Loader>
                 </div>
-                <Header size='medium' style = {{ textAlign: 'center' }} dividing>Registra Un Docente</Header>
+                <Header size='medium' style = {{ textAlign: 'center' }} dividing>{!this.props.docente ? 'Registra Un Docente' : 'Modifica Profilo Docente'}</Header>
                 <Form>
-                    <Form.Group widths = 'equal'>
-                        <Form.Input fluid name = 'username' value = {this.state.utente.username} onChange = {this.handleUtenteChange} label = 'Username' placeholder = 'Username' required/>
-                        <Form.Input type = 'password' fluid name = 'password' value = {this.state.utente.password} onChange = {this.handleUtenteChange} label = 'Password' placeholder = 'Password' required/>
-                    </Form.Group>
+                    {
+                        !this.props.docente
+                        ?
+                            <Form.Group widths = 'equal'>
+                                <Form.Input fluid name = 'username' value = {this.state.utente.username} onChange = {this.handleUtenteChange} label = 'Username' placeholder = 'Username' required/>
+                                <Form.Input type = 'password' fluid name = 'password' value = {this.state.utente.password} onChange = {this.handleUtenteChange} label = 'Password' placeholder = 'Password' required/>
+                            </Form.Group>
+                        :
+                            null
+                    }
+                    
                     <Form.Group widths = 'equal'>
                         <Form.Input fluid name = 'nome' value = {this.state.docente.nome} onChange = {this.handleDocenteChange} label = 'Nome' placeholder = 'Nome' required/>
                         <Form.Input fluid name = 'cognome' value = {this.state.docente.cognome} onChange = {this.handleDocenteChange} label = 'Cognome' placeholder = 'Cognome' required/>
@@ -186,7 +224,7 @@ export default class RegistraDocente extends Component {
                     </Form.Group>
                 </Form>
                 <div style = {{ textAlign: 'center', paddingTop: 20 }}>
-                    <Button onClick = {this.registraDocente} color = 'facebook' size = 'large' disabled = {!this.state.utente.username.trim() || !this.state.utente.password.trim() || !this.state.docente.nome.trim() || !this.state.docente.cognome.trim()}>Registra</Button>
+                    <Button onClick = {this.registraDocente} color = 'facebook' size = 'large' disabled = {!this.props.docente ? !this.state.utente.username.trim() || !this.state.utente.password.trim() || !this.state.docente.nome.trim() || !this.state.docente.cognome.trim() : !this.state.docente.nome.trim() || !this.state.docente.cognome.trim()}>{!this.props.docente ? 'Registra' : 'Conferma'}</Button>
                 </div>
             </Segment>
         );

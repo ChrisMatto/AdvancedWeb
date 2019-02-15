@@ -6,6 +6,8 @@ import DeleteCorso from './backoffice/deleteCorso';
 import MostraUtenti from './backoffice/mostraUtenti';
 import RegistraAmministratore from './backoffice/registraAmministratore';
 import RegistraDocente from './backoffice/registraDocente';
+import UpdateProfilo from './backoffice/profile';
+import UpdateDocente from './backoffice/updateDocente';
 
 export default class Backoffice extends Component {
     constructor(props) {
@@ -52,13 +54,12 @@ export default class Backoffice extends Component {
                     <ul>
                         <li><Link to = '/Backoffice/UpdateCourse'>Modifica Corsi</Link></li>
                         <li><Link to = '/Backoffice/UpdateCDL'>Modifica Cdl</Link></li>
-                        <li><Link to = '/Backoffice/UpdateDocente'>Modifica Docente</Link></li>
+                        <li><Link to = '/Backoffice/UpdateTeacher'>Modifica Docente</Link></li>
                     </ul>
 
                     <h4>Funzioni Eliminazione</h4>
                     <ul>
                         <li><Link to = '/Backoffice/DeleteCourse'>Elimina Un Corso</Link></li>
-                        <li><Link to = '/Backoffice/DeleteUtente'>Elimina Un Utente</Link></li>
                     </ul>
 
                     <h4>Funzioni Upload</h4>
@@ -76,14 +77,13 @@ export default class Backoffice extends Component {
         return (
             <aside className="col-md-4">
                 <div className="box_style_1 profile">
+                    <h4>Funzioni Modifica</h4>
+                        <ul>
+                            <li><Link to = '/Backoffice/UpdateTeacher'>Modifica Profilo Docente</Link></li>
+                        </ul>
                     {
                         this.state.corsi.length > 0 ?
-                            <Fragment>
-                                <h4>Funzioni Modifica</h4>
-                                <ul>
-                                    <li><Link to = '/Backoffice/UpdateCourse'>Modifica Un Corso</Link></li>
-                                </ul>
-                            </Fragment>
+                            <li><Link to = '/Backoffice/UpdateCourse'>Modifica Un Corso</Link></li>
                         :
                             null
                     }
@@ -138,7 +138,9 @@ export default class Backoffice extends Component {
                                 <Route exact path = '/Backoffice/DeleteCourse' render = {() => !this.state.utente.docente ? <DeleteCorso utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
                                 <Route exact path = '/Backoffice/Users' render = {() => !this.state.utente.docente ? <MostraUtenti utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
                                 <Route exact path = '/Backoffice/RegisterAdmin' render = {() => !this.state.utente.docente ? <RegistraAmministratore utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
-                                <Route exact path = '/Backoffice/RegisterTeacher' render = {() => !this.state.utente.docente ? <RegistraDocente utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>              
+                                <Route exact path = '/Backoffice/RegisterTeacher' render = {() => !this.state.utente.docente ? <RegistraDocente utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
+                                <Route exact path = '/Backoffice/Profile' render = {() => <UpdateProfilo utente = {this.state.utente} token = {this.state.token}/>}/>
+                                <Route exact path = '/Backoffice/UpdateTeacher' render = {() => <UpdateDocente utente = {this.state.utente} token = {this.state.token}/>}/>              
                             </Switch>
                             </div>
                         </div>
