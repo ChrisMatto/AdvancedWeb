@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -19,7 +20,7 @@ public class ControllerAPI {
     private DataAccess dataAccess;
 
     @Path("{controller}")
-    public Resource getController(@PathParam("controller") String controllerName, @Context Request request) {
+    public Resource getController(@PathParam("controller") String controllerName, @Context Request request, @Context ResourceContext context) {
         Controllers controller = Utils.getController(controllerName);
         if (!dataAccess.checkAccessNoToken(controllerName, request.getMethod())) {
             Response.ResponseBuilder responseBuilder = Response.status(403);
@@ -27,9 +28,9 @@ public class ControllerAPI {
         }
         switch (controller) {
             case auth:
-                return new AuthAPI();
+                return context.getResource(AuthAPI.class);
             case courses:
-                return new CoursesAPI();
+                return context.getResource(CoursesAPI.class);
             case cdl:
                 return new CdlAPI();
             case teachers:

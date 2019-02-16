@@ -1,6 +1,8 @@
 package Controller;
 
 import API.*;
+import DataAccess.DataAccess;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -27,5 +29,11 @@ public class AdvancedWebApplication extends ResourceConfig {
         register(JacksonFeature.class);
         register(ResponseFilter.class);
         register(ControllerAPI.class);
+        register(new AbstractBinder() {
+            @Override
+            protected void configure() {
+                bind(DataAccess.class).to(DataAccess.class);
+            }
+        });
     }
 }
