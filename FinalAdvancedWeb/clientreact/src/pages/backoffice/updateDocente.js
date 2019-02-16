@@ -15,7 +15,6 @@ export default class UdateDocente extends Component {
     }
 
     componentWillMount() {
-        this.setState({ loading: true });
         if (!this.props.utente.docente) {
             fetch('http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/teachers')
             .then(res => res.json())
@@ -35,10 +34,11 @@ export default class UdateDocente extends Component {
                     results.forEach(teacher => {
                         teachers.push(teacher);
                     });
-                    this.setState({ docenti: teachers, loading: false });
+                    this.setState({ docenti: teachers });
                 });
             });
         } else {
+            this.setState({ loading: true });
             fetch('http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/teachers/' + this.props.utente.docente)
             .then(res => res.ok ? res.json() : null)
             .then(result => {
