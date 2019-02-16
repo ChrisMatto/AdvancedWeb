@@ -19,8 +19,11 @@ public class ControllerAPI {
     @Inject
     private DataAccess dataAccess;
 
+    @Context
+    ResourceContext context;
+
     @Path("{controller}")
-    public Resource getController(@PathParam("controller") String controllerName, @Context Request request, @Context ResourceContext context) {
+    public Resource getController(@PathParam("controller") String controllerName, @Context Request request) {
         Controllers controller = Utils.getController(controllerName);
         if (!dataAccess.checkAccessNoToken(controllerName, request.getMethod())) {
             Response.ResponseBuilder responseBuilder = Response.status(403);
@@ -32,9 +35,9 @@ public class ControllerAPI {
             case courses:
                 return context.getResource(CoursesAPI.class);
             case cdl:
-                return new CdlAPI();
+                return context.getResource(CdlAPI.class);
             case teachers:
-                return new TeachersAPI();
+                return context.getResource(TeachersAPI.class);
             default:
                 Response.ResponseBuilder responseBuilder = Response.status(404);
                 throw new WebApplicationException(responseBuilder.build());

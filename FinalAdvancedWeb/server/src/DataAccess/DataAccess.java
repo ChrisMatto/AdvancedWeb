@@ -10,24 +10,21 @@ import org.jinq.orm.stream.JinqStream;
 import org.jinq.tuples.Pair;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class DataAccess {
-    private EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("NewPersistenceUnit");
     private EntityManager em;
     private JinqJPAStreamProvider stream;
     private EntityTransaction entityTransaction;
 
     public DataAccess() {
-        em = entityManagerFactory.createEntityManager();
+        em = Persistence.createEntityManagerFactory("NewPersistenceUnit").createEntityManager();
         stream = new JinqJPAStreamProvider(em.getMetamodel());
         entityTransaction = em.getTransaction();
     }

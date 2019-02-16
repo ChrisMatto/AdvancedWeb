@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
@@ -20,6 +21,9 @@ public class AuthAPI implements Resource {
 
     @Inject
     private DataAccess dataAccess;
+
+    @Context
+    ResourceContext context;
 
     @Path("login")
     @POST
@@ -78,15 +82,15 @@ public class AuthAPI implements Resource {
         }
         switch (controller) {
             case courses:
-                return new CoursesAPI(token);
+                return context.getResource(CoursesAPI.class);
             case users:
-                return new UsersAPI(token);
+                return context.getResource(UsersAPI.class);
             case cdl:
-                return new CdlAPI(token);
+                return context.getResource(CdlAPI.class);
             case teachers:
-                return new TeachersAPI(token);
+                return context.getResource(TeachersAPI.class);
             case logs:
-                return new LogsAPI(token);
+                return context.getResource(LogsAPI.class);
             default:
                 Response.ResponseBuilder responseBuilder = Response.status(404);
                 throw new WebApplicationException(responseBuilder.build());
