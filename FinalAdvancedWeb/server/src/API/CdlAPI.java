@@ -6,6 +6,7 @@ import Views.CdlCompleto;
 import Controller.Utils;
 import DataAccess.DataAccess;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -15,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CdlAPI implements Resource {
+
+    @Inject
+    private DataAccess dataAccess;
 
     private String token;
 
@@ -29,7 +33,7 @@ public class CdlAPI implements Resource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllCdl(@Context UriInfo uriInfo) {
-        List<Cdl> cdl = DataAccess.getAllCdl();
+        List<Cdl> cdl = dataAccess.getAllCdl();
         List<String> cdlUri = new ArrayList<>();
         String baseUri;
         if (token != null) {
@@ -50,7 +54,7 @@ public class CdlAPI implements Resource {
             return Response.status(400).build();
         }
         cdl.setAnno(Utils.getYear("current"));
-        DataAccess.saveLog(token, "ha inserito il nuovo CDL " + cdl.getNomeIt());
+        dataAccess.saveLog(token, "ha inserito il nuovo CDL " + cdl.getNomeIt());
         return Response.ok().build();
     }
 
@@ -58,7 +62,7 @@ public class CdlAPI implements Resource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCdlTriennali(@Context UriInfo uriInfo) {
-        List<Cdl> cdl = DataAccess.getCdlTriennali();
+        List<Cdl> cdl = dataAccess.getCdlTriennali();
         List<String> cdlUri = new ArrayList<>();
         String baseUri;
         if (token != null) {
@@ -69,7 +73,7 @@ public class CdlAPI implements Resource {
         for(Cdl c : cdl) {
             cdlUri.add(baseUri + c.getIdcdl());
         }
-        Versioni versione = DataAccess.getVersione("cdl");
+        Versioni versione = dataAccess.getVersione("cdl");
         if (versione != null) {
             return Response.ok(cdlUri).header("versione", versione.getVersione()).build();
         }
@@ -80,7 +84,7 @@ public class CdlAPI implements Resource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCdlMagistrali(@Context UriInfo uriInfo) {
-        List<Cdl> cdl = DataAccess.getCdlMagistrali();
+        List<Cdl> cdl = dataAccess.getCdlMagistrali();
         List<String> cdlUri = new ArrayList<>();
         String baseUri;
         if (token != null) {
@@ -91,7 +95,7 @@ public class CdlAPI implements Resource {
         for(Cdl c : cdl) {
             cdlUri.add(baseUri + c.getIdcdl());
         }
-        Versioni versione = DataAccess.getVersione("cdl");
+        Versioni versione = dataAccess.getVersione("cdl");
         if (versione != null) {
             return Response.ok(cdlUri).header("versione", versione.getVersione()).build();
         }
@@ -111,7 +115,7 @@ public class CdlAPI implements Resource {
         } else {
             baseUriCorsi = uriInfo.getBaseUri() + "courses/";
         }
-        Cdl cdl = DataAccess.getCdl(id);
+        Cdl cdl = dataAccess.getCdl(id);
         if (cdl != null) {
             return Response.ok(new CdlCompleto(cdl, baseUriCorsi)).build();
         }

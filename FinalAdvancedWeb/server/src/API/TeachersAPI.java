@@ -6,6 +6,7 @@ import Views.DocenteCompleto;
 import Controller.Utils;
 import DataAccess.DataAccess;
 
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -18,6 +19,9 @@ import java.nio.file.Paths;
 import java.util.Base64;
 
 public class TeachersAPI implements Resource {
+
+    @Inject
+    private DataAccess dataAccess;
 
     private String token;
 
@@ -38,11 +42,11 @@ public class TeachersAPI implements Resource {
         } else {
             baseUri = uriInfo.getBaseUri() + "teachers/";
         }
-        Versioni versione = DataAccess.getVersione("docente");
+        Versioni versione = dataAccess.getVersione("docente");
         if (versione != null) {
-            return Response.ok(DataAccess.getDocenti(baseUri)).header("versione", versione.getVersione()).build();
+            return Response.ok(dataAccess.getDocenti(baseUri)).header("versione", versione.getVersione()).build();
         }
-        return Response.ok(DataAccess.getDocenti(baseUri)).build();
+        return Response.ok(dataAccess.getDocenti(baseUri)).build();
     }
 
     @POST
@@ -94,8 +98,8 @@ public class TeachersAPI implements Resource {
         } else {
             docente.setImmagine(null);
         }
-        int idDocente = DataAccess.insertDocente(docente);
-        DataAccess.saveLog(token, "ha inserito il nuovo docente " + docente.getNome() + " " + docente.getCognome());
+        int idDocente = dataAccess.insertDocente(docente);
+        dataAccess.saveLog(token, "ha inserito il nuovo docente " + docente.getNome() + " " + docente.getCognome());
         return Response.ok(idDocente).build();
     }
 
@@ -149,8 +153,8 @@ public class TeachersAPI implements Resource {
         } else {
             docente.setImmagine(null);
         }
-        DataAccess.updateDocente(idDocente, docente);
-        DataAccess.saveLog(token, "ha modificato il profilo del docente " + docente.getNome() + " " + docente.getCognome());
+        dataAccess.updateDocente(idDocente, docente);
+        dataAccess.saveLog(token, "ha modificato il profilo del docente " + docente.getNome() + " " + docente.getCognome());
         return Response.ok().build();
     }
 
@@ -158,7 +162,7 @@ public class TeachersAPI implements Resource {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTeacher(@Context ServletContext context, @PathParam("id") int id) {
-        Docente doc = DataAccess.getDocente(id);
+        Docente doc = dataAccess.getDocente(id);
         if (doc != null) {
             Docente docente = new Docente();
             docente.copyFrom(doc);
@@ -185,14 +189,14 @@ public class TeachersAPI implements Resource {
     @Path("{id}/courses")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTeacherCourses(@PathParam("id") int id) {
-        return Response.ok(DataAccess.getCorsiDocente(id)).build();
+        return Response.ok(dataAccess.getCorsiDocente(id)).build();
     }
 
     @GET
     @Path("{id}/curriculum")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response downloadCurriculum(@PathParam("id") int id) {
-        Docente docente = DataAccess.getDocente(id);
+        Docente docente = dataAccess.getDocente(id);
         File file = Utils.getFile(docente.getCurriculum());
         return Response.ok(file).header("Content-Disposition", "attachment; filename=" + file.getName()).build();
     }
