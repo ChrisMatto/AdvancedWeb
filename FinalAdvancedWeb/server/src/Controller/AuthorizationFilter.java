@@ -2,6 +2,7 @@ package Controller;
 
 import DataAccess.DataAccess;
 
+import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -11,6 +12,9 @@ import java.net.URI;
 
 @PreMatching
 public class AuthorizationFilter implements ContainerRequestFilter {
+
+    @Inject
+    private DataAccess dataAccess;
 
     @Override
     public void filter(ContainerRequestContext containerRequestContext) {
@@ -35,13 +39,13 @@ public class AuthorizationFilter implements ContainerRequestFilter {
                 classEndIndex = path.indexOf("/", endIndex + 1);
                 if (classEndIndex > -1) {
                     String classPath = path.substring(endIndex + 1, classEndIndex);
-                    if (!DataAccess.checkAccessToken(token, classPath, method)) {
+                    if (!dataAccess.checkAccessToken(token, classPath, method)) {
                         Response.ResponseBuilder responseBuilder = Response.status(403);
                         throw  new WebApplicationException(responseBuilder.build());
                     }
                 }
                 fullMethodPath = path.substring(endIndex + 1);
-                if (DataAccess.checkAccessToken(token, fullMethodPath, method)) {
+                if (dataAccess.checkAccessToken(token, fullMethodPath, method)) {
                     containerRequestContext.setRequestUri(URI.create(containerRequestContext.getUriInfo().getBaseUri() + fullMethodPath));
                     containerRequestContext.setProperty("token", token);
                 } else {
@@ -53,12 +57,12 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             int classEndIndex = path.indexOf("/");
             if (classEndIndex > -1) {
                 String classPath = path.substring(0,classEndIndex);
-                if (!DataAccess.checkAccessNoToken(classPath, method)) {
+                if (!dataAccess.checkAccessNoToken(classPath, method)) {
                     Response.ResponseBuilder responseBuilder = Response.status(403);
                     throw  new WebApplicationException(responseBuilder.build());
                 }
             }
-            if(!DataAccess.checkAccessNoToken(path, method)) {
+            if(!dataAccess.checkAccessNoToken(path, method)) {
                 Response.ResponseBuilder responseBuilder = Response.status(403);
                 throw new WebApplicationException(responseBuilder.build());
             }

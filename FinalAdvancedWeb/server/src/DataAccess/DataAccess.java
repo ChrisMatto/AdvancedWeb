@@ -16,15 +16,20 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class DataAccess {
-    private static EntityManager em = Persistence.createEntityManagerFactory("NewPersistenceUnit").createEntityManager();
-    private static JinqJPAStreamProvider stream = new JinqJPAStreamProvider(em.getMetamodel());
-    private static EntityTransaction entityTransaction = em.getTransaction();
+    private EntityManager em;
+    private JinqJPAStreamProvider stream;
+    private EntityTransaction entityTransaction;
 
-    public static List<Integer> getCorsiByFilter(int year, MultivaluedMap<String,String> queryParams) {
+    public DataAccess() {
+        em = Persistence.createEntityManagerFactory("NewPersistenceUnit").createEntityManager();
+        stream = new JinqJPAStreamProvider(em.getMetamodel());
+        entityTransaction = em.getTransaction();
+    }
+
+    public List<Integer> getCorsiByFilter(int year, MultivaluedMap<String,String> queryParams) {
         JinqStream<Corso> streamCorsi = stream.streamAll(em,Corso.class)
                 .where(corso -> corso.getAnno() == year);
         for (String key : queryParams.keySet()) {
@@ -93,21 +98,21 @@ public class DataAccess {
                 .toList();
     }
 
-    public static List<Integer> getAnniCorsi() {
+    public List<Integer> getAnniCorsi() {
         return stream.streamAll(em, Corso.class)
                 .select(Corso::getAnno)
                 .distinct()
                 .toList();
     }
 
-    public static Corso getCorso(int id, int year) {
+    public Corso getCorso(int id, int year) {
         return stream.streamAll(em, Corso.class)
                 .where(corso -> corso.getIdCorso() == id && corso.getAnno() == year)
                 .findFirst()
                 .orElse(null);
     }
 
-    public static List<String> getDocenti(String baseUri) {
+    public List<String> getDocenti(String baseUri) {
         List<Integer> docenti = stream.streamAll(em, Docente.class)
                 .select(Docente::getIdDocente)
                 .toList();
@@ -118,14 +123,14 @@ public class DataAccess {
         return docentiUri;
     }
 
-    public static Docente getDocente(int id) {
+    public Docente getDocente(int id) {
         return stream.streamAll(em, Docente.class)
                 .where(docente -> docente.getIdDocente() == id)
                 .findFirst()
                 .orElse(null);
     }
 
-    public static List<Corso> getCorsiDocente(int idDocente) {
+    public List<Corso> getCorsiDocente(int idDocente) {
         int year = Utils.getCurrentYear();
         return stream.streamAll(em, Corso.class)
                 .join((corso, source) -> source.stream(DocentiCorso.class))
@@ -137,14 +142,14 @@ public class DataAccess {
                 .toList();
     }
 
-    public static MaterialeCompleto getMateriale(int idMateriale) {
+    public MaterialeCompleto getMateriale(int idMateriale) {
         return new MaterialeCompleto(stream.streamAll(em, Materiale.class)
                 .where(materiale -> materiale.getIdMateriale() == idMateriale)
                 .findFirst()
                 .orElse(null));
     }
 
-    public static void insertCorso(CorsoCompleto corsoCompleto) {
+    public void insertCorso(CorsoCompleto corsoCompleto) {
         int newId = stream.streamAll(em,Corso.class)
                 .max(Corso::getIdCorso) +1;
         corsoCompleto.setIdCorso(newId);
@@ -198,37 +203,37 @@ public class DataAccess {
         updateVersione("corso");
     }
 
-    private static void insertDescrizioneIt(DescrizioneIt descrizioneIt) {
+    private void insertDescrizioneIt(DescrizioneIt descrizioneIt) {
         entityTransaction.begin();
         em.persist(descrizioneIt);
         entityTransaction.commit();
     }
 
-    private static void insertDescrizioneEn(DescrizioneEn descrizioneEn) {
+    private void insertDescrizioneEn(DescrizioneEn descrizioneEn) {
         entityTransaction.begin();
         em.persist(descrizioneEn);
         entityTransaction.commit();
     }
 
-    private static void insertLinks(Links links) {
+    private void insertLinks(Links links) {
         entityTransaction.begin();
         em.persist(links);
         entityTransaction.commit();
     }
 
-    private static void insertDublinoIt(DublinoIt dublinoIt) {
+    private void insertDublinoIt(DublinoIt dublinoIt) {
         entityTransaction.begin();
         em.persist(dublinoIt);
         entityTransaction.commit();
     }
 
-    private static void insertDublinoEn(DublinoEn dublinoEn) {
+    private void insertDublinoEn(DublinoEn dublinoEn) {
         entityTransaction.begin();
         em.persist(dublinoEn);
         entityTransaction.commit();
     }
 
-    private static void insertDocentiCorso(int idCorso, int annoCorso, List<DocentePerCorso> docenti) {
+    private void insertDocentiCorso(int idCorso, int annoCorso, List<DocentePerCorso> docenti) {
         for (DocentePerCorso docente : docenti) {
             DocentiCorso docentiCorso = new DocentiCorso();
             docentiCorso.setCorso(idCorso);
@@ -240,7 +245,7 @@ public class DataAccess {
         }
     }
 
-    private static void insertCdlCorso(int idCorso, int annoCorso, List<CdlPerCorso> cdl) {
+    private void insertCdlCorso(int idCorso, int annoCorso, List<CdlPerCorso> cdl) {
         for (CdlPerCorso c : cdl) {
             CorsiCdl corsiCdl = new CorsiCdl();
             corsiCdl.setCorso(idCorso);
@@ -252,7 +257,7 @@ public class DataAccess {
         }
     }
 
-    private static void insertLibriCorso(int idCorso, int annoCorso, List<Libro> libri) {
+    private void insertLibriCorso(int idCorso, int annoCorso, List<Libro> libri) {
         for (Libro libro : libri) {
             LibriCorso libriCorso = new LibriCorso();
             libriCorso.setCorso(idCorso);
@@ -264,7 +269,7 @@ public class DataAccess {
         }
     }
 
-    private static void insertMaterialeCorso(int idCorso, int annoCorso, List<MaterialeCompleto> materiale) {
+    private void insertMaterialeCorso(int idCorso, int annoCorso, List<MaterialeCompleto> materiale) {
         for (Materiale mat : materiale) {
             MaterialeCorso materialeCorso = new MaterialeCorso();
             materialeCorso.setCorso(idCorso);
@@ -276,7 +281,7 @@ public class DataAccess {
         }
     }
 
-    private static void insertRelazioniCorso(int idCorso, int annoCorso, List<String> uriCorsi, String tipo) {
+    private void insertRelazioniCorso(int idCorso, int annoCorso, List<String> uriCorsi, String tipo) {
         if (uriCorsi != null && !uriCorsi.isEmpty()) {
             for (String uri : uriCorsi) {
                 CollegCorsi collegCorsi = new CollegCorsi();
@@ -303,7 +308,7 @@ public class DataAccess {
         }
     }
 
-    public static void updateCorso(int idCorso, int year, CorsoCompleto corsoCompleto) {
+    public void updateCorso(int idCorso, int year, CorsoCompleto corsoCompleto) {
         Corso corso = stream.streamAll(em, Corso.class)
                 .where(c -> c.getIdCorso() == idCorso && c.getAnno() == year)
                 .findFirst()
@@ -380,7 +385,7 @@ public class DataAccess {
         updateVersione("corso");
     }
 
-    private static void updateDescrizione(int idCorso, int year, Descrizione descrizione) {
+    private void updateDescrizione(int idCorso, int year, Descrizione descrizione) {
         Descrizione oldDescrizione;
         if (descrizione instanceof DescrizioneIt) {
             oldDescrizione = stream.streamAll(em, DescrizioneIt.class)
@@ -425,7 +430,7 @@ public class DataAccess {
         }
     }
 
-    public static void updateLinks(int idCorso, int year, Links links) {
+    public void updateLinks(int idCorso, int year, Links links) {
         Links oldLinks = stream.streamAll(em, Links.class)
                 .where(l -> l.getCorso() == idCorso && l.getAnnoCorso() == year)
                 .findFirst()
@@ -455,7 +460,7 @@ public class DataAccess {
         }
     }
 
-    private static void updateDublino(int idCorso, int year, Dublino dublino) {
+    private void updateDublino(int idCorso, int year, Dublino dublino) {
         Dublino oldDublino;
         if (dublino instanceof DublinoIt) {
             oldDublino = stream.streamAll(em, DublinoIt.class)
@@ -496,7 +501,7 @@ public class DataAccess {
         }
     }
 
-    public static void updateDocentiCorso(int idCorso, int year, List<DocentePerCorso> docenti) {
+    public void updateDocentiCorso(int idCorso, int year, List<DocentePerCorso> docenti) {
         List<DocentiCorso> oldDocentiCorso = stream.streamAll(em, DocentiCorso.class)
                 .where(docentiCorso -> docentiCorso.getCorso() == idCorso && docentiCorso.getAnnoCorso() == year)
                 .toList();
@@ -528,7 +533,7 @@ public class DataAccess {
         }
     }
 
-    private static void updateCdlCorso(int idCorso, int year, List<CdlPerCorso> cdlPerCorso) {
+    private void updateCdlCorso(int idCorso, int year, List<CdlPerCorso> cdlPerCorso) {
         List<CorsiCdl> oldCorsiCdl = stream.streamAll(em, CorsiCdl.class)
                 .where(corsiCdl -> corsiCdl.getCorso() == idCorso && corsiCdl.getAnnoCorso() == year)
                 .toList();
@@ -558,7 +563,7 @@ public class DataAccess {
         }
     }
 
-    private static void updateLibriCorso(int idCorso, int year, List<Libro> libri) {
+    private void updateLibriCorso(int idCorso, int year, List<Libro> libri) {
         List<LibriCorso> oldLibriCorso = stream.streamAll(em, LibriCorso.class)
                 .where(libriCorso -> libriCorso.getCorso() == idCorso && libriCorso.getAnnoCorso() == year)
                 .toList();
@@ -588,7 +593,7 @@ public class DataAccess {
         }
     }
 
-    private static void updateMaterialeCorso(int idCorso, int year, List<MaterialeCompleto> materialeCorso) {
+    private void updateMaterialeCorso(int idCorso, int year, List<MaterialeCompleto> materialeCorso) {
         List<MaterialeCorso> oldMaterialeCorso = stream.streamAll(em, MaterialeCorso.class)
                 .where(mc -> mc.getCorso() == idCorso && mc.getAnnoCorso() == year)
                 .toList();
@@ -618,7 +623,7 @@ public class DataAccess {
         }
     }
 
-    public static void updateRelazioniCorso(int idCorso, int annoCorso, List<String> uriCorsi, String tipo) {
+    public void updateRelazioniCorso(int idCorso, int annoCorso, List<String> uriCorsi, String tipo) {
         if (uriCorsi == null || uriCorsi.isEmpty()) {
             deleteRelazioniCorso(idCorso, annoCorso, tipo);
             return;
@@ -677,7 +682,7 @@ public class DataAccess {
         }
     }
 
-    public static List<HistoryCorso> getHistoryCorso(int id, String baseUri) {
+    public List<HistoryCorso> getHistoryCorso(int id, String baseUri) {
         List<HistoryCorso> history = new ArrayList<>();
         List<Corso> corsi = stream.streamAll(em, Corso.class)
                 .where(corso -> corso.getIdCorso() == id)
@@ -694,49 +699,49 @@ public class DataAccess {
         return history;
     }
 
-    public static List<Docente> getDocentiInCorso(int idCorso, int year) {
+    public List<Docente> getDocentiInCorso(int idCorso, int year) {
         return stream.streamAll(em, Docente.class)
                 .join((docente, source) -> source.stream(DocentiCorso.class))
                 .where(docenteDocentiCorsoPair -> docenteDocentiCorsoPair.getTwo().getCorso() == idCorso && docenteDocentiCorsoPair.getTwo().getAnnoCorso() == year && docenteDocentiCorsoPair.getOne().getIdDocente() == docenteDocentiCorsoPair.getTwo().getDocente())
                 .select(Pair::getOne).toList();
     }
 
-    public static List<Cdl> getCdlInCorso(int idCorso, int year) {
+    public List<Cdl> getCdlInCorso(int idCorso, int year) {
         return stream.streamAll(em, Cdl.class)
                 .join((cdl, source) -> source.stream(CorsiCdl.class))
                 .where(cdlCorsiCdlPair -> cdlCorsiCdlPair.getTwo().getCorso() == idCorso && cdlCorsiCdlPair.getTwo().getAnnoCorso() == year && cdlCorsiCdlPair.getOne().getIdcdl() == cdlCorsiCdlPair.getTwo().getCdl())
                 .select(Pair::getOne).toList();
     }
 
-    public static DescrizioneIt getDescrizioneIt(int idCorso, int year) {
+    public DescrizioneIt getDescrizioneIt(int idCorso, int year) {
         return stream.streamAll(em, DescrizioneIt.class)
                 .where(descrizioneIt -> descrizioneIt.getCorso() == idCorso && descrizioneIt.getAnnoCorso() == year)
                 .findFirst()
                 .orElse(null);
     }
 
-    public static DescrizioneEn getDescrizioneEn(int idCorso, int year) {
+    public DescrizioneEn getDescrizioneEn(int idCorso, int year) {
         return stream.streamAll(em, DescrizioneEn.class)
                 .where(descrizioneEn -> descrizioneEn.getCorso() == idCorso && descrizioneEn.getAnnoCorso() == year)
                 .findFirst()
                 .orElse(null);
     }
 
-    public static DublinoIt getDublinoIt(int idCorso, int year) {
+    public DublinoIt getDublinoIt(int idCorso, int year) {
         return stream.streamAll(em, DublinoIt.class)
                 .where(dublinoIt -> dublinoIt.getCorso() == idCorso && dublinoIt.getAnnoCorso() == year)
                 .findFirst()
                 .orElse(null);
     }
 
-    public static DublinoEn getDublinoEn(int idCorso, int year) {
+    public DublinoEn getDublinoEn(int idCorso, int year) {
         return stream.streamAll(em, DublinoEn.class)
                 .where(dublinoEn -> dublinoEn.getCorso() == idCorso && dublinoEn.getAnnoCorso() == year)
                 .findFirst()
                 .orElse(null);
     }
 
-    public static List<Libro> getLibriInCorso(int idCorso, int year) {
+    public List<Libro> getLibriInCorso(int idCorso, int year) {
         return stream.streamAll(em, LibriCorso.class)
                 .where(libriCorso -> libriCorso.getCorso() == idCorso && libriCorso.getAnnoCorso() == year)
                 .join((c, source) -> source.stream(Libro.class))
@@ -745,7 +750,7 @@ public class DataAccess {
                 .toList();
     }
 
-    public static List<MaterialeCompleto> getMaterialeCorso(int idCorso, int year) {
+    public List<MaterialeCompleto> getMaterialeCorso(int idCorso, int year) {
         List<Materiale> materiale = stream.streamAll(em, MaterialeCorso.class)
                 .where(materialeCorso -> materialeCorso.getCorso() == idCorso && materialeCorso.getAnnoCorso() == year)
                 .join((c, source) -> source.stream(Materiale.class))
@@ -759,7 +764,7 @@ public class DataAccess {
         return materialeCompleto;
     }
 
-    public static RelazioniCorso getRelazioniCorso(int idCorso, int year, String baseUri) {
+    public RelazioniCorso getRelazioniCorso(int idCorso, int year, String baseUri) {
         List<CollegCorsi> collegCorsi = stream.streamAll(em, CollegCorsi.class)
                 .where(cc -> cc.getThisCorso() == idCorso && cc.getAnnoThisCorso() == year && cc.getTipo().equals("propedeutico"))
                 .toList();
@@ -792,38 +797,38 @@ public class DataAccess {
         return new RelazioniCorso(propedeudici, mutuati, moduli, mutua);
     }
 
-    public static Links getLinks(int idCorso, int year) {
+    public Links getLinks(int idCorso, int year) {
         return stream.streamAll(em, Links.class)
                 .where(links -> links.getCorso() == idCorso && links.getAnnoCorso() == year)
                 .findFirst()
                 .orElse(new Links());
     }
 
-    public static List<Cdl> getAllCdl() {
+    public List<Cdl> getAllCdl() {
         return stream.streamAll(em, Cdl.class)
                 .toList();
     }
 
-    public static List<Cdl> getCdlTriennali() {
+    public List<Cdl> getCdlTriennali() {
         return stream.streamAll(em, Cdl.class)
                 .where(cdl -> cdl.getMagistrale() == 0)
                 .toList();
     }
 
-    public static List<Cdl> getCdlMagistrali() {
+    public List<Cdl> getCdlMagistrali() {
         return stream.streamAll(em, Cdl.class)
                 .where(cdl -> cdl.getMagistrale() == 1)
                 .toList();
     }
 
-    public static Cdl getCdl(int id) {
+    public Cdl getCdl(int id) {
         return stream.streamAll(em, Cdl.class)
                 .where(cdl -> cdl.getIdcdl() == id)
                 .findFirst()
                 .orElse(null);
     }
 
-    public static List<Corso> getCorsiInCdl(int idCdl) {
+    public List<Corso> getCorsiInCdl(int idCdl) {
         return stream.streamAll(em, CorsiCdl.class)
                 .where(corsiCdl -> corsiCdl.getCdl() == idCdl)
                 .join((c, source) -> source.stream(Corso.class))
@@ -832,7 +837,7 @@ public class DataAccess {
                 .toList();
     }
 
-    public static int insertDocente(Docente docente) {
+    public int insertDocente(Docente docente) {
         entityTransaction.begin();
         em.persist(docente);
         entityTransaction.commit();
@@ -840,7 +845,7 @@ public class DataAccess {
         return docente.getIdDocente();
     }
 
-    public static void updateDocente(int idDocente, Docente docente) {
+    public void updateDocente(int idDocente, Docente docente) {
         Docente doc = stream.streamAll(em, Docente.class)
                 .where(d -> d.getIdDocente() == idDocente)
                 .findFirst()
@@ -866,27 +871,27 @@ public class DataAccess {
         updateVersione("docente");
     }
 
-    public static List<Integer> getUtenti() {
+    public List<Integer> getUtenti() {
         return stream.streamAll(em, Utente.class)
                 .select(Utente::getIdUtente)
                 .toList();
     }
 
-    public static Utente getUtente(String username, String password) {
+    public Utente getUtente(String username, String password) {
         Optional<Utente> u = stream.streamAll(em, Utente.class)
                 .where(utente -> utente.getUsername().equals(username) && utente.getPassword().equals(password))
                 .findFirst();
         return u.orElse(null);
     }
 
-    public static Utente getUtenteNoPassword(int id) {
+    public Utente getUtenteNoPassword(int id) {
         return stream.streamAll(em, Utente.class)
                 .where(utente -> utente.getIdUtente() == id)
                 .findFirst()
                 .orElse(null);
     }
 
-    public static void insertUtente(Utente utente) {
+    public void insertUtente(Utente utente) {
         if (utente.getDocente() == null) {
             utente.setGruppo(1);
         }
@@ -895,7 +900,7 @@ public class DataAccess {
         entityTransaction.commit();
     }
 
-    public static void updateUtente(int idUtente, Utente utente) {
+    public void updateUtente(int idUtente, Utente utente) {
         Utente u = stream.streamAll(em, Utente.class)
                 .where(utente1 -> utente1.getIdUtente() == idUtente)
                 .findFirst()
@@ -934,7 +939,7 @@ public class DataAccess {
         }
     }
 
-    public static void deleteUtente(int id) {
+    public void deleteUtente(int id) {
         Utente utente = stream.streamAll(em, Utente.class)
                 .where(u -> u.getIdUtente() == id)
                 .findFirst()
@@ -944,48 +949,48 @@ public class DataAccess {
         entityTransaction.commit();
     }
 
-    public static Boolean existDocente(int id) {
+    public Boolean existDocente(int id) {
         return stream.streamAll(em, Docente.class)
                 .where(docente -> docente.getIdDocente() == id)
                 .findFirst()
                 .isPresent();
     }
 
-    public static Boolean existUsernameUtente(String username) {
+    public Boolean existUsernameUtente(String username) {
         return stream.streamAll(em, Utente.class)
                 .where(u -> u.getUsername().equals(username))
                 .findFirst().isPresent();
     }
 
-    public static Boolean existDocenteInUtente(int idDocente) {
+    public Boolean existDocenteInUtente(int idDocente) {
         return stream.streamAll(em, Utente.class)
                 .where(u -> u.getDocente() == idDocente)
                 .findFirst()
                 .isPresent();
     }
 
-    public static Boolean existGruppo(int id) {
+    public Boolean existGruppo(int id) {
         return stream.streamAll(em, Gruppo.class)
                 .where(gruppo -> gruppo.getIdGruppo() == id)
                 .findFirst()
                 .isPresent();
     }
 
-    public static Boolean existSessioneUtente(int idUtente) {
+    public Boolean existSessioneUtente(int idUtente) {
         return stream.streamAll(em, Sessione.class)
                 .where(sessione -> sessione.getUtente() == idUtente)
                 .findFirst()
                 .isPresent();
     }
 
-    public static Boolean existsSessione(String token) {
+    public Boolean existsSessione(String token) {
         return stream.streamAll(em, Sessione.class)
                 .where(sessione -> sessione.getToken().equals(token))
                 .findFirst()
                 .isPresent();
     }
 
-    public static void deleteOldSessions() {
+    public void deleteOldSessions() {
         List<Sessione> sessioni = stream.streamAll(em, Sessione.class)
                 .toList();
         entityTransaction.begin();
@@ -997,7 +1002,7 @@ public class DataAccess {
         entityTransaction.commit();
     }
 
-    public static String makeSessione(Utente utente) {
+    public String makeSessione(Utente utente) {
         Sessione sessione = new Sessione();
         sessione.setUtente(utente.getIdUtente());
         sessione.setData(new Timestamp(System.currentTimeMillis()));
@@ -1011,7 +1016,7 @@ public class DataAccess {
         return optionalSessione.map(Sessione::getToken).orElse(null);
     }
 
-    public static String getSessionToken(int idUtente) {
+    public String getSessionToken(int idUtente) {
         return stream.streamAll(em, Sessione.class)
                 .where(sessione -> sessione.getUtente() == idUtente)
                 .select(Sessione::getToken)
@@ -1019,7 +1024,7 @@ public class DataAccess {
                 .orElse(null);
     }
 
-    public static Utente getSessionUtente(String token) {
+    public Utente getSessionUtente(String token) {
         return stream.streamAll(em, Sessione.class)
                 .where(sessione -> sessione.getToken().equals(token))
                 .join((c, source) -> source.stream(Utente.class))
@@ -1029,7 +1034,7 @@ public class DataAccess {
                 .orElse(null);
     }
 
-    public static void deleteSession(String token) {
+    public void deleteSession(String token) {
         Optional<Sessione> sessione = stream.streamAll(em, Sessione.class)
                 .where(s -> s.getToken().equals(token))
                 .findFirst();
@@ -1040,7 +1045,7 @@ public class DataAccess {
         }
     }
 
-    public static Boolean checkAccessToken(String token, String service, String method) {
+    public Boolean checkAccessToken(String token, String service, String method) {
         Optional<Sessione> optionalSessione = stream.streamAll(em, Sessione.class)
                 .where(sessione -> sessione.getToken().equals(token))
                 .findFirst();
@@ -1071,14 +1076,14 @@ public class DataAccess {
         return servizio.isPresent();
     }
 
-    public static Boolean checkAccessNoToken(String service, String method) {
+    public Boolean checkAccessNoToken(String service, String method) {
         Optional<Servizio> optionalServizio = stream.streamAll(em, Servizio.class)
                 .where(s -> s.getNome().equals(service) && s.getMetodo().equals(method))
                 .findFirst();
         return !optionalServizio.isPresent();
     }
 
-    public static void deleteCorso(int idCorso, int year) {
+    public void deleteCorso(int idCorso, int year) {
         Corso corso = stream.streamAll(em, Corso.class)
                 .where(c -> c.getIdCorso() == idCorso && c.getAnno() == year)
                 .findFirst()
@@ -1104,7 +1109,7 @@ public class DataAccess {
         updateVersione("corso");
     }
 
-    private static void deleteDescrizione(int idCorso, int year, Class classe) {
+    private void deleteDescrizione(int idCorso, int year, Class classe) {
         Descrizione descrizione;
         if (classe.equals(DescrizioneIt.class)) {
             descrizione = stream.streamAll(em, DescrizioneIt.class)
@@ -1124,7 +1129,7 @@ public class DataAccess {
         }
     }
 
-    public static void deleteLinks(int idCorso, int year) {
+    public void deleteLinks(int idCorso, int year) {
         Links links = stream.streamAll(em, Links.class)
                 .where(l -> l.getCorso() == idCorso && l.getAnnoCorso() == year)
                 .findFirst()
@@ -1136,7 +1141,7 @@ public class DataAccess {
         }
     }
 
-    private static void deleteDublino(int idCorso, int year, Class classe) {
+    private void deleteDublino(int idCorso, int year, Class classe) {
         Dublino dublino;
         if (classe.equals(DublinoIt.class)) {
             dublino = stream.streamAll(em, DublinoIt.class)
@@ -1156,7 +1161,7 @@ public class DataAccess {
         }
     }
 
-    public static void deleteDocentiCorso(int idCorso, int year) {
+    public void deleteDocentiCorso(int idCorso, int year) {
         List<DocentiCorso> docentiCorso = stream.streamAll(em, DocentiCorso.class)
                 .where(dc -> dc.getCorso() == idCorso && dc.getAnnoCorso() == year)
                 .toList();
@@ -1167,7 +1172,7 @@ public class DataAccess {
         }
     }
 
-    private static void deleteCdlCorso(int idCorso, int year) {
+    private void deleteCdlCorso(int idCorso, int year) {
         List<CorsiCdl> corsiCdl = stream.streamAll(em, CorsiCdl.class)
                 .where(cc -> cc.getCorso() == idCorso && cc.getAnnoCorso() == year)
                 .toList();
@@ -1178,7 +1183,7 @@ public class DataAccess {
         }
     }
 
-    private static void deleteLibriCorso(int idCorso, int year) {
+    private void deleteLibriCorso(int idCorso, int year) {
         List<LibriCorso> libriCorso = stream.streamAll(em, LibriCorso.class)
                 .where(lc -> lc.getCorso() == idCorso && lc.getAnnoCorso() == year)
                 .toList();
@@ -1189,7 +1194,7 @@ public class DataAccess {
         }
     }
 
-    private static void deleteMaterialeCorso(int idCorso, int year) {
+    private void deleteMaterialeCorso(int idCorso, int year) {
         List<MaterialeCorso> materialeCorso = stream.streamAll(em, MaterialeCorso.class)
                 .where(mc -> mc.getCorso() == idCorso && mc.getAnnoCorso() == year)
                 .toList();
@@ -1200,7 +1205,7 @@ public class DataAccess {
         }
     }
 
-    private static void deleteRelazioniCorso(int idCorso, int annoCorso, String tipo) {
+    private void deleteRelazioniCorso(int idCorso, int annoCorso, String tipo) {
         List<CollegCorsi> collegCorsi = stream.streamAll(em, CollegCorsi.class)
                 .where(cg -> cg.getThisCorso() == idCorso && cg.getAnnoThisCorso() == annoCorso && cg.getTipo().equals(tipo))
                 .toList();
@@ -1211,19 +1216,19 @@ public class DataAccess {
         }
     }
 
-    public static List<Versioni> getVersioni() {
+    public List<Versioni> getVersioni() {
         return stream.streamAll(em, Versioni.class)
                 .toList();
     }
 
-    public static Versioni getVersione(String tabella) {
+    public Versioni getVersione(String tabella) {
         return stream.streamAll(em, Versioni.class)
                 .where(versioni -> versioni.getTabella().equals(tabella))
                 .findFirst()
                 .orElse(null);
     }
 
-    public static void updateVersione(String tabella) {
+    public void updateVersione(String tabella) {
         Random random = new Random();
         int version = random.nextInt();
         Versioni versione = stream.streamAll(em, Versioni.class)
@@ -1241,7 +1246,7 @@ public class DataAccess {
         }
     }
 
-    public static void saveLog(String token, String descrizione) {
+    public void saveLog(String token, String descrizione) {
         Utente utente = getSessionUtente(token);
         Log log = new Log();
         log.setUtente(utente.getIdUtente());
@@ -1252,7 +1257,7 @@ public class DataAccess {
         entityTransaction.commit();
     }
 
-    public static List<Log> getLogs() {
+    public List<Log> getLogs() {
         return stream.streamAll(em, Log.class)
                 .toList();
     }

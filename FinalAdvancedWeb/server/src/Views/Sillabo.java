@@ -1,9 +1,16 @@
 package Views;
 
 import DataAccess.DataAccess;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 
+import javax.inject.Inject;
+
 public class Sillabo {
+
+    @Inject
+    @JsonIgnore
+    private DataAccess dataAccess;
 
     @JsonView(Views.SillaboIt.class)
     private String sillaboIt;
@@ -11,9 +18,9 @@ public class Sillabo {
     @JsonView(Views.SillaboEn.class)
     private String sillaboEn;
 
-    public Sillabo(int id, int anno) {
-        this.sillaboIt = DataAccess.getDescrizioneIt(id, anno).getSillabo();
-        this.sillaboEn = DataAccess.getDescrizioneEn(id, anno).getSillabo();
+    public void init(int id, int anno) {
+        this.sillaboIt = dataAccess.getDescrizioneIt(id, anno).getSillabo();
+        this.sillaboEn = dataAccess.getDescrizioneEn(id, anno).getSillabo();
     }
 
     public String getSillaboIt() {

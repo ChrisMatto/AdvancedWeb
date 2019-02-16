@@ -2,12 +2,19 @@ package Views;
 
 import Classi.*;
 import DataAccess.DataAccess;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CorsoCompleto extends Corso {
+
+    @Inject
+    @JsonIgnore
+    private DataAccess dataAccess;
+
     private List<DocentePerCorso> docenti;
     private List<CdlPerCorso> cdl;
 
@@ -29,44 +36,29 @@ public class CorsoCompleto extends Corso {
     private List<MaterialeCompleto> materiale;
     private RelazioniCorso relazioni;
 
-    public CorsoCompleto() {
-        super();
-        docenti = null;
-        cdl = null;
-        descrizioneEn = null;
-        descrizioneIt = null;
-        dublinoIt = null;
-        dublinoEn = null;
-        libri = null;
-        materiale = null;
-        relazioni = null;
-        links = null;
-    }
-
-    public CorsoCompleto(Corso corso, String baseUri) {
-        super();
+    public void init(Corso corso, String baseUri) {
         if (corso == null) {
             return;
         }
         super.copyFrom(corso);
         docenti = new ArrayList<>();
-        List<Docente> docList = DataAccess.getDocentiInCorso(super.getIdCorso(), super.getAnno());
+        List<Docente> docList = dataAccess.getDocentiInCorso(super.getIdCorso(), super.getAnno());
         for (Docente doc : docList) {
             docenti.add(new DocentePerCorso(doc));
         }
         cdl = new ArrayList<>();
-        List<Cdl> cdlList = DataAccess.getCdlInCorso(super.getIdCorso(), super.getAnno());
+        List<Cdl> cdlList = dataAccess.getCdlInCorso(super.getIdCorso(), super.getAnno());
         for (Cdl c : cdlList) {
             cdl.add(new CdlPerCorso(c));
         }
-        descrizioneIt = DataAccess.getDescrizioneIt(super.getIdCorso(), super.getAnno());
-        descrizioneEn = DataAccess.getDescrizioneEn(super.getIdCorso(), super.getAnno());
-        dublinoIt = DataAccess.getDublinoIt(super.getIdCorso(), super.getAnno());
-        dublinoEn = DataAccess.getDublinoEn(super.getIdCorso(), super.getAnno());
-        libri = DataAccess.getLibriInCorso(super.getIdCorso(), super.getAnno());
-        materiale = DataAccess.getMaterialeCorso(super.getIdCorso(), super.getAnno());
-        relazioni = DataAccess.getRelazioniCorso(super.getIdCorso(), super.getAnno(), baseUri);
-        links = DataAccess.getLinks(super.getIdCorso(), super.getAnno());
+        descrizioneIt = dataAccess.getDescrizioneIt(super.getIdCorso(), super.getAnno());
+        descrizioneEn = dataAccess.getDescrizioneEn(super.getIdCorso(), super.getAnno());
+        dublinoIt = dataAccess.getDublinoIt(super.getIdCorso(), super.getAnno());
+        dublinoEn = dataAccess.getDublinoEn(super.getIdCorso(), super.getAnno());
+        libri = dataAccess.getLibriInCorso(super.getIdCorso(), super.getAnno());
+        materiale = dataAccess.getMaterialeCorso(super.getIdCorso(), super.getAnno());
+        relazioni = dataAccess.getRelazioniCorso(super.getIdCorso(), super.getAnno(), baseUri);
+        links = dataAccess.getLinks(super.getIdCorso(), super.getAnno());
     }
 
     public List<DocentePerCorso> getDocenti() {

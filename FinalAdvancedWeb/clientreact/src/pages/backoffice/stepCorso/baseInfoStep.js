@@ -81,7 +81,26 @@ export default function BaseInfoStep(props) {
             </Form.Group>
             <Form.Group widths = 'equal'>
                 <Form.Select fluid name = 'semestre' value = {props.corso.semestre} onChange = {props.handleChange} label = 'Semestre' placeholder = 'Seleziona un semestre...' options = {[{value: 1, text: 1}, {value: 2, text: 2}]}/>
-                <Form.Field/>
+                {
+                    props.admin && !props.isUpdate ?
+                        <Form.Dropdown 
+                            fluid
+                            scrolling
+                            search
+                            selection
+                            label = 'Anno Accademico'
+                            onChange = {props.handleChange}
+                            name = 'anno'
+                            options = {anniAccademici}
+                            placeholder = 'Seleziona Anno...'
+                            closeOnBlur
+                            required
+                            value = {props.corso.anno}
+                            error = {props.formError && !props.corso.anno}
+                        />
+                    :
+                        <Form.Field/>
+                }
             </Form.Group>
             <Form.Group widths = 'two'>
                 <Form.Input fluid name = 'cfu' value = {props.corso.cfu ? props.corso.cfu : ""} onChange = {props.handleChange} label = 'CFU' placeholder = 'CFU' type = 'number' min = '0'/>

@@ -6,7 +6,9 @@ import java.util.TimerTask;
 
 public class SessionTask extends TimerTask {
 
+    private DataAccess dataAccess = new DataAccess();
+
     public void run() {
-        DataAccess.deleteOldSessions();
+        dataAccess.deleteOldSessions();
     }
 }

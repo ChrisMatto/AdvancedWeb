@@ -7,7 +7,9 @@ import DataAccess.DataAccess;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.*;
 import java.io.File;
 import java.util.ArrayList;
@@ -15,15 +17,14 @@ import java.util.List;
 
 public class CoursesAPI implements Resource {
 
+    @Inject
+    private DataAccess dataAccess;
+
+    @PathParam("SID")
     private String token;
 
-    public CoursesAPI() {
-        token = null;
-    }
-
-    public CoursesAPI(String token) {
-        this.token = token;
-    }
+    @Context
+    ResourceContext context;
 
     @GET
     @Path("{year}")
@@ -35,7 +36,7 @@ public class CoursesAPI implements Resource {
         if (anno == Utils.getCurrentYear()) {
             annoString = "current";
         }
-        List<Integer> corsi = DataAccess.getCorsiByFilter(anno, queryParams);
+        List<Integer> corsi = dataAccess.getCorsiByFilter(anno, queryParams);
         List<String> corsiUri = new ArrayList<>();
         String baseUri;
         if (token != null) {
@@ -46,7 +47,7 @@ public class CoursesAPI implements Resource {
         for (int id: corsi) {
             corsiUri.add(baseUri + id);
         }
-        Versioni versione = DataAccess.getVersione("corso");
+        Versioni versione = dataAccess.getVersione("corso");
         if (versione != null) {
             return Response.ok(corsiUri).header("versione", versione.getVersione()).build();
         }
@@ -66,8 +67,8 @@ public class CoursesAPI implements Resource {
             return Response.status(400).build();
         }
         corso.setAnno(anno);
-        DataAccess.insertCorso(corso);
-        DataAccess.saveLog(token, "ha inserito il nuovo corso " + corso.getNomeIt());
+        dataAccess.insertCorso(corso);
+        dataAccess.saveLog(token, "ha inserito il nuovo corso " + corso.getNomeIt());
         return Response.ok().build();
     }
 
@@ -84,7 +85,7 @@ public class CoursesAPI implements Resource {
         } else {
             baseUri = uriInfo.getBaseUri() + "courses/";
         }
-        List<HistoryCorso> history = DataAccess.getHistoryCorso(id, baseUri);
+        List<HistoryCorso> history = dataAccess.getHistoryCorso(id, baseUri);
         return Response.ok(history).build();
     }
 
@@ -93,7 +94,7 @@ public class CoursesAPI implements Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCorso(@PathParam("id") int id, @PathParam("year") String year, @Context UriInfo uriInfo) {
         int anno = Utils.getYear(year);
-        Corso corso = DataAccess.getCorso(id, anno);
+        Corso corso = dataAccess.getCorso(id, anno);
         String baseUri;
         if (token != null) {
             baseUri = uriInfo.getBaseUri() + "auth/" + token +"/courses/";
@@ -101,7 +102,9 @@ public class CoursesAPI implements Resource {
             baseUri = uriInfo.getBaseUri() + "courses/";
         }
         if (corso != null) {
-            return Response.ok(new CorsoCompleto(corso, baseUri)).build();
+            CorsoCompleto corsoCompleto = context.getResource(CorsoCompleto.class);
+            corsoCompleto.init(corso, baseUri);
+            return Response.ok(corsoCompleto).build();
         }
         return Response.noContent().build();
     }
@@ -111,7 +114,7 @@ public class CoursesAPI implements Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCorsoLingua(@PathParam("id") int id, @PathParam("year") String year, @PathParam("lingua") String lingua, @Context UriInfo uriInfo) throws JsonProcessingException {
         int anno = Utils.getYear(year);
-        Corso corso = DataAccess.getCorso(id, anno);
+        Corso corso = dataAccess.getCorso(id, anno);
         String baseUri;
         if (token != null) {
             baseUri = uriInfo.getBaseUri() + "auth/" + token +"/courses/";
@@ -119,7 +122,8 @@ public class CoursesAPI implements Resource {
             baseUri = uriInfo.getBaseUri() + "courses/";
         }
         if (corso != null) {
-            CorsoCompleto corsoCompleto = new CorsoCompleto(corso, baseUri);
+            CorsoCompleto corsoCompleto = context.getResource(CorsoCompleto.class);
+            corsoCompleto.init(corso, baseUri);
             ObjectMapper mapper = new ObjectMapper();
             String jsonCorso;
             if (lingua.equals("it")) {
@@ -138,8 +142,8 @@ public class CoursesAPI implements Resource {
     public Response updateCorso(@PathParam("year") String year, @PathParam("id") int id, CorsoCompleto corsoCompleto) {
         int anno = Utils.getYear(year);
         if (corsoCompleto != null) {
-            DataAccess.updateCorso(id, anno, corsoCompleto);
-            DataAccess.saveLog(token, "ha modificato le informazioni del corso " + corsoCompleto.getNomeIt() + " dell'anno " + Utils.getYear(year));
+            dataAccess.updateCorso(id, anno, corsoCompleto);
+            dataAccess.saveLog(token, "ha modificato le informazioni del corso " + corsoCompleto.getNomeIt() + " dell'anno " + Utils.getYear(year));
         }
         return Response.ok().build();
     }
@@ -149,9 +153,9 @@ public class CoursesAPI implements Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteCorso(@PathParam("year") String year, @PathParam("id") int id) {
         int anno = Utils.getYear(year);
-        Corso corso = DataAccess.getCorso(id, Utils.getYear(year));
-        DataAccess.saveLog(token, "ha eliminato il corso " + corso.getNomeIt() + " dell'anno " + Utils.getYear(year));
-        DataAccess.deleteCorso(id, anno);
+        Corso corso = dataAccess.getCorso(id, Utils.getYear(year));
+        dataAccess.saveLog(token, "ha eliminato il corso " + corso.getNomeIt() + " dell'anno " + Utils.getYear(year));
+        dataAccess.deleteCorso(id, anno);
         return Response.ok().build();
     }
 
@@ -160,7 +164,7 @@ public class CoursesAPI implements Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBasicCorso(@PathParam("year") String year, @PathParam("id") int id) {
         int anno = Utils.getYear(year);
-        Corso corso = DataAccess.getCorso(id, anno);
+        Corso corso = dataAccess.getCorso(id, anno);
         return Response.ok(corso).build();
     }
 
@@ -169,7 +173,7 @@ public class CoursesAPI implements Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBasicCorsoLingua(@PathParam("year") String year, @PathParam("id") int id, @PathParam("lingua") String lingua) throws JsonProcessingException {
         int anno = Utils.getYear(year);
-        Corso corso = DataAccess.getCorso(id, anno);
+        Corso corso = dataAccess.getCorso(id, anno);
         ObjectMapper mapper = new ObjectMapper();
         String jsonCorso;
         if (lingua.equals("it")) {
@@ -185,7 +189,8 @@ public class CoursesAPI implements Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSyllabus(@PathParam("year") String year, @PathParam("id") int id) {
         int anno = Utils.getYear(year);
-        Sillabo sillabo = new Sillabo(id, anno);
+        Sillabo sillabo = context.getResource(Sillabo.class);
+        sillabo.init(id, anno);
         return Response.ok(sillabo).build();
     }
 
@@ -194,7 +199,8 @@ public class CoursesAPI implements Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSyllabusLingua(@PathParam("year") String year, @PathParam("id") int id, @PathParam("lingua") String lingua) throws JsonProcessingException {
         int anno = Utils.getYear(year);
-        Sillabo sillabo = new Sillabo(id, anno);
+        Sillabo sillabo = context.getResource(Sillabo.class);
+        sillabo.init(id, anno);
         ObjectMapper mapper = new ObjectMapper();
         String jsonSillabo;
         if (lingua.equals("it")) {
@@ -211,7 +217,7 @@ public class CoursesAPI implements Resource {
     public Response getDocentiCorso(@PathParam("year") String year, @PathParam("id") int id) {
         int anno = Utils.getYear(year);
         List<DocentePerCorso> docenti = new ArrayList<>();
-        List<Docente> docList = DataAccess.getDocentiInCorso(id, anno);
+        List<Docente> docList = dataAccess.getDocentiInCorso(id, anno);
         for (Docente doc : docList) {
             docenti.add(new DocentePerCorso(doc));
         }
@@ -224,13 +230,13 @@ public class CoursesAPI implements Resource {
     public Response updateDocentiCorso(@PathParam("year") String year, @PathParam("id") int id, List<DocentePerCorso> docenti) {
         int anno = Utils.getYear(year);
         if (docenti != null) {
-            DataAccess.updateDocentiCorso(id, anno, docenti);
+            dataAccess.updateDocentiCorso(id, anno, docenti);
         } else {
-            DataAccess.deleteDocentiCorso(id, anno);
+            dataAccess.deleteDocentiCorso(id, anno);
         }
-        Corso corso = DataAccess.getCorso(id, anno);
-        DataAccess.saveLog(token, "ha modificato la lista dei docenti del corso " + corso.getNomeIt() + " dell'anno " + anno);
-        DataAccess.updateVersione("corso");
+        Corso corso = dataAccess.getCorso(id, anno);
+        dataAccess.saveLog(token, "ha modificato la lista dei docenti del corso " + corso.getNomeIt() + " dell'anno " + anno);
+        dataAccess.updateVersione("corso");
         return Response.ok().build();
     }
 
@@ -245,7 +251,7 @@ public class CoursesAPI implements Resource {
         } else {
             baseUri = uriInfo.getBaseUri() + "courses/";
         }
-        RelazioniCorso relazioni = DataAccess.getRelazioniCorso(id, anno, baseUri);
+        RelazioniCorso relazioni = dataAccess.getRelazioniCorso(id, anno, baseUri);
         return Response.ok(relazioni).build();
     }
 
@@ -255,17 +261,17 @@ public class CoursesAPI implements Resource {
     public Response updateRelazioniCorso(@PathParam("year") String year, @PathParam("id") int id, RelazioniCorso relazioni) {
         int anno = Utils.getYear(year);
         if (relazioni == null) {
-            DataAccess.updateRelazioniCorso(id, anno, null, "propedeutico");
-            DataAccess.updateRelazioniCorso(id, anno, null, "modulo");
-            DataAccess.updateRelazioniCorso(id, anno, null, "mutuato");
+            dataAccess.updateRelazioniCorso(id, anno, null, "propedeutico");
+            dataAccess.updateRelazioniCorso(id, anno, null, "modulo");
+            dataAccess.updateRelazioniCorso(id, anno, null, "mutuato");
         } else {
-            DataAccess.updateRelazioniCorso(id, anno, relazioni.getPropedeudici(), "propedeutico");
-            DataAccess.updateRelazioniCorso(id, anno, relazioni.getModulo(), "modulo");
-            DataAccess.updateRelazioniCorso(id, anno, relazioni.getMutuati(), "mutuato");
+            dataAccess.updateRelazioniCorso(id, anno, relazioni.getPropedeudici(), "propedeutico");
+            dataAccess.updateRelazioniCorso(id, anno, relazioni.getModulo(), "modulo");
+            dataAccess.updateRelazioniCorso(id, anno, relazioni.getMutuati(), "mutuato");
         }
-        Corso corso = DataAccess.getCorso(id, anno);
-        DataAccess.saveLog(token, "ha modificato la lista delle relazioni del corso " + corso.getNomeIt() + " dell'anno " + anno);
-        DataAccess.updateVersione("corso");
+        Corso corso = dataAccess.getCorso(id, anno);
+        dataAccess.saveLog(token, "ha modificato la lista delle relazioni del corso " + corso.getNomeIt() + " dell'anno " + anno);
+        dataAccess.updateVersione("corso");
         return Response.ok().build();
     }
 
@@ -274,7 +280,7 @@ public class CoursesAPI implements Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLinksCorso(@PathParam("year") String year, @PathParam("id") int id) {
         int anno = Utils.getYear(year);
-        return Response.ok(DataAccess.getLinks(id, anno)).build();
+        return Response.ok(dataAccess.getLinks(id, anno)).build();
     }
 
     @Path("{year}/{id}/links")
@@ -283,13 +289,13 @@ public class CoursesAPI implements Resource {
     public Response updateLinksCorso(@PathParam("year") String year, @PathParam("id") int id, Links links) {
         int anno = Utils.getYear(year);
         if (links != null) {
-            DataAccess.updateLinks(id, anno, links);
+            dataAccess.updateLinks(id, anno, links);
         } else {
-            DataAccess.deleteLinks(id, anno);
+            dataAccess.deleteLinks(id, anno);
         }
-        Corso corso = DataAccess.getCorso(id, anno);
-        DataAccess.saveLog(token, "ha modificato i link del corso " + corso.getNomeIt() + " dell'anno " + anno);
-        DataAccess.updateVersione("corso");
+        Corso corso = dataAccess.getCorso(id, anno);
+        dataAccess.saveLog(token, "ha modificato i link del corso " + corso.getNomeIt() + " dell'anno " + anno);
+        dataAccess.updateVersione("corso");
         return Response.ok().build();
     }
 
@@ -297,7 +303,7 @@ public class CoursesAPI implements Resource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAnniCorsi() {
-        return Response.ok(DataAccess.getAnniCorsi()).build();
+        return Response.ok(dataAccess.getAnniCorsi()).build();
     }
 
     @Path("{year}/{id}/material")
@@ -305,14 +311,14 @@ public class CoursesAPI implements Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMaterialeCorso(@PathParam("year") String year, @PathParam("id") int id) {
         int anno = Utils.getYear(year);
-        return Response.ok(DataAccess.getMaterialeCorso(id, anno)).build();
+        return Response.ok(dataAccess.getMaterialeCorso(id, anno)).build();
     }
 
     @Path("material/{idMateriale}")
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getMateriale(@PathParam("idMateriale") int idMateriale) {
-        Materiale materiale = DataAccess.getMateriale(idMateriale);
+        Materiale materiale = dataAccess.getMateriale(idMateriale);
         File file = Utils.getFile(materiale.getLink());
         return Response.ok(file).header("Content-Disposition", "attachment; filename=" + file.getName()).build();
     }

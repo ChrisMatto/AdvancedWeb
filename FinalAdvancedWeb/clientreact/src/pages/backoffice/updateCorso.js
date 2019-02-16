@@ -318,7 +318,8 @@ export default class UpdateCorso extends Component {
                 Step = <BaseInfoStep
                         handleChange = {this.handleChange} 
                         handleSelectChange = {this.handleSelectChange}
-                        admin = {this.props.utente.docente ? false : true} 
+                        admin = {this.props.utente.docente ? false : true}
+                        isUpdate = {true}
                         docenti = {this.state.docenti} 
                         cdl = {this.state.cdl}
                         corsi = {this.state.corsi}
