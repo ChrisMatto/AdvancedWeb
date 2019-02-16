@@ -1,7 +1,7 @@
 package DataAccess;
 
 import Classi.*;
-import ClassiTemp.*;
+import Views.*;
 import Controller.Utils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -16,7 +16,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class DataAccess {
@@ -152,7 +152,6 @@ public class DataAccess {
         corso.copyFrom(corsoCompleto);
         entityTransaction.begin();
         em.persist(corso);
-        em.flush();
         entityTransaction.commit();
         if (corsoCompleto.getDescrizioneIt() != null) {
             corsoCompleto.getDescrizioneIt().setCorso(corsoCompleto.getIdCorso());
@@ -202,35 +201,30 @@ public class DataAccess {
     private static void insertDescrizioneIt(DescrizioneIt descrizioneIt) {
         entityTransaction.begin();
         em.persist(descrizioneIt);
-        em.flush();
         entityTransaction.commit();
     }
 
     private static void insertDescrizioneEn(DescrizioneEn descrizioneEn) {
         entityTransaction.begin();
         em.persist(descrizioneEn);
-        em.flush();
         entityTransaction.commit();
     }
 
     private static void insertLinks(Links links) {
         entityTransaction.begin();
         em.persist(links);
-        em.flush();
         entityTransaction.commit();
     }
 
     private static void insertDublinoIt(DublinoIt dublinoIt) {
         entityTransaction.begin();
         em.persist(dublinoIt);
-        em.flush();
         entityTransaction.commit();
     }
 
     private static void insertDublinoEn(DublinoEn dublinoEn) {
         entityTransaction.begin();
         em.persist(dublinoEn);
-        em.flush();
         entityTransaction.commit();
     }
 
@@ -242,7 +236,6 @@ public class DataAccess {
             docentiCorso.setDocente(docente.getIdDocente());
             entityTransaction.begin();
             em.persist(docentiCorso);
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -255,7 +248,6 @@ public class DataAccess {
             corsiCdl.setCdl(c.getIdCdl());
             entityTransaction.begin();
             em.persist(corsiCdl);
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -268,7 +260,6 @@ public class DataAccess {
             libriCorso.setLibro(libro.getIdLibro());
             entityTransaction.begin();
             em.persist(libriCorso);
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -281,7 +272,6 @@ public class DataAccess {
             materialeCorso.setMateriale(mat.getIdMateriale());
             entityTransaction.begin();
             em.persist(materialeCorso);
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -308,7 +298,6 @@ public class DataAccess {
                 }
                 entityTransaction.begin();
                 em.persist(collegCorsi);
-                em.flush();
                 entityTransaction.commit();
             }
         }
@@ -332,7 +321,6 @@ public class DataAccess {
         corso.setTipologia(corsoCompleto.getTipologia());
         entityTransaction.begin();
         em.persist(corso);
-        em.flush();
         entityTransaction.commit();
 
         if (corsoCompleto.getDescrizioneIt() != null) {
@@ -427,14 +415,12 @@ public class DataAccess {
             }
             entityTransaction.begin();
             em.persist(oldDescrizione);
-            em.flush();
             entityTransaction.commit();
         } else {
             descrizione.setCorso(idCorso);
             descrizione.setAnnoCorso(year);
             entityTransaction.begin();
             em.persist(descrizione);
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -459,14 +445,12 @@ public class DataAccess {
             }
             entityTransaction.begin();
             em.persist(oldLinks);
-            em.flush();
             entityTransaction.commit();
         } else {
             links.setCorso(idCorso);
             links.setAnnoCorso(year);
             entityTransaction.begin();
             em.persist(links);
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -502,14 +486,12 @@ public class DataAccess {
             }
             entityTransaction.begin();
             em.persist(oldDublino);
-            em.flush();
             entityTransaction.commit();
         } else {
             dublino.setCorso(idCorso);
             dublino.setAnnoCorso(year);
             entityTransaction.begin();
             em.persist(dublino);
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -526,7 +508,6 @@ public class DataAccess {
             if (oldDocentiCorso.isEmpty()) {
                 entityTransaction.begin();
                 em.persist(docentiCorso);
-                em.flush();
                 entityTransaction.commit();
             } else {
                 if (oldDocentiCorso.contains(docentiCorso)) {
@@ -534,7 +515,6 @@ public class DataAccess {
                 } else {
                     entityTransaction.begin();
                     em.persist(docentiCorso);
-                    em.flush();
                     entityTransaction.commit();
                 }
             }
@@ -543,7 +523,6 @@ public class DataAccess {
             for (DocentiCorso docentiCorso : oldDocentiCorso) {
                 entityTransaction.begin();
                 em.remove(docentiCorso);
-                em.flush();
                 entityTransaction.commit();
             }
         }
@@ -561,14 +540,12 @@ public class DataAccess {
             if (oldCorsiCdl.isEmpty()) {
                 entityTransaction.begin();
                 em.persist(corsiCdl);
-                em.flush();
                 entityTransaction.commit();
             } else if (oldCorsiCdl.contains(corsiCdl)) {
                 oldCorsiCdl.remove(corsiCdl);
             } else {
                 entityTransaction.begin();
                 em.persist(corsiCdl);
-                em.flush();
                 entityTransaction.commit();
             }
         }
@@ -576,7 +553,6 @@ public class DataAccess {
             for (CorsiCdl corsiCdl : oldCorsiCdl) {
                 entityTransaction.begin();
                 em.remove(corsiCdl);
-                em.flush();
                 entityTransaction.commit();
             }
         }
@@ -594,14 +570,12 @@ public class DataAccess {
             if (oldLibriCorso.isEmpty()) {
                 entityTransaction.begin();
                 em.persist(libriCorso);
-                em.flush();
                 entityTransaction.commit();
             } else if (oldLibriCorso.contains(libriCorso)) {
                 oldLibriCorso.remove(libriCorso);
             } else {
                 entityTransaction.begin();
                 em.persist(libriCorso);
-                em.flush();
                 entityTransaction.commit();
             }
         }
@@ -609,7 +583,6 @@ public class DataAccess {
             for (LibriCorso libriCorso : oldLibriCorso) {
                 entityTransaction.begin();
                 em.remove(libriCorso);
-                em.flush();
                 entityTransaction.commit();
             }
         }
@@ -627,14 +600,12 @@ public class DataAccess {
             if (oldMaterialeCorso.isEmpty()) {
                 entityTransaction.begin();
                 em.persist(matCorso);
-                em.flush();
                 entityTransaction.commit();
             } else if (oldMaterialeCorso.contains(matCorso)) {
                 oldMaterialeCorso.remove(matCorso);
             } else {
                 entityTransaction.begin();
                 em.persist(matCorso);
-                em.flush();
                 entityTransaction.commit();
             }
         }
@@ -642,7 +613,6 @@ public class DataAccess {
             for (MaterialeCorso matCorso : oldMaterialeCorso) {
                 entityTransaction.begin();
                 em.remove(matCorso);
-                em.flush();
                 entityTransaction.commit();
             }
         }
@@ -684,20 +654,17 @@ public class DataAccess {
                 oldCollegCorsi.remove(collegCorsi);
                 entityTransaction.begin();
                 em.remove(errorColleg);
-                em.flush();
                 entityTransaction.commit();
             }
             if (oldCollegCorsi.isEmpty()) {
                 entityTransaction.begin();
                 em.persist(collegCorsi);
-                em.flush();
                 entityTransaction.commit();
             } else if (oldCollegCorsi.contains(collegCorsi)) {
                 oldCollegCorsi.remove(collegCorsi);
             } else {
                 entityTransaction.begin();
                 em.persist(collegCorsi);
-                em.flush();
                 entityTransaction.commit();
             }
         }
@@ -705,7 +672,6 @@ public class DataAccess {
             for (CollegCorsi collegCorsi : oldCollegCorsi) {
                 entityTransaction.begin();
                 em.remove(collegCorsi);
-                em.flush();
                 entityTransaction.commit();
             }
         }
@@ -869,7 +835,6 @@ public class DataAccess {
     public static int insertDocente(Docente docente) {
         entityTransaction.begin();
         em.persist(docente);
-        em.flush();
         entityTransaction.commit();
         updateVersione("docente");
         return docente.getIdDocente();
@@ -897,7 +862,6 @@ public class DataAccess {
         }
         entityTransaction.begin();
         em.persist(doc);
-        em.flush();
         entityTransaction.commit();
         updateVersione("docente");
     }
@@ -928,7 +892,6 @@ public class DataAccess {
         }
         entityTransaction.begin();
         em.persist(utente);
-        em.flush();
         entityTransaction.commit();
     }
 
@@ -964,7 +927,6 @@ public class DataAccess {
             }
             entityTransaction.begin();
             em.persist(u);
-            em.flush();
             entityTransaction.commit();
         } else {
             Response.ResponseBuilder responseBuilder = Response.status(400);
@@ -979,7 +941,6 @@ public class DataAccess {
                 .orElse(null);
         entityTransaction.begin();
         em.remove(utente);
-        em.flush();
         entityTransaction.commit();
     }
 
@@ -1027,14 +988,13 @@ public class DataAccess {
     public static void deleteOldSessions() {
         List<Sessione> sessioni = stream.streamAll(em, Sessione.class)
                 .toList();
+        entityTransaction.begin();
         for (Sessione sessione : sessioni) {
             if (Utils.shouldDeleteSession(sessione.getData())) {
-                entityTransaction.begin();
                 em.remove(sessione);
-                em.flush();
-                entityTransaction.commit();
             }
         }
+        entityTransaction.commit();
     }
 
     public static String makeSessione(Utente utente) {
@@ -1045,7 +1005,6 @@ public class DataAccess {
         String token = sessione.getToken();
         entityTransaction.begin();
         em.persist(sessione);
-        em.flush();
         entityTransaction.commit();
         Optional<Sessione> optionalSessione = stream.streamAll(em, Sessione.class)
                 .where(s -> s.getToken().equals(token)).findFirst();
@@ -1077,7 +1036,6 @@ public class DataAccess {
         if(sessione.isPresent()) {
             entityTransaction.begin();
             em.remove(sessione.get());
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -1142,7 +1100,6 @@ public class DataAccess {
         deleteRelazioniCorso(idCorso, year, "mutuato");
         entityTransaction.begin();
         em.remove(corso);
-        em.flush();
         entityTransaction.commit();
         updateVersione("corso");
     }
@@ -1163,7 +1120,6 @@ public class DataAccess {
         if (descrizione != null) {
             entityTransaction.begin();
             em.remove(descrizione);
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -1176,7 +1132,6 @@ public class DataAccess {
         if (links != null) {
             entityTransaction.begin();
             em.remove(links);
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -1197,7 +1152,6 @@ public class DataAccess {
         if (dublino != null) {
             entityTransaction.begin();
             em.remove(dublino);
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -1209,7 +1163,6 @@ public class DataAccess {
         for (DocentiCorso doc : docentiCorso) {
             entityTransaction.begin();
             em.remove(doc);
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -1221,7 +1174,6 @@ public class DataAccess {
         for (CorsiCdl cc : corsiCdl) {
             entityTransaction.begin();
             em.remove(cc);
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -1233,7 +1185,6 @@ public class DataAccess {
         for (LibriCorso lc : libriCorso) {
             entityTransaction.begin();
             em.remove(lc);
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -1245,7 +1196,6 @@ public class DataAccess {
         for (MaterialeCorso matCorso : materialeCorso) {
             entityTransaction.begin();
             em.remove(matCorso);
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -1257,7 +1207,6 @@ public class DataAccess {
         for (CollegCorsi colCorso : collegCorsi) {
             entityTransaction.begin();
             em.remove(colCorso);
-            em.flush();
             entityTransaction.commit();
         }
     }
@@ -1288,8 +1237,24 @@ public class DataAccess {
             versione.setVersione(version);
             entityTransaction.begin();
             em.persist(versione);
-            em.flush();
             entityTransaction.commit();
         }
     }
+
+    public static void saveLog(String token, String descrizione) {
+        Utente utente = getSessionUtente(token);
+        Log log = new Log();
+        log.setUtente(utente.getIdUtente());
+        log.setDescrizione(utente.getUsername() + " " + descrizione);
+        log.setData(new Timestamp(System.currentTimeMillis()));
+        entityTransaction.begin();
+        em.persist(log);
+        entityTransaction.commit();
+    }
+
+    public static List<Log> getLogs() {
+        return stream.streamAll(em, Log.class)
+                .toList();
+    }
+
 }

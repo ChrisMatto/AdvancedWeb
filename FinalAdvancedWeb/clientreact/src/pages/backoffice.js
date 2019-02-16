@@ -8,6 +8,7 @@ import RegistraAmministratore from './backoffice/registraAmministratore';
 import RegistraDocente from './backoffice/registraDocente';
 import UpdateProfilo from './backoffice/profile';
 import UpdateDocente from './backoffice/updateDocente';
+import Logs from './backoffice/logs';
 
 export default class Backoffice extends Component {
     constructor(props) {
@@ -78,15 +79,15 @@ export default class Backoffice extends Component {
             <aside className="col-md-4">
                 <div className="box_style_1 profile">
                     <h4>Funzioni Modifica</h4>
-                        <ul>
-                            <li><Link to = '/Backoffice/UpdateTeacher'>Modifica Profilo Docente</Link></li>
-                        </ul>
+                    <ul>
+                        <li><Link to = '/Backoffice/UpdateTeacher'>Modifica Profilo Docente</Link></li>
                     {
                         this.state.corsi.length > 0 ?
                             <li><Link to = '/Backoffice/UpdateCourse'>Modifica Un Corso</Link></li>
                         :
                             null
                     }
+                    </ul>
                     
 
                     <h4>Aggiunta Documenti</h4>
@@ -140,7 +141,8 @@ export default class Backoffice extends Component {
                                 <Route exact path = '/Backoffice/RegisterAdmin' render = {() => !this.state.utente.docente ? <RegistraAmministratore utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
                                 <Route exact path = '/Backoffice/RegisterTeacher' render = {() => !this.state.utente.docente ? <RegistraDocente utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
                                 <Route exact path = '/Backoffice/Profile' render = {() => <UpdateProfilo utente = {this.state.utente} token = {this.state.token}/>}/>
-                                <Route exact path = '/Backoffice/UpdateTeacher' render = {() => <UpdateDocente utente = {this.state.utente} token = {this.state.token}/>}/>              
+                                <Route exact path = '/Backoffice/UpdateTeacher' render = {() => <UpdateDocente utente = {this.state.utente} token = {this.state.token}/>}/>
+                                <Route exact path = '/Backoffice/Logs' render = {() => !this.state.utente.docente ? <Logs utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
                             </Switch>
                             </div>
                         </div>

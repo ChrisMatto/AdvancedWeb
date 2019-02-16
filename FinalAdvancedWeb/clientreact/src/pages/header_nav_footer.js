@@ -31,7 +31,7 @@ function Header(props) {
                                                 null
                                             :
                                                 <li>
-                                                    <Link to = '/Log'>
+                                                    <Link to = '/Backoffice/Logs'>
                                                         <i className=""></i>Log</Link>
                                                 </li>
                                             }

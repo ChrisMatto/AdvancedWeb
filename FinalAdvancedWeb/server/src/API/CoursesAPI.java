@@ -1,7 +1,7 @@
 package API;
 
 import Classi.*;
-import ClassiTemp.*;
+import Views.*;
 import Controller.Utils;
 import DataAccess.DataAccess;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -67,6 +67,7 @@ public class CoursesAPI implements Resource {
         }
         corso.setAnno(anno);
         DataAccess.insertCorso(corso);
+        DataAccess.saveLog(token, "ha inserito il nuovo corso " + corso.getNomeIt());
         return Response.ok().build();
     }
 
@@ -138,6 +139,7 @@ public class CoursesAPI implements Resource {
         int anno = Utils.getYear(year);
         if (corsoCompleto != null) {
             DataAccess.updateCorso(id, anno, corsoCompleto);
+            DataAccess.saveLog(token, "ha modificato le informazioni del corso " + corsoCompleto.getNomeIt() + " dell'anno " + Utils.getYear(year));
         }
         return Response.ok().build();
     }
@@ -147,6 +149,8 @@ public class CoursesAPI implements Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteCorso(@PathParam("year") String year, @PathParam("id") int id) {
         int anno = Utils.getYear(year);
+        Corso corso = DataAccess.getCorso(id, Utils.getYear(year));
+        DataAccess.saveLog(token, "ha eliminato il corso " + corso.getNomeIt() + " dell'anno " + Utils.getYear(year));
         DataAccess.deleteCorso(id, anno);
         return Response.ok().build();
     }
@@ -224,6 +228,8 @@ public class CoursesAPI implements Resource {
         } else {
             DataAccess.deleteDocentiCorso(id, anno);
         }
+        Corso corso = DataAccess.getCorso(id, anno);
+        DataAccess.saveLog(token, "ha modificato la lista dei docenti del corso " + corso.getNomeIt() + " dell'anno " + anno);
         DataAccess.updateVersione("corso");
         return Response.ok().build();
     }
@@ -257,6 +263,8 @@ public class CoursesAPI implements Resource {
             DataAccess.updateRelazioniCorso(id, anno, relazioni.getModulo(), "modulo");
             DataAccess.updateRelazioniCorso(id, anno, relazioni.getMutuati(), "mutuato");
         }
+        Corso corso = DataAccess.getCorso(id, anno);
+        DataAccess.saveLog(token, "ha modificato la lista delle relazioni del corso " + corso.getNomeIt() + " dell'anno " + anno);
         DataAccess.updateVersione("corso");
         return Response.ok().build();
     }
@@ -279,6 +287,8 @@ public class CoursesAPI implements Resource {
         } else {
             DataAccess.deleteLinks(id, anno);
         }
+        Corso corso = DataAccess.getCorso(id, anno);
+        DataAccess.saveLog(token, "ha modificato i link del corso " + corso.getNomeIt() + " dell'anno " + anno);
         DataAccess.updateVersione("corso");
         return Response.ok().build();
     }

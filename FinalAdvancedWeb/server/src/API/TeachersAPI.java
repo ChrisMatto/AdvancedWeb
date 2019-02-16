@@ -2,7 +2,7 @@ package API;
 
 import Classi.Docente;
 import Classi.Versioni;
-import ClassiTemp.DocenteCompleto;
+import Views.DocenteCompleto;
 import Controller.Utils;
 import DataAccess.DataAccess;
 
@@ -95,6 +95,7 @@ public class TeachersAPI implements Resource {
             docente.setImmagine(null);
         }
         int idDocente = DataAccess.insertDocente(docente);
+        DataAccess.saveLog(token, "ha inserito il nuovo docente " + docente.getNome() + " " + docente.getCognome());
         return Response.ok(idDocente).build();
     }
 
@@ -149,6 +150,7 @@ public class TeachersAPI implements Resource {
             docente.setImmagine(null);
         }
         DataAccess.updateDocente(idDocente, docente);
+        DataAccess.saveLog(token, "ha modificato il profilo del docente " + docente.getNome() + " " + docente.getCognome());
         return Response.ok().build();
     }
 

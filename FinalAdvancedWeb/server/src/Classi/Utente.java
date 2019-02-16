@@ -1,6 +1,6 @@
 package Classi;
 
-import ClassiTemp.Views;
+import Views.Views;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;

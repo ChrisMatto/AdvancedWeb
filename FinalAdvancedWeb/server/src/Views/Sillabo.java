@@ -1,4 +1,4 @@
-package ClassiTemp;
+package Views;
 
 import DataAccess.DataAccess;
 import com.fasterxml.jackson.annotation.JsonView;

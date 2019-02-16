@@ -1,9 +1,7 @@
-package ClassiTemp;
+package Views;
 
 import Classi.*;
 import DataAccess.DataAccess;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;

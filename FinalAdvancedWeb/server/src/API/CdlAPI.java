@@ -2,7 +2,7 @@ package API;
 
 import Classi.Cdl;
 import Classi.Versioni;
-import ClassiTemp.CdlCompleto;
+import Views.CdlCompleto;
 import Controller.Utils;
 import DataAccess.DataAccess;
 
@@ -50,6 +50,7 @@ public class CdlAPI implements Resource {
             return Response.status(400).build();
         }
         cdl.setAnno(Utils.getYear("current"));
+        DataAccess.saveLog(token, "ha inserito il nuovo CDL " + cdl.getNomeIt());
         return Response.ok().build();
     }
 

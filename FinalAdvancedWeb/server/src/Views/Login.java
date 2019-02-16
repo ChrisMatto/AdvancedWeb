@@ -1,4 +1,4 @@
-package ClassiTemp;
+package Views;
 
 public class Login {
     private String username;

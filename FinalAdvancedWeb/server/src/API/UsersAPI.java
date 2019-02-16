@@ -51,6 +51,7 @@ public class UsersAPI implements Resource {
             return Response.status(409).build();
         }
         DataAccess.insertUtente(utente);
+        DataAccess.saveLog(token, "ha inserito il nuovo utente " + utente.getUsername());
         return Response.ok().build();
     }
 
@@ -71,7 +72,8 @@ public class UsersAPI implements Resource {
         if (id < 0) {
             return Response.status(404).build();
         }
-        DataAccess.updateUtente(id,utente);
+        DataAccess.updateUtente(id, utente);
+        DataAccess.saveLog(token, "ha modificato il profilo utente " + utente.getUsername());
         return Response.ok().build();
     }
 
@@ -85,7 +87,9 @@ public class UsersAPI implements Resource {
         if (DataAccess.existSessioneUtente(id)) {
             return Response.status(409).build();
         }
+        Utente utente = DataAccess.getUtenteNoPassword(id);
         DataAccess.deleteUtente(id);
+        DataAccess.saveLog(token, "ha eliminato l'utente " + utente.getUsername());
         return Response.ok().build();
     }
 }

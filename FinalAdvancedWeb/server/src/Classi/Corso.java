@@ -1,6 +1,6 @@
 package Classi;
 
-import ClassiTemp.Views;
+import Views.Views;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;

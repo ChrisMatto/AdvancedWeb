@@ -1,9 +1,6 @@
 package Classi;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -16,6 +13,7 @@ public class Log {
 
     @Id
     @Column(name = "IDLog")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getIdLog() {
         return idLog;
     }
@@ -63,6 +61,13 @@ public class Log {
                 utente == log.utente &&
                 Objects.equals(data, log.data) &&
                 Objects.equals(descrizione, log.descrizione);
+    }
+
+    public void copyFrom(Log log) {
+        this.idLog = log.idLog;
+        this.utente = log.utente;
+        this.data = log.data;
+        this.descrizione = log.descrizione;
     }
 
     @Override

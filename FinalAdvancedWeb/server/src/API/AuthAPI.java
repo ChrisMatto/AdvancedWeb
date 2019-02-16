@@ -1,8 +1,8 @@
 package API;
 
-import ClassiTemp.Login;
+import Views.Login;
 import Classi.Utente;
-import ClassiTemp.Views;
+import Views.Views;
 import Controller.Controllers;
 import Controller.Utils;
 import DataAccess.DataAccess;
@@ -14,7 +14,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import java.sql.Timestamp;
 
 public class AuthAPI implements Resource {
 
@@ -32,6 +31,7 @@ public class AuthAPI implements Resource {
                 if (token == null) {
                     token = DataAccess.makeSessione(utente);
                 }
+                DataAccess.saveLog(token, "ha effettuato l'accesso");
                 return Response.ok(token).build();
             } else {
                 return Response.status(401).build();
@@ -60,6 +60,7 @@ public class AuthAPI implements Resource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response logout(String token) {
+        DataAccess.saveLog(token, "ha effettuato il logout");
         DataAccess.deleteSession(token);
         return Response.ok().build();
     }
@@ -80,6 +81,8 @@ public class AuthAPI implements Resource {
                 return new CdlAPI(token);
             case teachers:
                 return new TeachersAPI(token);
+            case logs:
+                return new LogsAPI(token);
             default:
                 Response.ResponseBuilder responseBuilder = Response.status(404);
                 throw new WebApplicationException(responseBuilder.build());
