@@ -18,7 +18,7 @@ public class Sillabo {
     @JsonView(Views.SillaboEn.class)
     private String sillaboEn;
 
-    public Sillabo(int id, int anno) {
+    public void init(int id, int anno) {
         this.sillaboIt = dataAccess.getDescrizioneIt(id, anno).getSillabo();
         this.sillaboEn = dataAccess.getDescrizioneEn(id, anno).getSillabo();
     }

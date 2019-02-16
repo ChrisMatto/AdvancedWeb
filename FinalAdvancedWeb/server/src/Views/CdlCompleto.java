@@ -17,13 +17,7 @@ public class CdlCompleto extends Cdl {
 
     private List<String> corsi;
 
-    public CdlCompleto() {
-        super();
-        corsi = null;
-    }
-
-    public CdlCompleto(Cdl cdl, String baseUriCorsi) {
-        super();
+    public void init(Cdl cdl, String baseUriCorsi) {
         if (cdl == null) {
             return;
         }

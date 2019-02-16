@@ -2,13 +2,11 @@ package Controller;
 
 import DataAccess.DataAccess;
 
-import javax.inject.Inject;
 import java.util.TimerTask;
 
 public class SessionTask extends TimerTask {
 
-    @Inject
-    private DataAccess dataAccess;
+    private DataAccess dataAccess = new DataAccess();
 
     public void run() {
         dataAccess.deleteOldSessions();

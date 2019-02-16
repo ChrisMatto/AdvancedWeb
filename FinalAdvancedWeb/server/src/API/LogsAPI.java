@@ -4,6 +4,7 @@ import DataAccess.DataAccess;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -13,15 +14,8 @@ public class LogsAPI implements Resource {
     @Inject
     private DataAccess dataAccess;
 
+    @PathParam("SID")
     private String token;
-
-    public LogsAPI() {
-        token = null;
-    }
-
-    public LogsAPI(String token) {
-        this.token = token;
-    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

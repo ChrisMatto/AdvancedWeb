@@ -8,6 +8,7 @@ import DataAccess.DataAccess;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -20,15 +21,11 @@ public class CdlAPI implements Resource {
     @Inject
     private DataAccess dataAccess;
 
+    @PathParam("SID")
     private String token;
 
-    public CdlAPI() {
-        token = null;
-    }
-
-    public CdlAPI(String token) {
-        this.token = token;
-    }
+    @Context
+    ResourceContext context;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -117,7 +114,9 @@ public class CdlAPI implements Resource {
         }
         Cdl cdl = dataAccess.getCdl(id);
         if (cdl != null) {
-            return Response.ok(new CdlCompleto(cdl, baseUriCorsi)).build();
+            CdlCompleto cdlCompleto = context.getResource(CdlCompleto.class);
+            cdlCompleto.init(cdl, baseUriCorsi);
+            return Response.ok(cdlCompleto).build();
         }
         return Response.status(404).build();
     }

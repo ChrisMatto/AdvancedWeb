@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.*;
 import java.io.File;
 import java.util.ArrayList;
@@ -19,15 +20,11 @@ public class CoursesAPI implements Resource {
     @Inject
     private DataAccess dataAccess;
 
+    @PathParam("SID")
     private String token;
 
-    public CoursesAPI() {
-        token = null;
-    }
-
-    public CoursesAPI(String token) {
-        this.token = token;
-    }
+    @Context
+    ResourceContext context;
 
     @GET
     @Path("{year}")
@@ -105,7 +102,9 @@ public class CoursesAPI implements Resource {
             baseUri = uriInfo.getBaseUri() + "courses/";
         }
         if (corso != null) {
-            return Response.ok(new CorsoCompleto(corso, baseUri)).build();
+            CorsoCompleto corsoCompleto = context.getResource(CorsoCompleto.class);
+            corsoCompleto.init(corso, baseUri);
+            return Response.ok(corsoCompleto).build();
         }
         return Response.noContent().build();
     }
@@ -123,7 +122,8 @@ public class CoursesAPI implements Resource {
             baseUri = uriInfo.getBaseUri() + "courses/";
         }
         if (corso != null) {
-            CorsoCompleto corsoCompleto = new CorsoCompleto(corso, baseUri);
+            CorsoCompleto corsoCompleto = context.getResource(CorsoCompleto.class);
+            corsoCompleto.init(corso, baseUri);
             ObjectMapper mapper = new ObjectMapper();
             String jsonCorso;
             if (lingua.equals("it")) {
@@ -189,7 +189,8 @@ public class CoursesAPI implements Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSyllabus(@PathParam("year") String year, @PathParam("id") int id) {
         int anno = Utils.getYear(year);
-        Sillabo sillabo = new Sillabo(id, anno);
+        Sillabo sillabo = context.getResource(Sillabo.class);
+        sillabo.init(id, anno);
         return Response.ok(sillabo).build();
     }
 
@@ -198,7 +199,8 @@ public class CoursesAPI implements Resource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSyllabusLingua(@PathParam("year") String year, @PathParam("id") int id, @PathParam("lingua") String lingua) throws JsonProcessingException {
         int anno = Utils.getYear(year);
-        Sillabo sillabo = new Sillabo(id, anno);
+        Sillabo sillabo = context.getResource(Sillabo.class);
+        sillabo.init(id, anno);
         ObjectMapper mapper = new ObjectMapper();
         String jsonSillabo;
         if (lingua.equals("it")) {

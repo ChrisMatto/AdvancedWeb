@@ -17,13 +17,7 @@ public class CorsoPerDocente extends Corso {
 
     private List<CdlPerCorso> cdl;
 
-    public CorsoPerDocente() {
-        super();
-        cdl = null;
-    }
-
-    public CorsoPerDocente(Corso corso) {
-        super();
+    public void init(Corso corso) {
         if (corso == null) {
             return;
         }

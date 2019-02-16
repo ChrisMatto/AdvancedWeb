@@ -36,22 +36,7 @@ public class CorsoCompleto extends Corso {
     private List<MaterialeCompleto> materiale;
     private RelazioniCorso relazioni;
 
-    public CorsoCompleto() {
-        super();
-        docenti = null;
-        cdl = null;
-        descrizioneEn = null;
-        descrizioneIt = null;
-        dublinoIt = null;
-        dublinoEn = null;
-        libri = null;
-        materiale = null;
-        relazioni = null;
-        links = null;
-    }
-
-    public CorsoCompleto(Corso corso, String baseUri) {
-        super();
+    public void init(Corso corso, String baseUri) {
         if (corso == null) {
             return;
         }

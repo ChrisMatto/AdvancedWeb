@@ -9,6 +9,7 @@ import DataAccess.DataAccess;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
+import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -23,15 +24,11 @@ public class TeachersAPI implements Resource {
     @Inject
     private DataAccess dataAccess;
 
+    @PathParam("SID")
     private String token;
 
-    public TeachersAPI() {
-        token = null;
-    }
-
-    public TeachersAPI(String token) {
-        this.token = token;
-    }
+    @Context
+    ResourceContext resourceContext;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -180,7 +177,9 @@ public class TeachersAPI implements Resource {
                     docente.setImmagine(null);
                 }
             }
-            return Response.ok(new DocenteCompleto(docente)).build();
+            DocenteCompleto fullDoc = resourceContext.getResource(DocenteCompleto.class);
+            fullDoc.init(docente);
+            return Response.ok(fullDoc).build();
         }
         return Response.status(404).build();
     }

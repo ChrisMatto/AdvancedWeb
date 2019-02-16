@@ -17,15 +17,8 @@ public class UsersAPI implements Resource {
     @Inject
     private DataAccess dataAccess;
 
+    @PathParam("SID")
     private String token;
-
-    public UsersAPI() {
-        this.token = null;
-    }
-
-    public UsersAPI(String token) {
-        this.token = token;
-    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

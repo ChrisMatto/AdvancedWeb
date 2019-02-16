@@ -6,6 +6,8 @@ import DataAccess.DataAccess;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.inject.Inject;
+import javax.ws.rs.container.ResourceContext;
+import javax.ws.rs.core.Context;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,15 +17,13 @@ public class DocenteCompleto extends Docente {
     @JsonIgnore
     private DataAccess dataAccess;
 
+    @Context
+    @JsonIgnore
+    private ResourceContext context;
+
     private List<CorsoPerDocente> corsi;
 
-    public DocenteCompleto() {
-        super();
-        corsi = null;
-    }
-
-    public DocenteCompleto(Docente docente) {
-        super();
+    public void init(Docente docente) {
         if (docente == null) {
             return;
         }
@@ -31,7 +31,9 @@ public class DocenteCompleto extends Docente {
         corsi = new ArrayList<>();
         List<Corso> corsiList = dataAccess.getCorsiDocente(super.getIdDocente());
         for (Corso corso : corsiList) {
-            corsi.add(new CorsoPerDocente(corso));
+            CorsoPerDocente c = context.getResource(CorsoPerDocente.class);
+            c.init(corso);
+            corsi.add(c);
         }
     }
 
