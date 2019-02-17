@@ -1,9 +1,6 @@
 package Classi;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -13,7 +10,7 @@ public class Cdl {
     private String nomeEn;
     private int anno;
     private int cfu;
-    private byte magistrale;
+    private boolean magistrale;
     private String immagine;
     private String descrizioneIt;
     private String descrizioneEn;
@@ -22,6 +19,7 @@ public class Cdl {
 
     @Id
     @Column(name = "IDCDL")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getIdcdl() {
         return idcdl;
     }
@@ -72,11 +70,11 @@ public class Cdl {
 
     @Basic
     @Column(name = "Magistrale")
-    public byte getMagistrale() {
+    public boolean getMagistrale() {
         return magistrale;
     }
 
-    public void setMagistrale(byte magistrale) {
+    public void setMagistrale(boolean magistrale) {
         this.magistrale = magistrale;
     }
 

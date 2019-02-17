@@ -9,6 +9,8 @@ import RegistraDocente from './backoffice/registraDocente';
 import UpdateProfilo from './backoffice/profile';
 import UpdateDocente from './backoffice/updateDocente';
 import Logs from './backoffice/logs';
+import CreateCdl from './backoffice/createCdl';
+import UpdateCdl from './backoffice/updateCdl';
 
 export default class Backoffice extends Component {
     constructor(props) {
@@ -43,7 +45,7 @@ export default class Backoffice extends Component {
 
                     <h4>Funzioni Creazione</h4>
                     <ul>
-                        <li><Link to = '/Backoffice/CreateCDL'>Crea Un Nuovo Cdl</Link></li>
+                        <li><Link to = '/Backoffice/CreateCdl'>Crea Un Nuovo Cdl</Link></li>
                         <li><Link to = '/Backoffice/CreateCourse'>Crea Un Nuovo Corso</Link></li>
                         <li><Link to = '/Backoffice/RegisterTeacher'>Registra Un Nuovo Docente</Link></li>
                         <li><Link to = '/Backoffice/RegisterAdmin'>Registra Un Nuovo Amministratore</Link></li>
@@ -54,13 +56,14 @@ export default class Backoffice extends Component {
                     <h4>Funzioni Modifica</h4>
                     <ul>
                         <li><Link to = '/Backoffice/UpdateCourse'>Modifica Corsi</Link></li>
-                        <li><Link to = '/Backoffice/UpdateCDL'>Modifica Cdl</Link></li>
+                        <li><Link to = '/Backoffice/UpdateCdl'>Modifica Cdl</Link></li>
                         <li><Link to = '/Backoffice/UpdateTeacher'>Modifica Docente</Link></li>
                     </ul>
 
                     <h4>Funzioni Eliminazione</h4>
                     <ul>
                         <li><Link to = '/Backoffice/DeleteCourse'>Elimina Un Corso</Link></li>
+                        <li><Link to = '/Backoffice/DeleteCdl'>Elimina Un Cdl</Link></li>
                     </ul>
 
                     <h4>Funzioni Upload</h4>
@@ -143,6 +146,9 @@ export default class Backoffice extends Component {
                                 <Route exact path = '/Backoffice/Profile' render = {() => <UpdateProfilo utente = {this.state.utente} token = {this.state.token}/>}/>
                                 <Route exact path = '/Backoffice/UpdateTeacher' render = {() => <UpdateDocente utente = {this.state.utente} token = {this.state.token}/>}/>
                                 <Route exact path = '/Backoffice/Logs' render = {() => !this.state.utente.docente ? <Logs utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
+                                <Route exact path = '/Backoffice/CreateCdl' render = {() => !this.state.utente.docente ? <CreateCdl utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
+                                <Route exact path = '/Backoffice/UpdateCdl' render = {() => !this.state.utente.docente ? <UpdateCdl utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
+                                <Route exact path = '/Backoffice/DeleteCdl' render = {() => !this.state.utente.docente ? <UpdateCdl isDelete = {true} utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
                             </Switch>
                             </div>
                         </div>

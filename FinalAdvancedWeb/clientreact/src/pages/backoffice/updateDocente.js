@@ -3,7 +3,7 @@ import { Segment, Form, Button, Loader, Header } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 import RegistraDocente from './registraDocente';
 
-export default class UdateDocente extends Component {
+export default class UpdateDocente extends Component {
     constructor() {
         super();
         this.state = {

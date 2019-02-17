@@ -43,3 +43,28 @@
     margin: 0 auto !important;
     width: 70% !important;
 }
+
+.k-switch-on .k-switch-container {
+    background-color: limegreen;
+}
+
+.k-switch-on .k-switch-container:hover {
+    background-color: limegreen;
+}
+
+.k-switch {
+    width: 8em;
+    font-size: 11px;
+    padding-top: 3px;
+    left: 50%;
+    margin-left: calc(50% - 4em);
+    margin-right: calc(50% - 4em);
+}
+
+.k-switch-label-on {
+    left: 20px;
+}
+
+.k-switch-label-off {
+    right: 20px;
+}

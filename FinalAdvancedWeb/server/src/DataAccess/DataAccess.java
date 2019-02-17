@@ -811,13 +811,13 @@ public class DataAccess {
 
     public List<Cdl> getCdlTriennali() {
         return stream.streamAll(em, Cdl.class)
-                .where(cdl -> cdl.getMagistrale() == 0)
+                .where(cdl -> !cdl.getMagistrale())
                 .toList();
     }
 
     public List<Cdl> getCdlMagistrali() {
         return stream.streamAll(em, Cdl.class)
-                .where(cdl -> cdl.getMagistrale() == 1)
+                .where(Cdl::getMagistrale)
                 .toList();
     }
 
@@ -826,6 +826,48 @@ public class DataAccess {
                 .where(cdl -> cdl.getIdcdl() == id)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public void insertCdl(Cdl cdl) {
+        entityTransaction.begin();
+        em.persist(cdl);
+        entityTransaction.commit();
+        updateVersione("cdl");
+    }
+
+    public void updateCdl(int idCdl, Cdl cdl) {
+        Cdl dbCdl = stream.streamAll(em, Cdl.class)
+                .where(c -> c.getIdcdl() == idCdl)
+                .findFirst()
+                .orElse(null);
+        if (dbCdl == null) {
+            Response.ResponseBuilder responseBuilder = Response.status(400);
+            throw new WebApplicationException(responseBuilder.build());
+        }
+        String immagine = dbCdl.getImmagine();
+        dbCdl.copyFrom(cdl);
+        if (dbCdl.getImmagine() == null || dbCdl.getImmagine().trim().isEmpty()) {
+            dbCdl.setImmagine(immagine);
+        }
+        entityTransaction.begin();
+        em.persist(dbCdl);
+        entityTransaction.commit();
+    }
+
+    public void deleteCdl(int idCdl) {
+        Cdl cdl = stream.streamAll(em, Cdl.class)
+                .where(c -> c.getIdcdl() == idCdl)
+                .findFirst()
+                .orElse(null);
+        List<CorsiCdl> corsi = stream.streamAll(em, CorsiCdl.class)
+                .where(corsiCdl -> corsiCdl.getCdl() == idCdl)
+                .toList();
+        if (cdl != null && corsi.isEmpty()) {
+            entityTransaction.begin();
+            em.remove(cdl);
+            entityTransaction.commit();
+            updateVersione("cdl");
+        }
     }
 
     public List<Corso> getCorsiInCdl(int idCdl) {
@@ -1214,11 +1256,6 @@ public class DataAccess {
             em.remove(colCorso);
             entityTransaction.commit();
         }
-    }
-
-    public List<Versioni> getVersioni() {
-        return stream.streamAll(em, Versioni.class)
-                .toList();
     }
 
     public Versioni getVersione(String tabella) {

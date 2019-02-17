@@ -48,50 +48,16 @@ public class TeachersAPI implements Resource {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertTeacher(@Context ServletContext context, @Context HttpHeaders headers, Docente docente) {
+    public Response insertTeacher(@Context HttpHeaders headers, Docente docente) {
         String curriculumType = headers.getHeaderString("file-type");
         String imageType = headers.getHeaderString("image-type");
         if (curriculumType != null && docente.getCurriculum() != null && !docente.getCurriculum().trim().isEmpty()) {
-            curriculumType = "." + curriculumType;
-            byte[] byteCurriculum = Base64.getDecoder().decode(docente.getCurriculum());
-            String stringPath = context.getRealPath("") + "curriculum/" + docente.getNome() + docente.getCognome();
-            File existingFile = new File(stringPath + curriculumType);
-            int i = 1;
-            String newStringPath = stringPath;
-            while (existingFile.exists()) {
-                newStringPath = stringPath + i;
-                i++;
-                existingFile = new File(newStringPath + curriculumType);
-            }
-            InputStream fileStream = new ByteArrayInputStream(byteCurriculum);
-            try {
-                Files.copy(fileStream, Paths.get(newStringPath + curriculumType));
-                docente.setCurriculum("curriculum/" + docente.getNome() + docente.getCognome() + curriculumType);
-            } catch (IOException e) {
-                System.out.println(e.toString());
-            }
+            docente.setCurriculum(Utils.saveNewFile(docente.getCurriculum(), "curriculum/" + docente.getNome() + docente.getCognome(), curriculumType));
         } else {
             docente.setCurriculum(null);
         }
         if (imageType != null && docente.getImmagine() != null && !docente.getImmagine().trim().isEmpty()) {
-            imageType = "." + imageType;
-            byte[] byteImage = Base64.getDecoder().decode(docente.getImmagine());
-            String stringPath = context.getRealPath("") + "imgDocenti/" + docente.getNome() + docente.getCognome();
-            File existingFile = new File(stringPath + imageType);
-            int i = 1;
-            String newStringPath = stringPath;
-            while (existingFile.exists()) {
-                newStringPath = stringPath + i;
-                i++;
-                existingFile = new File(newStringPath + imageType);
-            }
-            InputStream fileStream = new ByteArrayInputStream(byteImage);
-            try {
-                Files.copy(fileStream, Paths.get(newStringPath + imageType));
-                docente.setImmagine("imgDocenti/" + docente.getNome() + docente.getCognome() + imageType);
-            } catch (IOException e) {
-                System.out.println(e.toString());
-            }
+            docente.setImmagine(Utils.saveNewFile(docente.getImmagine(), "imgDocenti/" + docente.getNome() + docente.getCognome(), imageType));
         } else {
             docente.setImmagine(null);
         }
@@ -106,46 +72,17 @@ public class TeachersAPI implements Resource {
     public Response updateTeacher(@Context ServletContext context, @Context HttpHeaders headers, @PathParam("id") int idDocente, Docente docente) {
         String curriculumType = headers.getHeaderString("file-type");
         String imageType = headers.getHeaderString("image-type");
+        Docente dbDocente = dataAccess.getDocente(idDocente);
         if (curriculumType != null && docente.getCurriculum() != null && !docente.getCurriculum().trim().isEmpty()) {
-            curriculumType = "." + curriculumType;
-            byte[] byteCurriculum = Base64.getDecoder().decode(docente.getCurriculum());
-            String stringPath = context.getRealPath("") + "curriculum/" + docente.getNome() + docente.getCognome();
-            File existingFile = new File(stringPath + curriculumType);
-            if (existingFile.exists()) {
-                try {
-                    Files.delete(Paths.get(stringPath + curriculumType));
-                } catch (IOException e) {
-                    System.out.println(e.toString());
-                }
-            }
-            InputStream fileStream = new ByteArrayInputStream(byteCurriculum);
-            try {
-                Files.copy(fileStream, Paths.get(stringPath + curriculumType));
-                docente.setCurriculum("curriculum/" + docente.getNome() + docente.getCognome() + curriculumType);
-            } catch (IOException e) {
-                System.out.println(e.toString());
+            if (dbDocente != null) {
+                docente.setCurriculum(Utils.updateFile(docente.getCurriculum(), dbDocente.getCurriculum(), curriculumType));
             }
         } else {
             docente.setCurriculum(null);
         }
         if (imageType != null && docente.getImmagine() != null && !docente.getImmagine().trim().isEmpty()) {
-            imageType = "." + imageType;
-            byte[] byteImage = Base64.getDecoder().decode(docente.getImmagine());
-            String stringPath = context.getRealPath("") + "imgDocenti/" + docente.getNome() + docente.getCognome();
-            File existingFile = new File(stringPath + imageType);
-            while (existingFile.exists()) {
-                try {
-                    Files.delete(Paths.get(stringPath + imageType));
-                } catch (IOException e) {
-                    System.out.println(e.toString());
-                }
-            }
-            InputStream fileStream = new ByteArrayInputStream(byteImage);
-            try {
-                Files.copy(fileStream, Paths.get(stringPath + imageType));
-                docente.setImmagine("imgDocenti/" + docente.getNome() + docente.getCognome() + imageType);
-            } catch (IOException e) {
-                System.out.println(e.toString());
+            if (dbDocente != null) {
+                docente.setImmagine(Utils.updateFile(docente.getImmagine(), dbDocente.getImmagine(), imageType));
             }
         } else {
             docente.setImmagine(null);
@@ -158,24 +95,13 @@ public class TeachersAPI implements Resource {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTeacher(@Context ServletContext context, @PathParam("id") int id) {
+    public Response getTeacher(@PathParam("id") int id) {
         Docente doc = dataAccess.getDocente(id);
         if (doc != null) {
             Docente docente = new Docente();
             docente.copyFrom(doc);
             if (docente.getImmagine() != null && !docente.getImmagine().trim().isEmpty()) {
-                String imagePath = context.getRealPath("") + docente.getImmagine();
-                File image = new File(imagePath);
-                if (image.exists()) {
-                    try {
-                        byte[] imageBytes = Files.readAllBytes(Paths.get(imagePath));
-                        docente.setImmagine(Base64.getEncoder().encodeToString(imageBytes));
-                    } catch (IOException e) {
-                        System.out.println(e.toString());
-                    }
-                } else {
-                    docente.setImmagine(null);
-                }
+                docente.setImmagine(Utils.getEncodedFile(docente.getImmagine()));
             }
             DocenteCompleto fullDoc = resourceContext.getResource(DocenteCompleto.class);
             fullDoc.init(docente);

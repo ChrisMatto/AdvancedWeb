@@ -159,23 +159,23 @@ function Cdl(props) {
     var nome;
     var descrizione;
     if (props.lingua === "it") {
-        if (cdl['nomeIt'] != null) {
+        if (cdl['nomeIt'] || cdl.nomeIt.trim()) {
             nome = cdl['nomeIt'];
         } else {
             nome = cdl['nomeEn'];
         }
-        if (cdl['descrizioneIt'] != null) {
+        if (cdl['descrizioneIt'] || cdl.descrizioneIt.trim()) {
             descrizione = cdl['descrizioneIt'];
         } else {
             descrizione = cdl['descrizioneEn'];
         }
     } else {
-        if (cdl['nomeEn'] != null) {
+        if (cdl['nomeEn'] || cdl.nomeEn.trim()) {
             nome = cdl['nomeEn'];
         } else {
             nome = cdl['nomeIt'];
         }
-        if (cdl['descrizioneEn'] != null) {
+        if (cdl['descrizioneEn'] || cdl.descrizioneEn.trim()) {
             descrizione = cdl['descrizioneEn'];
         } else {
             descrizione = cdl['descrizioneIt'];
@@ -185,7 +185,7 @@ function Cdl(props) {
         <div  className="col-lg-3 col-md-6 col-sm-6">
             <div className="col-item">
                 <div className="photo">
-                    <Link to = {'/Courses?cdl=' + cdl['idcdl']}><img src={cdl['immagine']} alt="cdlimmagine"/></Link>
+                    <Link to = {'/Courses?cdl=' + cdl['idcdl']}><img src={'data:image;base64,' + cdl.immagine} alt="cdlimmagine"/></Link>
                     <div className="cat_row" >{nome}<span className="pull-right"><i className="fas fa-university"></i></span></div>
                 </div>
                 <div className="info">
