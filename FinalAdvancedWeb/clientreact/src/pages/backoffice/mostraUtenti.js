@@ -31,6 +31,7 @@ export default class MostraUtenti extends Component {
                 results.forEach(c => {
                     users.push(c);
                 });
+                users.sort((a, b) => (a.username > b.username) ? 1 : (a.username < b.username) ? -1 : 0);
                 this.setState({ users: users });
             });
         });
@@ -61,7 +62,7 @@ export default class MostraUtenti extends Component {
                     <Loader active size = 'massive'>Inviando Informazioni</Loader>
                 </div>
                 <Header size='medium' style = {{ textAlign: 'center' }} dividing>Lista Utenti</Header>
-                <Table celled striped color = 'grey' className = 'center-table'>
+                <Table celled striped color = 'blue' className = 'center-table'>
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>Username</Table.HeaderCell>
@@ -76,8 +77,8 @@ export default class MostraUtenti extends Component {
                                 <Table.Row key = {utente.idUtente}>
                                     <Table.Cell>{utente.username}</Table.Cell>
                                     <Table.Cell>{utente.docente ? 'Docente' : 'Amministratore'}</Table.Cell>
-                                    <Table.Cell textAlign = 'center'>{utente.docente ? <Button icon = 'external' onClick = {() => this.setState({ redirect: utente.docente })}/> : null}</Table.Cell>
-                                    <Table.Cell textAlign = 'center'><Button icon = 'user delete' onClick = {() => this.deleteUser(utente.idUtente)}/></Table.Cell>
+                                    <Table.Cell textAlign = 'center'>{utente.docente ? <Button color = 'instagram' inverted icon = 'external' onClick = {() => this.setState({ redirect: utente.docente })}/> : null}</Table.Cell>
+                                    <Table.Cell textAlign = 'center'><Button color = 'red' inverted icon = 'user delete' onClick = {() => this.deleteUser(utente.idUtente)}/></Table.Cell>
                                 </Table.Row>
                             )
                         }

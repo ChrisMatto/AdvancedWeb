@@ -228,7 +228,7 @@ export default class DettagliCorso extends Component {
         return (
         <div key = {docente.idDocente} className = 'media'>
             <div className = 'pull-right'>
-                <img id="img-piccola" src={'/' + docente.immagine} className="img-circle" alt=""/>
+                <img id="img-piccola" src={'data:image;base64,' + docente.immagine} className="img-circle" alt=""/>
             </div>
             <div className = 'media-body'>
                 <h5 className = 'media-heading'><Link to = {'/Teachers/' + docente.idDocente}>{docente.nome} {docente.cognome}</Link></h5>
