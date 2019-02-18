@@ -764,6 +764,13 @@ public class DataAccess {
         return materialeCompleto;
     }
 
+    public Libro getLibro(int idLibro) {
+        return stream.streamAll(em, Libro.class)
+                .where(l -> l.getIdLibro() == idLibro)
+                .findFirst()
+                .orElse(null);
+    }
+
     public void insertLibro(int idCorso, int year, Libro libro) {
         entityTransaction.begin();
         em.persist(libro);
@@ -786,6 +793,26 @@ public class DataAccess {
             dbLibro.copyFrom(libro);
             entityTransaction.begin();
             em.persist(dbLibro);
+            entityTransaction.commit();
+        }
+    }
+
+    public void deleteLibro(int idLibro) {
+        List<LibriCorso> libriCorso = stream.streamAll(em, LibriCorso.class)
+                .where(l -> l.getLibro() == idLibro)
+                .toList();
+        for (LibriCorso l : libriCorso) {
+            entityTransaction.begin();
+            em.remove(l);
+            entityTransaction.commit();
+        }
+        Libro libro = stream.streamAll(em, Libro.class)
+                .where(l -> l.getIdLibro() == idLibro)
+                .findFirst()
+                .orElse(null);
+        if (libro != null) {
+            entityTransaction.begin();
+            em.remove(libro);
             entityTransaction.commit();
         }
     }

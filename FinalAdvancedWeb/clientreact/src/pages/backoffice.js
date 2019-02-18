@@ -12,6 +12,7 @@ import Logs from './backoffice/logs';
 import CreateCdl from './backoffice/createCdl';
 import UpdateCdl from './backoffice/updateCdl';
 import AddLibro from './backoffice/addLibro';
+import ManageLibri from './backoffice/manageLibri';
 
 export default class Backoffice extends Component {
     constructor(props) {
@@ -70,7 +71,7 @@ export default class Backoffice extends Component {
                     <h4>Funzioni Upload</h4>
                     <ul>
                         <li><Link to = '/Backoffice/ManageMateriale'>Materiale Gestione</Link></li>
-                        <li><Link to = '/Backoffice/ManageBooks'>Libri Gestione</Link></li>
+                        <li><Link to = '/Backoffice/ManageBooks'>Gestione Libri</Link></li>
                     </ul>
 
                 </div>
@@ -103,7 +104,7 @@ export default class Backoffice extends Component {
                     <h4>Gestione Documenti</h4>
                     <ul>
                         <li><Link to = '/Backoffice/ManageMateriale'>Materiale Gestione</Link></li>
-                        <li><Link to = '/Backoffice/ManageBooks'>Libri Gestione</Link></li>
+                        <li><Link to = '/Backoffice/ManageBooks'>Gestione Libri</Link></li>
                     </ul>
                 </div>
             </aside>
@@ -151,6 +152,7 @@ export default class Backoffice extends Component {
                                 <Route exact path = '/Backoffice/UpdateCdl' render = {() => !this.state.utente.docente ? <UpdateCdl utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
                                 <Route exact path = '/Backoffice/DeleteCdl' render = {() => !this.state.utente.docente ? <UpdateCdl isDelete = {true} utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
                                 <Route exact path = '/Backoffice/AddBook' render = {() => <AddLibro utente = {this.state.utente} token = {this.state.token}/>}/>
+                                <Route exact path = '/Backoffice/ManageBooks' render = {() => <ManageLibri utente = {this.state.utente} token = {this.state.token}/>}/>
                             </Switch>
                             </div>
                         </div>

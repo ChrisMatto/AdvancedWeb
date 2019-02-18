@@ -50,4 +50,16 @@ public class BookAPI implements Resource {
         dataAccess.saveLog(token, "ha modificato il libro " + libro.getTitolo() + " per il corso " + corso.getNomeIt() + " dell'anno " + anno);
         return Response.ok().build();
     }
+
+    @Path("course/{year}/{idCorso}/{id}")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteLibro(@PathParam("year") String year, @PathParam("idCorso") int idCorso, @PathParam("id") int idLibro) {
+        int anno = Utils.getYear(year);
+        Libro libro = dataAccess.getLibro(idLibro);
+        Corso corso = dataAccess.getCorso(idCorso, anno);
+        dataAccess.deleteLibro(idLibro);
+        dataAccess.saveLog(token, "ha eliminato il libro " + libro.getTitolo() + " per il corso " + corso.getNomeIt() + " dell'anno " + anno);
+        return Response.ok().build();
+    }
 }

@@ -1,7 +1,8 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Segment, Header, Form, Button, Loader } from 'semantic-ui-react';
 import AnnoCdlStep from './stepCorso/annoCdlStep';
+import LibroForm from './libroForm/libroForm';
 
 export default class AddLibro extends Component {
     constructor() {
@@ -120,28 +121,9 @@ export default class AddLibro extends Component {
                     }                    
                 </Form>
                 <div style = {{ textAlign: 'center', paddingTop: 20 }}>
-                    <Button onClick = {() => !this.state.selected ? this.setState({ selected: true }) : this.addLibro()} color = 'facebook' size = 'large' disabled = {!this.state.idCorso}>Conferma</Button>
+                    <Button onClick = {() => !this.state.selected ? this.setState({ selected: true }) : this.addLibro()} color = 'facebook' size = 'large' disabled = {!this.state.selected ? !this.state.idCorso : !this.state.libro.titolo.trim() || !this.state.libro.autore.trim() || !this.state.libro.anno}>Conferma</Button>
                 </div>
             </Segment>
         );
     }
-}
-
-function LibroForm(props) {
-    return (
-        <Fragment>
-            <Form.Group widths = 'equal'>
-                <Form.Input fluid name = 'titolo' value = {props.libro.titolo} onChange = {props.handleChange} label = 'Titolo Libro' placeholder = 'Titolo' required/>
-                <Form.Input fluid name = 'autore' value = {props.libro.autore} onChange = {props.handleChange} label = 'Autore Libro' placeholder = 'Autore' required/>
-            </Form.Group>
-            <Form.Group widths = 'equal'>
-                <Form.Input type = 'number' fluid name = 'anno' value = {props.libro.anno} onChange = {props.handleChange} label = 'Anno Pubblicazione Libro' placeholder = 'Anno' required/>
-                <Form.Input type = 'number' fluid name = 'volume' value = {props.libro.volume} onChange = {props.handleChange} label = 'Volume Libro' placeholder = 'Volume'/>
-            </Form.Group>
-            <Form.Group widths = 'equal'>
-                <Form.Input fluid name = 'editore' value = {props.libro.editore} onChange = {props.handleChange} label = 'Editore Libro' placeholder = 'Editore'/>
-                <Form.Input fluid name = 'link' value = {props.libro.link} onChange = {props.handleChange} label = 'Link Libro' placeholder = 'Link'/>
-            </Form.Group>
-        </Fragment>
-    );
 }
