@@ -1,9 +1,6 @@
 package Classi;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -18,6 +15,7 @@ public class Libro {
 
     @Id
     @Column(name = "IDLibro")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getIdLibro() {
         return idLibro;
     }
@@ -98,6 +96,15 @@ public class Libro {
                 Objects.equals(volume, libro.volume) &&
                 Objects.equals(editore, libro.editore) &&
                 Objects.equals(link, libro.link);
+    }
+
+    public void copyFrom(Libro libro) {
+        this.titolo = libro.titolo;
+        this.autore = libro.autore;
+        this.volume = libro.volume;
+        this.anno = libro.anno;
+        this.editore = libro.editore;
+        this.link = libro.link;
     }
 
     @Override

@@ -764,6 +764,32 @@ public class DataAccess {
         return materialeCompleto;
     }
 
+    public void insertLibro(int idCorso, int year, Libro libro) {
+        entityTransaction.begin();
+        em.persist(libro);
+        entityTransaction.commit();
+        LibriCorso libriCorso = new LibriCorso();
+        libriCorso.setLibro(libro.getIdLibro());
+        libriCorso.setCorso(idCorso);
+        libriCorso.setAnnoCorso(year);
+        entityTransaction.begin();
+        em.persist(libriCorso);
+        entityTransaction.commit();
+    }
+
+    public void updateLibro(int idLibro, Libro libro) {
+        Libro dbLibro = stream.streamAll(em, Libro.class)
+                .where(l -> l.getIdLibro() == idLibro)
+                .findFirst()
+                .orElse(null);
+        if (dbLibro != null) {
+            dbLibro.copyFrom(libro);
+            entityTransaction.begin();
+            em.persist(dbLibro);
+            entityTransaction.commit();
+        }
+    }
+
     public RelazioniCorso getRelazioniCorso(int idCorso, int year, String baseUri) {
         List<CollegCorsi> collegCorsi = stream.streamAll(em, CollegCorsi.class)
                 .where(cc -> cc.getThisCorso() == idCorso && cc.getAnnoThisCorso() == year && cc.getTipo().equals("propedeutico"))

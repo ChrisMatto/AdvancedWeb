@@ -240,9 +240,9 @@ export default class DettagliCorso extends Component {
 
     getLibro(libro) {
         if (libro.link) {
-            return <li key = {libro.idLibro}><a href = {libro.link}>{libro.titolo}</a>, {libro.volume > 0 ? libro.volume + ',' : null} {libro.anno}, {libro.autore}, {libro.editore}</li>
+            return <li key = {libro.idLibro}><a href = {libro.link}>{libro.titolo} </a>, {libro.volume > 0 ? 'Vol. ' + libro.volume + ',  ' : null}  {libro.anno},  <br/>Autore: {libro.autore}{libro.editore ? ',  Editore: ' + libro.editore : null}</li>
         }
-        return <li key = {libro.idLibro}>{libro.volume > 0 ? libro.volume + ',' : null} {libro.anno}, {libro.autore}, {libro.editore}</li>
+        return <li key = {libro.idLibro}>{libro.titolo}, {libro.volume > 0 ? 'Vol. ' + libro.volume + ',  ' : null}  {libro.anno},  <br/>Autore: {libro.autore}{libro.editore ? ',  Editore: ' + libro.editore : null}</li>
     }
 
     render() {

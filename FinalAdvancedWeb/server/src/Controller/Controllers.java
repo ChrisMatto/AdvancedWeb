@@ -7,6 +7,7 @@ public enum Controllers {
     cdl("cdl"),
     teachers("teachers"),
     logs("logs"),
+    books("books"),
     noController("");
 
     private String controller;

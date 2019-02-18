@@ -91,6 +91,8 @@ public class AuthAPI implements Resource {
                 return context.getResource(TeachersAPI.class);
             case logs:
                 return context.getResource(LogsAPI.class);
+            case books:
+                return context.getResource(BookAPI.class);
             default:
                 Response.ResponseBuilder responseBuilder = Response.status(404);
                 throw new WebApplicationException(responseBuilder.build());

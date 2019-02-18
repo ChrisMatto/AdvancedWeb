@@ -194,7 +194,7 @@ export default class AnnoCdlStep extends Component{
                             scrolling
                             search
                             selection
-                            label = {'Seleziona Corso Da ' + (this.props.elimina ? 'Eliminare' : 'Modificare')}
+                            label = {'Seleziona Un Corso'}
                             onChange = {(e, {name, value}) => {
                                 this.setState({ idCorso: value });
                                 this.props.selectedCorso(value, this.state.anno, this.state.cdl);

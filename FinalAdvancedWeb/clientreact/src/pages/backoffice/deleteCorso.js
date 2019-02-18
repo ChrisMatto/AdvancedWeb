@@ -54,31 +54,6 @@ export default class DeleteCorso extends Component {
             cdlCorso: cdlCorso,
             idCorso: idCorso
         });
-        if (idCorso) {
-            fetch('http://localhost:8080/AdvancedWeb/rest/auth/' + this.props.token + '/courses/' + annoCorso)
-            .then(res => res.json())
-            .then(result => {
-                let promises = [];
-                result.forEach(uri => {
-                    promises.push(fetch(uri));
-                });
-                Promise.all(promises).then(responses => {
-                    var jsonPromises = [];
-                    responses.forEach(response => {
-                        jsonPromises.push(response.json());
-                    });
-                    return Promise.all(jsonPromises);
-                }).then(results => {
-                    var corsi = [];
-                    results.forEach(corso => {
-                        corsi.push(corso);
-                    });
-                    this.setState({
-                        corsi: corsi
-                    });
-                });
-            });
-        }
     }
 
     deleteCorso = () => {
@@ -116,7 +91,6 @@ export default class DeleteCorso extends Component {
                         anniCorsi = {this.state.anniCorsi}
                         selectedCorso = {this.selectedCorso}
                         utente = {this.props.utente}
-                        elimina = {true}
                     />
                 </Form>
                 <div style = {{ textAlign: 'center', paddingTop: 20 }}>

@@ -322,5 +322,4 @@ public class CoursesAPI implements Resource {
         File file = Utils.getFile(materiale.getLink());
         return Response.ok(file).header("Content-Disposition", "attachment; filename=" + file.getName()).build();
     }
-
 }
