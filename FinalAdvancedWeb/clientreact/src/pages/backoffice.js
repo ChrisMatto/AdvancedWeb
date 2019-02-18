@@ -13,6 +13,8 @@ import CreateCdl from './backoffice/createCdl';
 import UpdateCdl from './backoffice/updateCdl';
 import AddLibro from './backoffice/addLibro';
 import ManageLibri from './backoffice/manageLibri';
+import AddMateriale from './backoffice/addMateriale';
+import ManageMateriale from './backoffice/manageMateriale';
 
 export default class Backoffice extends Component {
     constructor(props) {
@@ -51,7 +53,7 @@ export default class Backoffice extends Component {
                         <li><Link to = '/Backoffice/CreateCourse'>Crea Un Nuovo Corso</Link></li>
                         <li><Link to = '/Backoffice/RegisterTeacher'>Registra Un Nuovo Docente</Link></li>
                         <li><Link to = '/Backoffice/RegisterAdmin'>Registra Un Nuovo Amministratore</Link></li>
-                        <li><Link to = '/Backoffice/NewMateriale'>Aggiungi Materiale</Link></li>
+                        <li><Link to = '/Backoffice/AddMaterial'>Aggiungi Materiale</Link></li>
                         <li><Link to = '/Backoffice/AddBook'>Aggiungi Libro</Link></li>
                     </ul>
 
@@ -70,8 +72,8 @@ export default class Backoffice extends Component {
 
                     <h4>Funzioni Upload</h4>
                     <ul>
-                        <li><Link to = '/Backoffice/ManageMateriale'>Materiale Gestione</Link></li>
-                        <li><Link to = '/Backoffice/ManageBooks'>Gestione Libri</Link></li>
+                        <li><Link to = '/Backoffice/ManageMaterial'>Gestione Materiale</Link></li>
+                        <li><Link to = '/Backoffice/ManageMaterial'>Gestione Libri</Link></li>
                     </ul>
 
                 </div>
@@ -97,13 +99,13 @@ export default class Backoffice extends Component {
 
                     <h4>Aggiunta Documenti</h4>
                     <ul>
-                        <li><Link to = '/Backoffice/NewMateriale'>Aggiungi Materiale</Link></li>
+                        <li><Link to = '/Backoffice/AddMaterial'>Aggiungi Materiale</Link></li>
                         <li><Link to = '/Backoffice/AddBook'>Aggiungi Libro</Link></li>
                     </ul>
 
                     <h4>Gestione Documenti</h4>
                     <ul>
-                        <li><Link to = '/Backoffice/ManageMateriale'>Materiale Gestione</Link></li>
+                        <li><Link to = '/Backoffice/ManageMaterial'>Gestione Materiale</Link></li>
                         <li><Link to = '/Backoffice/ManageBooks'>Gestione Libri</Link></li>
                     </ul>
                 </div>
@@ -153,6 +155,8 @@ export default class Backoffice extends Component {
                                 <Route exact path = '/Backoffice/DeleteCdl' render = {() => !this.state.utente.docente ? <UpdateCdl isDelete = {true} utente = {this.state.utente} token = {this.state.token}/> : <Redirect to = '/Backoffice'/>}/>
                                 <Route exact path = '/Backoffice/AddBook' render = {() => <AddLibro utente = {this.state.utente} token = {this.state.token}/>}/>
                                 <Route exact path = '/Backoffice/ManageBooks' render = {() => <ManageLibri utente = {this.state.utente} token = {this.state.token}/>}/>
+                                <Route exact path = '/Backoffice/AddMaterial' render = {() => <AddMateriale utente = {this.state.utente} token = {this.state.token}/>}/>
+                                <Route exact path = '/Backoffice/ManageMaterial' render = {() => <ManageMateriale utente = {this.state.utente} token = {this.state.token}/>}/>
                             </Switch>
                             </div>
                         </div>

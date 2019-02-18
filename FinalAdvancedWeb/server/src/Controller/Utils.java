@@ -97,25 +97,25 @@ public class Utils {
         return newFilePath + extension;
     }
 
-    public static String updateFile(String encodedFile, String filePath, String fileExtension) {
+    public static String updateFile(String encodedFile, String oldFilePath, String newFilePath, String fileExtension) {
         String extension = "." + fileExtension;
         byte[] fileBytes = Base64.getDecoder().decode(encodedFile);
         String basePath = context.getRealPath("");
-        File existingFile = new File(basePath + filePath + extension);
+        File existingFile = new File(basePath + oldFilePath);
         while (existingFile.exists()) {
             try {
-                Files.delete(Paths.get(basePath + filePath + extension));
+                Files.delete(Paths.get(basePath + oldFilePath));
             } catch (IOException e) {
                 System.out.println(e.toString());
             }
         }
         InputStream fileStream = new ByteArrayInputStream(fileBytes);
         try {
-            Files.copy(fileStream, Paths.get(basePath + filePath + extension));
+            Files.copy(fileStream, Paths.get(basePath + newFilePath + extension));
         } catch (IOException e) {
             System.out.println(e.toString());
         }
-        return filePath + extension;
+        return newFilePath + extension;
     }
 
     public static String getEncodedFile(String filePath) {

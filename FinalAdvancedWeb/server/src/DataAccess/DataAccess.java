@@ -817,6 +817,52 @@ public class DataAccess {
         }
     }
 
+    public void insertMateriale(int idCorso, int year, Materiale materiale) {
+        entityTransaction.begin();
+        em.persist(materiale);
+        entityTransaction.commit();
+        MaterialeCorso materialeCorso = new MaterialeCorso();
+        materialeCorso.setMateriale(materiale.getIdMateriale());
+        materialeCorso.setCorso(idCorso);
+        materialeCorso.setAnnoCorso(year);
+        entityTransaction.begin();
+        em.persist(materialeCorso);
+        entityTransaction.commit();
+    }
+
+    public void updateMateriale(int idMateriale, Materiale materiale) {
+        Materiale dbMateriale = stream.streamAll(em, Materiale.class)
+                .where(l -> l.getIdMateriale() == idMateriale)
+                .findFirst()
+                .orElse(null);
+        if (dbMateriale != null) {
+            dbMateriale.copyFrom(materiale);
+            entityTransaction.begin();
+            em.persist(dbMateriale);
+            entityTransaction.commit();
+        }
+    }
+
+    public void deleteMateriale(int idMateriale) {
+        List<MaterialeCorso> materialeCorso = stream.streamAll(em, MaterialeCorso.class)
+                .where(l -> l.getMateriale() == idMateriale)
+                .toList();
+        for (MaterialeCorso l : materialeCorso) {
+            entityTransaction.begin();
+            em.remove(l);
+            entityTransaction.commit();
+        }
+        Materiale materiale = stream.streamAll(em, Materiale.class)
+                .where(l -> l.getIdMateriale() == idMateriale)
+                .findFirst()
+                .orElse(null);
+        if (materiale != null) {
+            entityTransaction.begin();
+            em.remove(materiale);
+            entityTransaction.commit();
+        }
+    }
+
     public RelazioniCorso getRelazioniCorso(int idCorso, int year, String baseUri) {
         List<CollegCorsi> collegCorsi = stream.streamAll(em, CollegCorsi.class)
                 .where(cc -> cc.getThisCorso() == idCorso && cc.getAnnoThisCorso() == year && cc.getTipo().equals("propedeutico"))

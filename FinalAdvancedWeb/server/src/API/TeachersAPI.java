@@ -75,14 +75,14 @@ public class TeachersAPI implements Resource {
         Docente dbDocente = dataAccess.getDocente(idDocente);
         if (curriculumType != null && docente.getCurriculum() != null && !docente.getCurriculum().trim().isEmpty()) {
             if (dbDocente != null) {
-                docente.setCurriculum(Utils.updateFile(docente.getCurriculum(), dbDocente.getCurriculum(), curriculumType));
+                docente.setCurriculum(Utils.updateFile(docente.getCurriculum(), dbDocente.getCurriculum(), "curriculum/" + docente.getNome() + docente.getCognome(), curriculumType));
             }
         } else {
             docente.setCurriculum(null);
         }
         if (imageType != null && docente.getImmagine() != null && !docente.getImmagine().trim().isEmpty()) {
             if (dbDocente != null) {
-                docente.setImmagine(Utils.updateFile(docente.getImmagine(), dbDocente.getImmagine(), imageType));
+                docente.setImmagine(Utils.updateFile(docente.getImmagine(), dbDocente.getImmagine(), "imgDocenti/" + docente.getNome() + docente.getCognome(), imageType));
             }
         } else {
             docente.setImmagine(null);

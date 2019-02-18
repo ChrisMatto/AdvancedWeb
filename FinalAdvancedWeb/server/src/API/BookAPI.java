@@ -46,8 +46,9 @@ public class BookAPI implements Resource {
         }
         int anno = Utils.getYear(year);
         Corso corso = dataAccess.getCorso(idCorso, anno);
+        Libro lib = dataAccess.getLibro(idLibro);
         dataAccess.updateLibro(idLibro, libro);
-        dataAccess.saveLog(token, "ha modificato il libro " + libro.getTitolo() + " per il corso " + corso.getNomeIt() + " dell'anno " + anno);
+        dataAccess.saveLog(token, "ha modificato il libro " + lib.getTitolo() + " per il corso " + corso.getNomeIt() + " dell'anno " + anno);
         return Response.ok().build();
     }
 

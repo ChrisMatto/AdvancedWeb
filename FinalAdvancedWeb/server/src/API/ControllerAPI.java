@@ -40,6 +40,8 @@ public class ControllerAPI {
                 return context.getResource(TeachersAPI.class);
             case books:
                 return context.getResource(BookAPI.class);
+            case material:
+                return context.getResource(MaterialAPI.class);
             default:
                 Response.ResponseBuilder responseBuilder = Response.status(404);
                 throw new WebApplicationException(responseBuilder.build());

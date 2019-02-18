@@ -145,7 +145,7 @@ public class CdlAPI implements Resource {
         if (imageType != null && cdl.getImmagine() != null && !cdl.getImmagine().trim().isEmpty()) {
             Cdl dbCdl = dataAccess.getCdl(idCdl);
             if (dbCdl != null) {
-                cdl.setImmagine(Utils.updateFile(cdl.getImmagine(), dbCdl.getImmagine(), imageType));
+                cdl.setImmagine(Utils.updateFile(cdl.getImmagine(), dbCdl.getImmagine(), "imgCDL/" + cdl.getNomeIt(), imageType));
             }
         } else {
             cdl.setImmagine(null);

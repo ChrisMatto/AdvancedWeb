@@ -305,21 +305,4 @@ public class CoursesAPI implements Resource {
     public Response getAnniCorsi() {
         return Response.ok(dataAccess.getAnniCorsi()).build();
     }
-
-    @Path("{year}/{id}/material")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMaterialeCorso(@PathParam("year") String year, @PathParam("id") int id) {
-        int anno = Utils.getYear(year);
-        return Response.ok(dataAccess.getMaterialeCorso(id, anno)).build();
-    }
-
-    @Path("material/{idMateriale}")
-    @GET
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response getMateriale(@PathParam("idMateriale") int idMateriale) {
-        Materiale materiale = dataAccess.getMateriale(idMateriale);
-        File file = Utils.getFile(materiale.getLink());
-        return Response.ok(file).header("Content-Disposition", "attachment; filename=" + file.getName()).build();
-    }
 }

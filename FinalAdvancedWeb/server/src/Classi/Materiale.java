@@ -1,11 +1,9 @@
 package Classi;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -18,6 +16,7 @@ public class Materiale {
 
     @Id
     @Column(name = "IDMateriale")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getIdMateriale() {
         return idMateriale;
     }
@@ -43,6 +42,7 @@ public class Materiale {
         return link;
     }
 
+    @JsonProperty
     public void setLink(String link) {
         this.link = link;
     }

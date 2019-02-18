@@ -8,6 +8,7 @@ public enum Controllers {
     teachers("teachers"),
     logs("logs"),
     books("books"),
+    material("material"),
     noController("");
 
     private String controller;

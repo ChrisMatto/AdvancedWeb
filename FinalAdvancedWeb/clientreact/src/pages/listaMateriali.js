@@ -17,7 +17,7 @@ export default class ListaMateriali extends Component {
         .then(result => {
             this.setState({corso: result});
         });
-        fetch('http://localhost:8080/AdvancedWeb/rest/courses/' + this.props.year + '/' + this.props.id + '/material')
+        fetch('http://localhost:8080/AdvancedWeb/rest/material/course/' + this.props.year + '/' + this.props.id)
         .then(res => res.json())
         .then(result => {
             this.setState({materiale: result});
@@ -68,7 +68,7 @@ export default class ListaMateriali extends Component {
                                                 <th scope = 'row'>{mat.nome}</th>
                                                 <td>{lingua === 'it' ? mat.descrizioneIt || mat.descrizioneEn : mat.descrizioneEn || mat.descrizioneIt}</td>
                                                 <td>{formatBytes(mat.dimensioni)}</td>
-                                                <td className = 'icon-download'><a href = {'http://localhost:8080/AdvancedWeb/rest/courses/material/' + mat.idMateriale}> {lingua === 'it' ? 'Scarica Ora' : 'Download Now'} </a></td>
+                                                <td className = 'icon-download'><a href = {'http://localhost:8080/AdvancedWeb/rest/material/' + mat.idMateriale}> {lingua === 'it' ? 'Scarica Ora' : 'Download Now'} </a></td>
                                             </tr>
                                         )): null}
                                     </tbody>
