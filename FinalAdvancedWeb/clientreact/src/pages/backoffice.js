@@ -73,7 +73,7 @@ export default class Backoffice extends Component {
                     <h4>Funzioni Upload</h4>
                     <ul>
                         <li><Link to = '/Backoffice/ManageMaterial'>Gestione Materiale</Link></li>
-                        <li><Link to = '/Backoffice/ManageMaterial'>Gestione Libri</Link></li>
+                        <li><Link to = '/Backoffice/ManageBooks'>Gestione Libri</Link></li>
                     </ul>
 
                 </div>
